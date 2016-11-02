@@ -9,25 +9,31 @@
 import Foundation
 import CoreBluetooth
 
+/// Thin wrapper around `CBUUID`.
 public struct Identifier {
     let core: CBUUID
 
+    /// The identifier represented as a string.
     public var string: String {
         return self.core.uuidString
     }
 
+    /// The data of the identifier.
     public var data: Data {
         return self.core.data
     }
 
+    /// Initializes an instance of `Identifier` from a `CBUUID` object.
     public init(uuid: CBUUID) {
         self.core = uuid
     }
 
+    /// Initializes an instance of `Identifier` from a `UUID` object.
     public init(uuid: UUID) {
         self.core = CBUUID(nsuuid: uuid)
     }
 
+    /// Initializes an instance of `Identifier` from a string.
     public init(string: String) {
         self.core = CBUUID(string: string)
     }
