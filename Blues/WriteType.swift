@@ -9,6 +9,7 @@
 import Foundation
 import CoreBluetooth
 
+// A enum representation of a Bluetooth Low Energy write type.
 public enum WriteType {
     /// A characteristic value is to be written, with a response from
     /// the peripheral to indicate whether the write was successful.

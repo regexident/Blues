@@ -86,6 +86,7 @@ public enum Result<T, E> {
 
 extension Optional {
 
+    /// Equivalent to the Swift nil-coalescing operator: `self ?? alternative`.
     func unwrapOr(_ alternative: Wrapped) -> Wrapped {
         if let some = self {
             return some
@@ -94,6 +95,7 @@ extension Optional {
         }
     }
 
+    /// Equivalent to the Swift nil-coalescing operator `self ?? alternative()`.
     func unwrapOrElse(_ alternative: () -> Wrapped) -> Wrapped {
         if let some = self {
             return some
@@ -102,6 +104,9 @@ extension Optional {
         }
     }
 
+    /// Transforms the `Optional<Wrapped>` into a `Result<Wrapped, E>`
+    ///
+    /// - returns: `.ok(some)` iff self is `.some(some)`, else `.err(error)`.
     func okOr<E>(_ error: E) -> Result<Wrapped, E> {
         if let some = self {
             return .ok(some)
@@ -110,6 +115,9 @@ extension Optional {
         }
     }
 
+    /// Transforms the `Optional<Wrapped>` into a `Result<Wrapped, E>`
+    ///
+    /// - returns: `.ok(some)` iff self is `.some(some)`, else `.err(error())`.
     func okOrElse<E>(_ error: () -> E) -> Result<Wrapped, E> {
         if let some = self {
             return .ok(some)
@@ -121,21 +129,21 @@ extension Optional {
 
 /*
  extension Result where E: Error {
- // Construct a `Result` from a Swift `throws` error handling function
- public init(_ capturing: () throws -> T) {
- do {
- self = .ok(try capturing())
- } catch let error {
- self = .err(error)
- }
- }
+     // Construct a `Result` from a Swift `throws` error handling function
+     public init(_ capturing: () throws -> T) {
+         do {
+             self = .ok(try capturing())
+         } catch let error {
+             self = .err(error)
+         }
+     }
 
- // Convert the `Result` back to typical Swift `throws` error handling
- public func unwrap() throws -> T {
- switch self {
- case .ok(let v): return v
- case .err(let e): throw e
- }
- }
+     // Convert the `Result` back to typical Swift `throws` error handling
+     public func unwrap() throws -> T {
+         switch self {
+         case .ok(let v): return v
+         case .err(let e): throw e
+         }
+     }
  }
  */

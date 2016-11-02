@@ -9,7 +9,7 @@
 import Foundation
 import CoreBluetooth
 
-/// The options of a given `CentralManager`.
+/// Thin struct wrapper around the options of a given `CentralManager`s connection.
 public struct CentralManagerOptions {
     /// A unique identifier (UID) for the manager that is being instantiated
     ///

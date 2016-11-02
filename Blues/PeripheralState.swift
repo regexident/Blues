@@ -9,13 +9,18 @@
 import Foundation
 import CoreBluetooth
 
+/// Thin enum wrapper around `CBPeripheralState`.
 public enum PeripheralState {
+    
     /// The peripheral is currently not connected to the central manager.
     case disconnected
+    
     /// The peripheral is currently in the process of connecting to the central manager.
     case connecting
+    
     /// The peripheral is currently connected to the central manager.
     case connected
+    
     /// The peripheral is currently in the process of disconnecting from the central manager.
     case disconnecting
 

@@ -9,8 +9,17 @@
 import Foundation
 import CoreBluetooth
 
+/// Thin struct wrapper around `CBCharacteristicProperties`.
 public struct CharacteristicProperties: OptionSet {
+
+    /// The characteristic’s value can be broadcast using a characteristic configuration descriptor.
+    ///
+    /// - important: This property is not allowed for local characteristics published via the `add(_:)` method of the `PeripheralManager` class. This means that you cannot use this property when you initialize a new `MutableCharacteristic` object via the `init(type:properties:value:permissions:)` method of the `MutableCharacteristic` class.
+    
     public static var broadcast = CharacteristicProperties(core: .broadcast)
+    /// The characteristic’s value can be read.
+    ///
+    /// Use the `read()` method of the `Peripheral` class to read the value of a characteristic.
     public static var read = CharacteristicProperties(core: .read)
     public static var writeWithoutResponse = CharacteristicProperties(core: .writeWithoutResponse)
     public static var write = CharacteristicProperties(core: .write)

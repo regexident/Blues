@@ -8,7 +8,10 @@
 
 import Foundation
 
-public enum PeripheralError {
+/// Errors related to a peripheral.
+public enum PeripheralError: Swift.Error {
+    /// The peripheral is unreachable (e.g. disconnected).
     case unreachable
+    /// The action was not handled by the internal responder chain.
     case unhandled
 }

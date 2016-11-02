@@ -9,7 +9,7 @@
 import Foundation
 import CoreBluetooth
 
-/// The options of a given `Peripheral`s connection.
+/// Thin struct wrapper around the options of a given `Peripheral`s connection.
 public struct ConnectionOptions {
 
     /// A Boolean value that specifies whether the system should display
