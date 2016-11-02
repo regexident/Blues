@@ -43,7 +43,7 @@ extension DefaultDescriptor: CustomStringConvertible {
 }
 
 /// A descriptor of a peripheral’s characteristic, providing further information about its value.
-public protocol Descriptor: class, DescriptorDelegate, Responder {
+public protocol Descriptor: class, DescriptorDelegate {
     var name: String? { get }
     var shadow: ShadowDescriptor { get }
 
@@ -65,18 +65,18 @@ extension Descriptor {
         return self.shadow.characteristic
     }
 
-    public var nextResponder: Responder? {
-        return self.shadow.characteristic
+    var nextResponder: Responder? {
+        return self.shadow.characteristic as! Responder?
     }
 
     public func read() -> Result<(), PeripheralError> {
-        return self.tryToHandle(ReadValueForDescriptorMessage(
+        return (self as! Responder).tryToHandle(ReadValueForDescriptorMessage(
             descriptor: self
         )) ?? .err(.unhandled)
     }
 
     public func write(data: Data) -> Result<(), PeripheralError> {
-        return self.tryToHandle(WriteValueForDescriptorMessage(
+        return (self as! Responder).tryToHandle(WriteValueForDescriptorMessage(
             data: data,
             descriptor: self
         )) ?? .err(.unhandled)

@@ -76,7 +76,7 @@ extension DefaultPeripheral: CustomStringConvertible {
     }
 }
 
-public protocol Peripheral: class, PeripheralDelegate, Responder {
+public protocol Peripheral: class, PeripheralDelegate {
     var name: String? { get }
     var shadow: ShadowPeripheral { get }
 
@@ -113,31 +113,31 @@ extension Peripheral {
         return .ok(connectionOptions)
     }
 
-    public var nextResponder: Responder? {
-        return self.shadow
+    var nextResponder: Responder? {
+        return .some((self.shadow as! Responder))
     }
 
     public func connect(options: ConnectionOptions? = nil) -> Result<(), PeripheralError> {
-        return self.tryToHandle(ConnectPeripheralMessage(
+        return (self as! Responder).tryToHandle(ConnectPeripheralMessage(
             peripheral: self,
             options: options
         )) ?? .err(.unhandled)
     }
 
     public func disconnect() -> Result<(), PeripheralError> {
-        return self.tryToHandle(DisconnectPeripheralMessage(
+        return (self as! Responder).tryToHandle(DisconnectPeripheralMessage(
             peripheral: self
         )) ?? .err(.unhandled)
     }
 
     public func discover(services: [Identifier]?) -> Result<(), PeripheralError> {
-        return self.tryToHandle(DiscoverServicesMessage(
+        return (self as! Responder).tryToHandle(DiscoverServicesMessage(
             uuids: services
         )) ?? .err(.unhandled)
     }
 
     public func readRSSI() {
-        let _ = self.tryToHandle(ReadRSSIMessage())
+        let _ = (self as! Responder).tryToHandle(ReadRSSIMessage())
     }
 
     var core: CBPeripheral {

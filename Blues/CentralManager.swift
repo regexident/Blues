@@ -30,6 +30,10 @@ public class CentralManager: NSObject {
 
     let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
 
+    var nextResponder: Responder? {
+        return nil
+    }
+    
     public init(delegate: CentralManagerDelegate? = nil, dataSource: CentralManagerDataSource? = nil, options: CentralManagerOptions? = nil) {
         self.delegate = delegate
         self.dataSource = dataSource
@@ -111,12 +115,6 @@ public class CentralManager: NSObject {
         shadowPeripheral.peripheral = peripheral
         self.peripherals[uuid] = peripheral
         return peripheral
-    }
-}
-
-extension CentralManager: Responder {
-    public var nextResponder: Responder? {
-        return nil
     }
 }
 

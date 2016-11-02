@@ -31,6 +31,10 @@ public class ShadowPeripheral: NSObject {
         }
         return centralManager.queue
     }
+    
+    var nextResponder: Responder? {
+        return .some(self.centralManager as! Responder)
+    }
 
     func inner(for peripheral: Peripheral) -> CBPeripheral {
         guard peripheral === peripheral else {
@@ -76,12 +80,6 @@ public class ShadowPeripheral: NSObject {
         for service in self.services.values {
             service.shadow.detach()
         }
-    }
-}
-
-extension ShadowPeripheral: Responder {
-    public var nextResponder: Responder? {
-        return self.centralManager
     }
 }
 

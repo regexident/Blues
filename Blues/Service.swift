@@ -43,7 +43,7 @@ extension DefaultService: CustomStringConvertible {
     }
 }
 
-public protocol Service: class, ServiceDelegate, Responder {
+public protocol Service: class, ServiceDelegate {
     var name: String? { get }
     var shadow: ShadowService { get }
 
@@ -75,19 +75,19 @@ extension Service {
         return self.shadow.peripheral
     }
 
-    public var nextResponder: Responder? {
-        return self.shadow.peripheral
+    var nextResponder: Responder? {
+        return self.shadow.peripheral as! Responder?
     }
 
     public func discover(includedServices: [Identifier]?) -> Result<(), PeripheralError> {
-        return self.tryToHandle(DiscoverIncludedServicesMessage(
+        return (self as! Responder).tryToHandle(DiscoverIncludedServicesMessage(
             uuids: includedServices,
             service: self
         )) ?? .err(.unhandled)
     }
 
     public func discover(characteristics: [Identifier]?) -> Result<(), PeripheralError> {
-        return self.tryToHandle(DiscoverCharacteristicsMessage(
+        return (self as! Responder).tryToHandle(DiscoverCharacteristicsMessage(
             uuids: characteristics,
             service: self
         )) ?? .err(.unhandled)

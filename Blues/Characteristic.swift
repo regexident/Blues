@@ -55,7 +55,7 @@ extension DefaultCharacteristic: CustomStringConvertible {
     }
 }
 
-public protocol Characteristic: class, CharacteristicDelegate, Responder {
+public protocol Characteristic: class, CharacteristicDelegate {
     var name: String? { get }
     var shadow: ShadowCharacteristic { get }
 
@@ -111,25 +111,25 @@ extension Characteristic {
         return self.shadow.service
     }
 
-    public var nextResponder: Responder? {
-        return self.shadow.service
+    var nextResponder: Responder? {
+        return self.shadow.service as! Responder?
     }
 
     public func discoverDescriptors(uuids: [Identifier]? = nil) -> Result<(), PeripheralError> {
-        return self.tryToHandle(DiscoverDescriptorsMessage(
+        return (self as! Responder).tryToHandle(DiscoverDescriptorsMessage(
             uuids: uuids,
             characteristic: self
         )) ?? .err(.unhandled)
     }
 
     public func read() -> Result<(), PeripheralError> {
-        return self.tryToHandle(ReadValueForCharacteristicMessage(
+        return (self as! Responder).tryToHandle(ReadValueForCharacteristicMessage(
             characteristic: self
         )) ?? .err(.unhandled)
     }
 
     public func write(data: Data, type: WriteType) -> Result<(), PeripheralError> {
-        return self.tryToHandle(WriteValueForCharacteristicMessage(
+        return (self as! Responder).tryToHandle(WriteValueForCharacteristicMessage(
             data: data,
             characteristic: self,
             type: type
@@ -137,7 +137,7 @@ extension Characteristic {
     }
 
     public func set(notifyValue: Bool) -> Result<(), PeripheralError> {
-        return self.tryToHandle(SetNotifyValueForCharacteristicMessage(
+        return (self as! Responder).tryToHandle(SetNotifyValueForCharacteristicMessage(
             notifyValue: notifyValue,
             characteristic: self
         )) ?? .err(.unhandled)

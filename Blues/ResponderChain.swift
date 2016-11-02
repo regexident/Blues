@@ -18,15 +18,15 @@ public protocol Message {
     func sendToHandler(_ handler: Handler) -> Output
 }
 
-private extension Message {
+extension Message {
 
-    func tryToSendTo(_ firstResponder: Responder) -> Output? {
+    fileprivate func tryToSendTo(_ firstResponder: Responder) -> Output? {
         guard let handler: Handler = findHandlerInChainStartingWith(firstResponder)
         else { return nil }
         return sendToHandler(handler)
     }
 
-    func canSendTo(_ firstResponder: Responder) -> Bool {
+    fileprivate func canSendTo(_ firstResponder: Responder) -> Bool {
         let handler = findHandlerInChainStartingWith(firstResponder) as Handler?
         return handler != nil
     }
@@ -36,13 +36,13 @@ public protocol Responder {
     var nextResponder: Responder? { get }
 }
 
-public extension Responder {
+extension Responder {
 
-    func tryToHandle<MessageType: Message>(_ message: MessageType) -> MessageType.Output? {
+    public func tryToHandle<MessageType: Message>(_ message: MessageType) -> MessageType.Output? {
         return message.tryToSendTo(self)
     }
 
-    func canHandle<MessageType: Message>(_ message: MessageType) -> Bool {
+    public func canHandle<MessageType: Message>(_ message: MessageType) -> Bool {
         return message.canSendTo(self)
     }
 }
