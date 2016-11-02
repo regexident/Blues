@@ -23,10 +23,6 @@
 		BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */; };
 		BFCB8E131DC1104400D5430D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
 		BFE23E961DC5013F00F94D20 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E951DC5013F00F94D20 /* Result.swift */; };
-		BFE23E981DC5165200F94D20 /* BatteryPoweredPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E971DC5165200F94D20 /* BatteryPoweredPeripheral.swift */; };
-		BFE23E9A1DC51FDF00F94D20 /* BatteryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E991DC51FDF00F94D20 /* BatteryService.swift */; };
-		BFE23E9C1DC5200900F94D20 /* BatteryLevelCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E9B1DC5200900F94D20 /* BatteryLevelCharacteristic.swift */; };
-		BFE23E9E1DC52A3900F94D20 /* ServiceNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E9D1DC52A3900F94D20 /* ServiceNames.swift */; };
 		BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA11DC5372700F94D20 /* ResponderChain.swift */; };
 		BFE23EA41DC550F500F94D20 /* PeripheralHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */; };
 		BFE23EA61DC551A700F94D20 /* CentralManagerHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */; };
@@ -35,6 +31,7 @@
 		BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */; };
 		BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB11DC694FC00F94D20 /* Identifier.swift */; };
 		BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB51DC6BC0000F94D20 /* Error.swift */; };
+		BFE2FD251DCA0031002F1394 /* ServiceNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2FD241DCA0031002F1394 /* ServiceNames.swift */; };
 		BFE903611DC3EA3600F1BF42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903601DC3EA3600F1BF42 /* AppDelegate.swift */; };
 		BFE903631DC3EA3600F1BF42 /* CentralManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903621DC3EA3600F1BF42 /* CentralManagerViewController.swift */; };
 		BFE903651DC3EA3600F1BF42 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903641DC3EA3600F1BF42 /* PeripheralViewController.swift */; };
@@ -97,10 +94,6 @@
 		BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerProtocols.swift; sourceTree = "<group>"; };
 		BFCB8E121DC1104400D5430D /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Service.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFE23E951DC5013F00F94D20 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		BFE23E971DC5165200F94D20 /* BatteryPoweredPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryPoweredPeripheral.swift; sourceTree = "<group>"; };
-		BFE23E991DC51FDF00F94D20 /* BatteryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BatteryService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFE23E9B1DC5200900F94D20 /* BatteryLevelCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BatteryLevelCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFE23E9D1DC52A3900F94D20 /* ServiceNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceNames.swift; sourceTree = "<group>"; };
 		BFE23EA11DC5372700F94D20 /* ResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderChain.swift; sourceTree = "<group>"; };
 		BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralHandling.swift; sourceTree = "<group>"; };
 		BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerHandling.swift; sourceTree = "<group>"; };
@@ -109,6 +102,7 @@
 		BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProperties.swift; sourceTree = "<group>"; };
 		BFE23EB11DC694FC00F94D20 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		BFE23EB51DC6BC0000F94D20 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		BFE2FD241DCA0031002F1394 /* ServiceNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceNames.swift; sourceTree = "<group>"; };
 		BFE9035E1DC3EA3600F1BF42 /* BluesDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluesDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE903601DC3EA3600F1BF42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFE903621DC3EA3600F1BF42 /* CentralManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerViewController.swift; sourceTree = "<group>"; };
@@ -172,7 +166,6 @@
 				BFCB8DF31DC0E22200D5430D /* Blues.h */,
 				BFE23EAB1DC5642D00F94D20 /* Generic Attributes */,
 				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
-				BFE23E9D1DC52A3900F94D20 /* ServiceNames.swift */,
 				BFE23EA91DC563E100F94D20 /* Responder Chain */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
 			);
@@ -233,13 +226,11 @@
 			isa = PBXGroup;
 			children = (
 				BFE903601DC3EA3600F1BF42 /* AppDelegate.swift */,
-				BFE23E971DC5165200F94D20 /* BatteryPoweredPeripheral.swift */,
-				BFE23E991DC51FDF00F94D20 /* BatteryService.swift */,
-				BFE23E9B1DC5200900F94D20 /* BatteryLevelCharacteristic.swift */,
 				BFE903621DC3EA3600F1BF42 /* CentralManagerViewController.swift */,
 				BFE903641DC3EA3600F1BF42 /* PeripheralViewController.swift */,
 				BFE23EA71DC55D6F00F94D20 /* CharacteristicViewController.swift */,
 				BFE23EAD1DC567A700F94D20 /* Extensions.swift */,
+				BFE2FD241DCA0031002F1394 /* ServiceNames.swift */,
 				BFE903661DC3EA3600F1BF42 /* Main.storyboard */,
 				BFE903691DC3EA3600F1BF42 /* Assets.xcassets */,
 				BFE9036B1DC3EA3600F1BF42 /* LaunchScreen.storyboard */,
@@ -411,7 +402,6 @@
 				BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */,
 				BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */,
 				BF90BDA91DC3D2E900160828 /* ShadowPeripheral.swift in Sources */,
-				BFE23E9E1DC52A3900F94D20 /* ServiceNames.swift in Sources */,
 				BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */,
 				BFE23EA41DC550F500F94D20 /* PeripheralHandling.swift in Sources */,
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
@@ -432,13 +422,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFE23E9C1DC5200900F94D20 /* BatteryLevelCharacteristic.swift in Sources */,
 				BFE903651DC3EA3600F1BF42 /* PeripheralViewController.swift in Sources */,
-				BFE23E9A1DC51FDF00F94D20 /* BatteryService.swift in Sources */,
 				BFE23EAE1DC567A700F94D20 /* Extensions.swift in Sources */,
 				BFE903631DC3EA3600F1BF42 /* CentralManagerViewController.swift in Sources */,
 				BFE23EA81DC55D6F00F94D20 /* CharacteristicViewController.swift in Sources */,
-				BFE23E981DC5165200F94D20 /* BatteryPoweredPeripheral.swift in Sources */,
+				BFE2FD251DCA0031002F1394 /* ServiceNames.swift in Sources */,
 				BFE903611DC3EA3600F1BF42 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
