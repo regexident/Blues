@@ -50,9 +50,18 @@ class PeripheralViewController: UITableViewController {
         guard let peripheral = self.peripheral else {
             return
         }
-        self.cachedServices = Array(peripheral.services.values)
+        if let services = peripheral.services?.values {
+            self.cachedServices = Array(services)
+        } else {
+            self.cachedServices = []
+        }
         for service in self.cachedServices {
-            let cachedCharacteristics = Array(service.characteristics.values)
+            let cachedCharacteristics: [Characteristic]
+            if let characteristics = service.characteristics?.values {
+                cachedCharacteristics = Array(characteristics)
+            } else {
+                cachedCharacteristics = []
+            }
             self.cachedCharacteristicsByService[service.uuid] = cachedCharacteristics
             for characteristic in cachedCharacteristics {
                 guard let characteristic = characteristic as? DelegatedCharacteristic else {

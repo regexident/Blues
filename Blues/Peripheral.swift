@@ -102,7 +102,7 @@ extension Peripheral {
         return PeripheralState(state: self.core.state)
     }
 
-    public var services: [Identifier: Service] {
+    public var services: [Identifier: Service]? {
         return self.shadow.services
     }
 

@@ -112,7 +112,7 @@ extension Characteristic {
     ///   For example, they may describe the value in human-readable form
     ///   and describe how the value should be formatted for presentation purposes.
     ///   For more information about characteristic descriptors, see `Descriptor`.
-    public var descriptors: [Identifier: Descriptor] {
+    public var descriptors: [Identifier: Descriptor]? {
         return self.shadow.descriptors
     }
 

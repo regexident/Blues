@@ -97,7 +97,7 @@ extension Service {
     ///   contain one characteristic that describes the intended body location
     ///   of the device’s heart rate sensor and another characteristic that
     ///   transmits heart rate measurement data.
-    public var characteristics: [Identifier: Characteristic] {
+    public var characteristics: [Identifier: Characteristic]? {
         return self.shadow.characteristics
     }
 
@@ -232,8 +232,8 @@ public class ShadowService {
     weak var core: CBService?
     weak var peripheral: Peripheral?
 
-    var characteristics: [Identifier: Characteristic] = [:]
-    var includedServices: [Identifier: Service] = [:]
+    var characteristics: [Identifier: Characteristic]?
+    var includedServices: [Identifier: Service]?
 
     init(core: CBService, peripheral: Peripheral) {
         self.uuid = Identifier(uuid: core.uuid)
@@ -248,7 +248,7 @@ public class ShadowService {
         }
         for core in cores {
             let uuid = Identifier(uuid: core.uuid)
-            guard let characteristic = self.characteristics[uuid] else {
+            guard let characteristic = self.characteristics?[uuid] else {
                 continue
             }
             characteristic.shadow.attach(core: core)
@@ -257,7 +257,10 @@ public class ShadowService {
 
     func detach() {
         self.core = nil
-        for characteristic in self.characteristics.values {
+        guard let characteristics = self.characteristics?.values else {
+            return
+        }
+        for characteristic in characteristics {
             characteristic.shadow.detach()
         }
     }
