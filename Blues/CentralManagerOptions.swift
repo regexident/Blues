@@ -19,36 +19,47 @@ public struct CentralManagerOptions {
     ///
     /// - note: Pass `nil` if you have a single shared manager, or a custom
     /// UID if you have multiple background instances of CentralManager in the app.
-    var backgroundRestorationIdentifier: String?
+    let restoreIdentifier: String?
 
     /// System should display a warning dialog to the user
     /// if Bluetooth is powered off when the manager is instantiated.
-    var showPowerAlert: Bool = false
+    let showPowerAlert: Bool?
 
-    init(dictionary: [String: Any]) {
-        for (key, value) in dictionary {
-            switch key {
-            case CBCentralManagerOptionRestoreIdentifierKey:
-                self.backgroundRestorationIdentifier = value as? String
-            case CBCentralManagerOptionShowPowerAlertKey:
-                guard let boolValue = value as? Bool else {
-                    fatalError("Unexpected value: \"\(value)\"")
-                }
-                self.showPowerAlert = boolValue
-            default:
-                fatalError("Unexpected key: \"\(key)\"")
-            }
-        }
+    enum Keys {
+        static let restoreIdentifier = CBCentralManagerOptionRestoreIdentifierKey
+        static let showPowerAlert = CBCentralManagerOptionShowPowerAlertKey
     }
 
+    /// A dictionary-representation according to Core Bluetooth's `CBConnectPeripheralOption`s.
     var dictionary: [String: Any] {
         var dictionary: [String: Any] = [:]
-        if let backgroundRestorationIdentifier = self.backgroundRestorationIdentifier {
-            dictionary[CBCentralManagerOptionRestoreIdentifierKey] = backgroundRestorationIdentifier
+
+        if let restoreIdentifier = self.restoreIdentifier {
+            dictionary[Keys.restoreIdentifier] = restoreIdentifier
         }
-        dictionary[CBCentralManagerOptionShowPowerAlertKey] = self.showPowerAlert
+
+        if let showPowerAlert = self.showPowerAlert {
+            dictionary[Keys.showPowerAlert] = showPowerAlert
+        }
+
         return dictionary
     }
+
+    /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
+    ///
+    /// - Parameter dictionary: The dictionary to take values from.
+    init(dictionary: [String: Any]) {
+        guard let restoreIdentifier = dictionary[Keys.restoreIdentifier] as? String? else {
+            fatalError()
+        }
+        self.restoreIdentifier = restoreIdentifier
+
+        guard let showPowerAlert = dictionary[Keys.showPowerAlert] as? Bool? else {
+            fatalError()
+        }
+        self.showPowerAlert = showPowerAlert
+    }
+}
 
 extension CentralManagerOptions: CustomStringConvertible {
     public var description: String {

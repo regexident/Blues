@@ -47,7 +47,7 @@ extension Identifier: Equatable {
 }
 
 extension Identifier: Hashable {
-    
+
     public var hashValue: Int {
         return self.core.hashValue
     }

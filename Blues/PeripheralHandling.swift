@@ -55,7 +55,6 @@ struct DiscoverDescriptorsMessage: Message {
     typealias Handler = PeripheralHandling
     typealias Output = Result<(), PeripheralError>
 
-    let uuids: [Identifier]?
     let characteristic: Characteristic
 
     func sendToHandler(_ handler: Handler) -> Output {

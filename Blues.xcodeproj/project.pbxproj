@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
 		BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE661DC2D99200870202 /* Characteristic.swift */; };
 		BF3FFE6C1DC3A7A300870202 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */; };
 		BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */; };
@@ -74,6 +75,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF3FFE661DC2D99200870202 /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Characteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Descriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionOptions.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				BF90BDA81DC3D2E900160828 /* ShadowPeripheral.swift */,
 				BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */,
 				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
+				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
 				BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */,
 			);
 			name = "Generic Attributes";
@@ -394,6 +397,7 @@
 				BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */,
 				BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */,
 				BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */,
+				BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */,
 				BF3FFE6C1DC3A7A300870202 /* Descriptor.swift in Sources */,
 				BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */,
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
