@@ -45,3 +45,14 @@ public enum PeripheralState {
         }
     }
 }
+
+extension PeripheralState: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .disconnected: return ".disconnected"
+        case .connecting: return ".connecting"
+        case .connected: return ".connected"
+        case .disconnecting: return ".disconnecting"
+        }
+    }
+}

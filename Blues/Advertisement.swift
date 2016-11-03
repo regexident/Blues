@@ -76,8 +76,7 @@ extension Advertisement: CustomStringConvertible {
             "solicitedServiceUUIDs: \(self.solicitedServiceUUIDs)",
             "txPowerLevel: \(self.txPowerLevel)",
             "isConnectable: \(self.isConnectable)",
-        ]
-        let propertiesString = properties.joined(separator: ", ")
-        return "<Advertisement \(propertiesString)>"
+        ].joined(separator: ", ")
+        return "<Advertisement \(properties)>"
     }
 }

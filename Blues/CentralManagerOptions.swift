@@ -49,4 +49,13 @@ public struct CentralManagerOptions {
         dictionary[CBCentralManagerOptionShowPowerAlertKey] = self.showPowerAlert
         return dictionary
     }
+
+extension CentralManagerOptions: CustomStringConvertible {
+    public var description: String {
+        let properties = [
+            "restoreIdentifier: \(self.restoreIdentifier)",
+            "showPowerAlert: \(self.showPowerAlert)",
+        ].joined(separator: ", ")
+        return "<CentralManagerOptions \(properties)>"
+    }
 }

@@ -58,5 +58,14 @@ public struct ConnectionOptions {
                 fatalError("Unexpected key: \"\(key)\"")
             }
         }
+
+extension ConnectionOptions: CustomStringConvertible {
+    public var description: String {
+        let properties = [
+            "notifyOnConnection: \(self.notifyOnConnection)",
+            "notifyOnDisconnection: \(self.notifyOnDisconnection)",
+            "notifyOnNotification: \(self.notifyOnNotification)",
+        ].joined(separator: ", ")
+        return "<ConnectionOptions \(properties)>"
     }
 }

@@ -32,3 +32,12 @@ public enum WriteType {
         }
     }
 }
+
+extension WriteType: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .withResponse: return ".withResponse"
+        case .withoutResponse: return ".withoutResponse"
+        }
+    }
+}

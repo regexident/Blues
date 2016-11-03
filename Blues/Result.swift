@@ -147,3 +147,12 @@ extension Optional {
      }
  }
  */
+
+extension Result: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .ok(let value): return ".ok(\(value))"
+        case .err(let error): return ".err(\(error))"
+        }
+    }
+}
