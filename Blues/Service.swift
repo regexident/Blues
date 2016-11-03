@@ -11,9 +11,9 @@ import CoreBluetooth
 
 /// Default implementation of `Service` protocol.
 public class DefaultService: Service, DelegatedService {
-    
+
     public let shadow: ShadowService
-    
+
     public weak var delegate: ServiceDelegate?
 
     public required init(shadow: ShadowService) {
@@ -33,7 +33,7 @@ extension DefaultService: ServiceDelegate {
 }
 
 extension DefaultService: CustomStringConvertible {
-    
+
     public var description: String {
         let attributes = [
             "uuid = \(self.shadow.uuid)",
@@ -44,34 +44,37 @@ extension DefaultService: CustomStringConvertible {
 }
 
 public protocol Service: class, ServiceDelegate {
-    
+
     /// The service's name.
     ///
     /// - Note:
     ///   Default implementation returns `nil`
     var name: String? { get }
-    
+
     /// The supporting "shadow" service that does the heavy lifting.
     var shadow: ShadowService { get }
 
     /// Initializes a `Service` as a shim for a provided shadow service.
-    init(shadow: ShadowService)
-
-    /// Creates and returns a service for a given shadow service.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given service.
-    ///   The default implementation creates `DefaultService`.
     ///
     /// - Parameters:
-    ///   - shadow: The service's shadow service.
+    ///   - shadow: The service's "shadow" service
+    init(shadow: ShadowService)
+
+    /// Creates and returns a characteristic for a given shadow characteristic.
     ///
-    /// - Returns: A new service object.
+    /// - Note:
+    ///   Override this property to provide a custom type for the given characteristic.
+    ///   The default implementation creates `DefaultCharacteristic`.
+    ///
+    /// - Parameters:
+    ///   - shadow: The service's shadow characteristic.
+    ///
+    /// - Returns: A new characteristic object.
     func makeCharacteristic(shadow: ShadowCharacteristic) -> Characteristic
 }
 
 extension Service {
-    
+
     /// The Bluetooth-specific identifier of the service.
     public var uuid: Identifier {
         return self.shadow.uuid
@@ -91,7 +94,8 @@ extension Service {
 
     /// A list of characteristics that have been discovered in this service.
     ///
-    /// - Note: This dictionary contains `Characteristic` objects that represent a
+    /// - Note:
+    ///   This dictionary contains `Characteristic` objects that represent a
     ///   service’s characteristics. Characteristics provide further details
     ///   about a peripheral’s service. For example, a heart rate service may
     ///   contain one characteristic that describes the intended body location
@@ -106,14 +110,10 @@ extension Service {
         return self.shadow.peripheral
     }
 
-    var nextResponder: Responder? {
-        return self.shadow.peripheral as! Responder?
-    }
-    
     var core: Result<CBService, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
     }
-    
+
     /// Creates and returns a characteristic for a given shadow characteristic.
     ///
     /// - Note:
@@ -134,9 +134,11 @@ extension Service {
     ///   You can provide an array of `Identifier` objects—representing
     ///   included service identifiers—in the `includedServices` parameter.
     ///   When you do, the peripheral returns only the included services of the
-    ///   service that your app is interested in (recommended). If the
-    ///   `includedServicess` parameter is `nil`, all the included services of the
-    ///   service are returned; setting the parameter to `nil` is considerably
+    ///   service that your app is interested in (recommended).
+    ///
+    /// - Important:
+    ///   If the `includedServicess` parameter is `nil`, all the included services
+    ///   of the service are returned; setting the parameter to `nil` is considerably
     ///   slower and is not recommended. When the peripheral discovers one or more
     ///   included services of the specified service, it calls the
     ///   `didDiscover(includedServices:forService:)` method of
@@ -147,10 +149,10 @@ extension Service {
     ///   - includedServices:
     ///     An array of `Identifier` objects that you are interested in. Here, each
     ///     `Identifier` identifies the type of included service you want to discover.
-	///
+    ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(includedServices: [Identifier]? = nil) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(DiscoverIncludedServicesMessage(
+        return self.shadow.tryToHandle(DiscoverIncludedServicesMessage(
             uuids: includedServices,
             service: self
         )) ?? .err(.unhandled)
@@ -178,7 +180,7 @@ extension Service {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(characteristics: [Identifier]?) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(DiscoverCharacteristicsMessage(
+        return self.shadow.tryToHandle(DiscoverCharacteristicsMessage(
             uuids: characteristics,
             service: self
         )) ?? .err(.unhandled)
@@ -187,14 +189,14 @@ extension Service {
 
 /// A `Service` that supports delegation.
 public protocol DelegatedService: Service {
-    
+
     /// The service's delegate.
     weak var delegate: ServiceDelegate? { get set }
 }
 
 /// A `DelegatedService`'s delegate.
 public protocol ServiceDelegate: class {
-    
+
     /// Invoked when you discover the peripheral’s available services.
     ///
     /// - Note:
@@ -205,7 +207,7 @@ public protocol ServiceDelegate: class {
     ///     were discovered, iff successful, otherwise `.ok(error)`.
     ///   - service: The service that the included services belong to.
     func didDiscover(includedServices: Result<[Service], Error>, forService service: Service)
-    
+
     /// Invoked when you discover the characteristics of a specified service.
     ///
     /// - Note:
@@ -222,13 +224,13 @@ public protocol ServiceDelegate: class {
     func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service)
 }
 
-/// The supporting "shadow" setvice that does the actual heavy lifting
+/// The supporting "shadow" service that does the actual heavy lifting
 /// behind any `Service` implementation.
 public class ShadowService {
-    
+
     /// The Bluetooth-specific identifier of the service.
     public let uuid: Identifier
-    
+
     weak var core: CBService?
     weak var peripheral: Peripheral?
 
@@ -263,5 +265,12 @@ public class ShadowService {
         for characteristic in characteristics {
             characteristic.shadow.detach()
         }
+    }
+}
+
+extension ShadowService: Responder {
+
+    var nextResponder: Responder? {
+        return self.peripheral?.shadow
     }
 }

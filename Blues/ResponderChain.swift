@@ -12,7 +12,7 @@ import CoreBluetooth
 // Created by Matthew Johnson on 5/28/16.
 // Copyright © 2016 Anandabits LLC. All rights reserved.
 
-public protocol Message {
+protocol Message {
     associatedtype Handler
     associatedtype Output
     func sendToHandler(_ handler: Handler) -> Output
@@ -32,17 +32,17 @@ extension Message {
     }
 }
 
-public protocol Responder {
+protocol Responder {
     var nextResponder: Responder? { get }
 }
 
 extension Responder {
 
-    public func tryToHandle<MessageType: Message>(_ message: MessageType) -> MessageType.Output? {
+    func tryToHandle<MessageType: Message>(_ message: MessageType) -> MessageType.Output? {
         return message.tryToSendTo(self)
     }
 
-    public func canHandle<MessageType: Message>(_ message: MessageType) -> Bool {
+    func canHandle<MessageType: Message>(_ message: MessageType) -> Bool {
         return message.canSendTo(self)
     }
 }

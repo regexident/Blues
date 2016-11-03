@@ -9,8 +9,13 @@
 import Foundation
 import CoreBluetooth
 
+/// The supporting "shadow" peripheral that does the actual heavy lifting
+/// behind any `Peripheral` implementation.
 public class ShadowPeripheral: NSObject {
+
+    /// The Bluetooth-specific identifier of the service.
     public let uuid: Identifier
+
     let core: CBPeripheral
     weak var peripheral: Peripheral?
     var connectionOptions: ConnectionOptions?
@@ -30,10 +35,6 @@ public class ShadowPeripheral: NSObject {
             fatalError("Invalid use of detached ShadowPeripheral")
         }
         return centralManager.queue
-    }
-
-    var nextResponder: Responder? {
-        return .some(self.centralManager as! Responder)
     }
 
     func inner(for peripheral: Peripheral) -> CBPeripheral {
@@ -206,7 +207,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return wrapper.didDiscover(services: .err(error!), forPeripheral: wrapper)
             }
             var discoveredServices: [Service] = []
-            var services: [Identifier : Service] = wrapper.shadow.services ?? [:]
+            var services: [Identifier: Service] = wrapper.shadow.services ?? [:]
             for coreService in coreServices {
                 let shadowServices = ShadowService(core: coreService, peripheral: wrapper)
                 let service = wrapper.makeService(shadow: shadowServices)
@@ -231,7 +232,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return wrapper.didDiscover(includedServices: .err(error!), forService: wrapper)
             }
             var discoveredServices: [Service] = []
-            var services: [Identifier : Service] = wrapper.shadow.includedServices ?? [:]
+            var services: [Identifier: Service] = wrapper.shadow.includedServices ?? [:]
             for coreService in coreServices {
                 let shadowServices = ShadowService(core: coreService, peripheral: peripheral)
                 let service = peripheral.makeService(shadow: shadowServices)
@@ -253,7 +254,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return wrapper.didDiscover(characteristics: .err(error!), forService: wrapper)
             }
             var discoveredCharacteristics: [Characteristic] = []
-            var characteristics: [Identifier : Characteristic] = wrapper.shadow.characteristics ?? [:]
+            var characteristics: [Identifier: Characteristic] = wrapper.shadow.characteristics ?? [:]
             for coreCharacteristic in coreCharacteristics {
                 let shadowCharacteristic = ShadowCharacteristic(core: coreCharacteristic, service: wrapper)
                 let characteristic = wrapper.makeCharacteristic(shadow: shadowCharacteristic)
@@ -335,6 +336,12 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             let result = Result(success: descriptor.value, failure: error)
             wrapper.didWrite(any: result, forDescriptor: wrapper)
         }
+    }
+}
+
+extension ShadowPeripheral: Responder {
+    var nextResponder: Responder? {
+        return .some(self.centralManager as! Responder)
     }
 }
 

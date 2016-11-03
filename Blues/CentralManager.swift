@@ -30,10 +30,6 @@ public class CentralManager: NSObject {
 
     let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
 
-    var nextResponder: Responder? {
-        return nil
-    }
-    
     public init(delegate: CentralManagerDelegate? = nil, dataSource: CentralManagerDataSource? = nil, options: CentralManagerOptions? = nil) {
         self.delegate = delegate
         self.dataSource = dataSource
@@ -41,27 +37,24 @@ public class CentralManager: NSObject {
         self.inner = CBCentralManager(delegate: self, queue: self.queue, options: options?.dictionary)
     }
 
-    public func startScanningForPeripherals(advertisingWithServices services: [String]? = nil) {
-        //!  print("\(type(of: self)).\(#function)")
+    public func startScanningForPeripherals(advertisingWithServices services: [String]? = nil, options: CentralManagerScanningOptions? = nil) {
         guard !self.inner.isScanning else {
             return
         }
 
         self.queue.async {
             let uuids = services?.map { CBUUID(string: $0) }
-            self.inner.scanForPeripherals(withServices: uuids, options: nil)
+            self.inner.scanForPeripherals(withServices: uuids, options: options?.dictionary)
         }
     }
 
     public func stopScanningForPeripherals() {
-        //!  print("\(type(of: self)).\(#function)")
         self.queue.async {
             self.inner.stopScan()
         }
     }
 
     public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [Peripheral] {
-        //!  print("\(type(of: self)).\(#function)")
         let innerPeripherals = self.inner.retrievePeripherals(withIdentifiers: identifiers)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
         return self.peripherals.flatMap { uuid, peripheral in
@@ -70,7 +63,6 @@ public class CentralManager: NSObject {
     }
 
     public func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [Peripheral] {
-        //!  print("\(type(of: self)).\(#function)")
         let innerPeripherals = self.inner.retrieveConnectedPeripherals(withServices: serviceUUIDs)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
         return self.peripherals.flatMap { uuid, peripheral in
@@ -79,7 +71,6 @@ public class CentralManager: NSObject {
     }
 
     public func disconnectAll() {
-        //!  print("\(type(of: self)).\(#function)")
         self.queue.async {
             let connectedPeripherals = self.peripherals.values.filter {
                 $0.state == .connected
@@ -89,39 +80,11 @@ public class CentralManager: NSObject {
             }
         }
     }
-
-    fileprivate func restore(peripheral: Peripheral) {
-        //!  print("\(type(of: self)).\(#function)")
-        self.queue.async {
-            guard peripheral.state == .connected else {
-                return
-            }
-            peripheral.willRestore(peripheral: peripheral)
-            // FIXME: Have this actually do something!
-        }
-    }
-
-    fileprivate func makePeripheral(core: CBPeripheral, advertisement: Advertisement) -> Peripheral {
-        //!  print("\(type(of: self)).\(#function) -> \(advertisement)")
-        let uuid = Identifier(uuid: core.identifier)
-        let peripheralClass: Peripheral.Type
-        if let dataSource = self.dataSource {
-            peripheralClass = dataSource.peripheralClass(forAdvertisement: advertisement, onManager: self)
-        } else {
-            peripheralClass = DefaultPeripheral.self
-        }
-        let shadowPeripheral = ShadowPeripheral(core: core, centralManager: self)
-        let peripheral = peripheralClass.init(shadow: shadowPeripheral, advertisement: advertisement)
-        shadowPeripheral.peripheral = peripheral
-        self.peripherals[uuid] = peripheral
-        return peripheral
-    }
 }
 
 extension CentralManager: CentralManagerHandling {
 
     func connect(peripheral: Peripheral, options: ConnectionOptions? = nil) -> Result<(), PeripheralError> {
-        //!  print("\(type(of: self)).\(#function)")
         guard peripheral.state != .connected else {
             return .ok(())
         }
@@ -135,7 +98,6 @@ extension CentralManager: CentralManagerHandling {
     }
 
     func disconnect(peripheral: Peripheral) -> Result<(), PeripheralError> {
-        //!  print("\(type(of: self)).\(#function)")
         guard peripheral.state == .connected else {
             return .err(.unreachable)
         }
@@ -146,16 +108,34 @@ extension CentralManager: CentralManagerHandling {
         }
         return .ok(())
     }
+
+    func makePeripheral(core: CBPeripheral, advertisement: Advertisement?) -> Peripheral {
+        let shadowPeripheral = ShadowPeripheral(core: core, centralManager: self)
+        let peripheralClass: Peripheral.Type
+        if let dataSource = self.dataSource {
+            peripheralClass = dataSource.peripheralClass(forAdvertisement: advertisement, onManager: self)
+        } else {
+            peripheralClass = DefaultPeripheral.self
+        }
+        let peripheral = peripheralClass.init(shadow: shadowPeripheral)
+        peripheral.shadow.peripheral = peripheral
+        self.peripherals[peripheral.uuid] = peripheral
+        return peripheral
+    }
 }
 
 extension CentralManager: CBCentralManagerDelegate {
 
-    //    @objc public func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
-    //        print("\(type(of: self)).\(#function) -> \(dict)")
-    //    }
+    @objc public func centralManager(_ central: CBCentralManager, willRestoreState dictionary: [String: Any]) {
+        self.queue.async {
+            let restoreState = CentralManagerRestoreState(dictionary: dictionary) {
+                self.makePeripheral(core: $0, advertisement: nil)
+            }
+            self.delegate?.willRestore(state: restoreState, ofManager: self)
+        }
+    }
 
     @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        //!  print("\(type(of: self)).\(#function) -> \(central.state)")
         if central.state == .poweredOn {
             self.didUpdateStateToPoweredOn()
         } else if central.state == .poweredOff {
@@ -169,11 +149,10 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     private func didUpdateStateToPoweredOn() {
-        //!  print("\(type(of: self)).\(#function)")
+        // nothing for now
     }
 
     private func didUpdateStateToPoweredOff() {
-        //!  print("\(type(of: self)).\(#function)")
         let connectedPeripherals = self.peripherals.values.filter {
             $0.state != .disconnected
         }
@@ -196,15 +175,13 @@ extension CentralManager: CBCentralManagerDelegate {
             guard !self.hasAlreadyDiscovered(peripheral: peripheral) else {
                 return
             }
-            //!  print("\(type(of: self)).\(#function) -> \(peripheral.name) @ \(RSSI as Int)")
-            let advertisement = Advertisement(advertisementData: advertisementData)
+            let advertisement = Advertisement(dictionary: advertisementData)
             let peripheral = self.makePeripheral(core: peripheral, advertisement: advertisement)
             self.delegate?.didDiscover(peripheral: peripheral, advertisement: advertisement, withManager: self)
         }
     }
 
     @objc public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        //!  print("\(type(of: self)).\(#function) -> \(peripheral.name)")
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -216,7 +193,6 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     @objc public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Swift.Error?) {
-        //!  print("\(type(of: self)).\(#function) -> \(peripheral.name)")
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -228,7 +204,6 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     @objc public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Swift.Error?) {
-        //!  print("\(type(of: self)).\(#function) -> \(peripheral.name)")
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -237,5 +212,12 @@ extension CentralManager: CBCentralManagerDelegate {
             peripheral.shadow.detach()
             peripheral.didDisconnect(peripheral: peripheral, error: error)
         }
+    }
+}
+
+extension CentralManager: Responder {
+
+    var nextResponder: Responder? {
+        return nil
     }
 }

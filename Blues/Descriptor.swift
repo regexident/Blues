@@ -11,7 +11,7 @@ import CoreBluetooth
 
 /// Default implementation of `Descriptor` protocol.
 public class DefaultDescriptor: Descriptor, DelegatedDescriptor {
-    
+
     public let shadow: ShadowDescriptor
 
     public weak var delegate: DescriptorDelegate?
@@ -45,13 +45,13 @@ extension DefaultDescriptor: CustomStringConvertible {
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
 public protocol Descriptor: class, DescriptorDelegate {
-    
+
     /// The descriptor's name.
     ///
     /// - Note:
     ///   Default implementation returns `nil`
     var name: String? { get }
-    
+
     /// The supporting "shadow" descriptor that does the heavy lifting.
     var shadow: ShadowDescriptor { get }
 
@@ -60,14 +60,14 @@ public protocol Descriptor: class, DescriptorDelegate {
 }
 
 extension Descriptor {
-    
+
     /// The Bluetooth-specific identifier of the descriptor.
     public var uuid: Identifier {
         return self.shadow.uuid
     }
-    
+
     /// The descriptor's name.
-    /// 
+    ///
     /// - Note:
     ///   Override this property to provide a name for your custom descriptor type.
     public var name: String? {
@@ -86,10 +86,6 @@ extension Descriptor {
         return self.shadow.characteristic
     }
 
-    var nextResponder: Responder? {
-        return self.shadow.characteristic as! Responder?
-    }
-
     var core: Result<CBDescriptor, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
     }
@@ -103,7 +99,7 @@ extension Descriptor {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func read() -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(ReadValueForDescriptorMessage(
+        return self.shadow.tryToHandle(ReadValueForDescriptorMessage(
             descriptor: self
         )) ?? .err(.unhandled)
     }
@@ -127,11 +123,11 @@ extension Descriptor {
     ///   method of `Characteristic` instead.
     ///
     /// Parameters:
-    /// - data: The value to be written. 
+    /// - data: The value to be written.
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func write(data: Data) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(WriteValueForDescriptorMessage(
+        return self.shadow.tryToHandle(WriteValueForDescriptorMessage(
             data: data,
             descriptor: self
         )) ?? .err(.unhandled)
@@ -162,7 +158,7 @@ public protocol TypesafeDescriptor: Descriptor {
 
 /// A `Descriptor` that supports delegation.
 public protocol DelegatedDescriptor: Descriptor {
-    
+
     /// The descriptor's delegate.
     weak var delegate: DescriptorDelegate? { get set }
 }
@@ -219,7 +215,7 @@ public protocol TypesafeDescriptorDelegate: DescriptorDelegate {
 /// The supporting "shadow" descriptor that does the actual heavy lifting
 /// behind any `Descriptor` implementation.
 public class ShadowDescriptor {
-    
+
     /// The Bluetooth-specific identifier of the descriptor.
     public let uuid: Identifier
 
@@ -238,5 +234,12 @@ public class ShadowDescriptor {
 
     func detach() {
         self.core = nil
+    }
+}
+
+extension ShadowDescriptor: Responder {
+
+    var nextResponder: Responder? {
+        return self.characteristic?.shadow
     }
 }

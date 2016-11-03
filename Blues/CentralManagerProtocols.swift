@@ -11,12 +11,27 @@ import Foundation
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
 public protocol CentralManagerDataSource: class {
-    func peripheralClass(forAdvertisement advertisement: Advertisement, onManager manager: CentralManager) -> Peripheral.Type
+    func peripheralClass(forAdvertisement advertisement: Advertisement?, onManager manager: CentralManager) -> Peripheral.Type
 }
 
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
 public protocol CentralManagerDelegate: class {
+
+    /// Invoked when the central manager is about to be restored by the system.
+    ///
+    /// - Note:
+    ///   For apps that opt in to the state preservation and restoration feature
+    ///   of Core Bluetooth, this is the first method invoked when your app is
+    ///   relaunched into the background to complete some Bluetooth-related task.
+    ///   Use this method to synchronize the state of your app with the state
+    ///   of the Bluetooth system.
+    ///
+    /// - Parameters:
+    ///   - state: The central manager's restore state.
+    ///   - manager: The central manager providing this information.
+    func willRestore(state: CentralManagerRestoreState, ofManager manager: CentralManager)
+
     /// Invoked when the central manager’s state is updated.
     ///
     /// - parameter state:   The state of the central manager object.

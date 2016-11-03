@@ -101,17 +101,20 @@ extension CentralManagerViewController {
 
 extension CentralManagerViewController: CentralManagerDataSource {
 
-    func peripheralClass(forAdvertisement advertisement: Advertisement, onManager manager: CentralManager) -> Peripheral.Type {
+    func peripheralClass(forAdvertisement advertisement: Advertisement?, onManager manager: CentralManager) -> Peripheral.Type {
         return DefaultPeripheral.self
     }
 }
 
 extension CentralManagerViewController: CentralManagerDelegate {
 
+    func willRestore(state: CentralManagerRestoreState, ofManager manager: CentralManager) {
+    }
+
     @available(iOSApplicationExtension 10.0, *)
     func didUpdate(state: CentralManagerState, ofManager manager: CentralManager) {
         if state == .poweredOn {
-            self.centralManager.startScanningForPeripherals(advertisingWithServices: nil)
+            self.centralManager.startScanningForPeripherals(advertisingWithServices: nil, options: nil)
         }
     }
 

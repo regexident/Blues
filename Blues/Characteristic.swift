@@ -11,9 +11,9 @@ import CoreBluetooth
 
 /// Default implementation of `Characteristic` protocol.
 public class DefaultCharacteristic: Characteristic, DelegatedCharacteristic {
-    
+
     public let shadow: ShadowCharacteristic
-    
+
     public weak var delegate: CharacteristicDelegate?
 
     public required init(shadow: ShadowCharacteristic) {
@@ -51,17 +51,19 @@ extension DefaultCharacteristic: CustomStringConvertible {
 }
 
 public protocol Characteristic: class, CharacteristicDelegate {
-    
+
     /// The characteristic's name.
     ///
     /// - Note:
     ///   Default implementation returns `nil`
     var name: String? { get }
-    
+
     /// The supporting "shadow" characteristic that does the heavy lifting.
     var shadow: ShadowCharacteristic { get }
 
     /// Initializes a `Characteristic` as a shim for a provided shadow characteristic.
+    /// - Parameters:
+    ///   - shadow: The characteristic's "shadow" characteristic
     init(shadow: ShadowCharacteristic)
 
     /// Creates and returns a descriptor for a given shadow descriptor.
@@ -88,7 +90,7 @@ public protocol TypesafeCharacteristic: Characteristic {
 }
 
 extension Characteristic {
-    
+
     /// The Bluetooth-specific identifier of the characteristic.
     public var uuid: Identifier {
         return self.shadow.uuid
@@ -136,18 +138,14 @@ extension Characteristic {
         return self.shadow.service
     }
 
-    var nextResponder: Responder? {
-        return self.shadow.service as! Responder?
-    }
-    
     var core: Result<CBCharacteristic, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
     }
-    
+
     public func makeDescriptor(shadow: ShadowDescriptor) -> Descriptor {
         return DefaultDescriptor(shadow: shadow)
     }
-    
+
     /// Discovers the descriptors of a characteristic.
     ///
     /// - Note:
@@ -156,11 +154,11 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discoverDescriptors() -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(DiscoverDescriptorsMessage(
+        return self.shadow.tryToHandle(DiscoverDescriptorsMessage(
             characteristic: self
         )) ?? .err(.unhandled)
     }
-    
+
     /// Retrieves the value of a specified characteristic.
     ///
     /// - Note:
@@ -176,7 +174,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func read() -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(ReadValueForCharacteristicMessage(
+        return self.shadow.tryToHandle(ReadValueForCharacteristicMessage(
             characteristic: self
         )) ?? .err(.unhandled)
     }
@@ -208,7 +206,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(data: Data, type: WriteType) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(WriteValueForCharacteristicMessage(
+        return self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
             data: data,
             characteristic: self,
             type: type
@@ -239,7 +237,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func set(notifyValue: Bool) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(SetNotifyValueForCharacteristicMessage(
+        return self.shadow.tryToHandle(SetNotifyValueForCharacteristicMessage(
             notifyValue: notifyValue,
             characteristic: self
         )) ?? .err(.unhandled)
@@ -276,7 +274,7 @@ extension TypesafeCharacteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(value: Value, type: WriteType) -> Result<(), PeripheralError> {
-        return (self as! Responder).tryToHandle(WriteValueForCharacteristicMessage(
+        return self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
             data: self.transform(value: value),
             characteristic: self,
             type: type
@@ -286,14 +284,14 @@ extension TypesafeCharacteristic {
 
 /// A `Characteristic` that supports delegation.
 public protocol DelegatedCharacteristic: Characteristic {
-    
+
     /// The characteristic's delegate.
     weak var delegate: CharacteristicDelegate? { get set }
 }
 
 /// A `DelegatedCharacteristic`'s delegate.
 public protocol CharacteristicDelegate: class {
-    
+
     /// Invoked when you retrieve a specified characteristic’s value,
     /// or when the peripheral device notifies your app that
     /// the characteristic’s value has changed.
@@ -302,7 +300,7 @@ public protocol CharacteristicDelegate: class {
     ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic)
-    
+
     /// Invoked when you write data to a characteristic’s value.
     ///
     /// - Note:
@@ -313,7 +311,7 @@ public protocol CharacteristicDelegate: class {
     ///   - data: `.ok(data)` with the written value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic)
-    
+
     /// Invoked when the peripheral receives a request to start or stop providing
     /// notifications for a specified characteristic’s value.
     ///
@@ -359,7 +357,7 @@ public protocol TypesafeCharacteristicDelegate: CharacteristicDelegate {
     ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didUpdate(value: Result<Value, Error>, forCharacteristic characteristic: Characteristic)
-    
+
     /// Invoked when you write data to a characteristic’s value.
     ///
     /// - SeeAlso: `CharacteristicDelegate.didWrite(data:forCharacteristic:)`
@@ -383,10 +381,10 @@ public protocol TypesafeCharacteristicDelegate: CharacteristicDelegate {
 /// The supporting "shadow" characteristic that does the actual heavy lifting
 /// behind any `Characteristic` implementation.
 public class ShadowCharacteristic {
-    
+
     /// The Bluetooth-specific identifier of the characteristic.
     public let uuid: Identifier
-    
+
     weak var core: CBCharacteristic?
     weak var service: Service?
     var descriptors: [Identifier: Descriptor] = [:]
@@ -416,5 +414,12 @@ public class ShadowCharacteristic {
         for descriptor in self.descriptors.values {
             descriptor.shadow.detach()
         }
+    }
+}
+
+extension ShadowCharacteristic: Responder {
+
+    var nextResponder: Responder? {
+        return self.service?.shadow
     }
 }
