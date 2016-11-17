@@ -64,18 +64,7 @@ extension DefaultPeripheral {
     }
 }
 
-extension DefaultPeripheral: CustomStringConvertible {
-    public var description: String {
-        let attributes = [
-            "uuid = \(self.shadow.uuid)",
-            "name = \(self.name ?? "<nil>")",
-            "state = \(self.state)",
-        ].joined(separator: ", ")
-        return "<DefaultPeripheral \(attributes)>"
-    }
-}
-
-public protocol Peripheral: class, PeripheralDelegate {
+public protocol Peripheral: class, PeripheralDelegate, CustomStringConvertible {
 
     /// The peripheral's name.
     ///
@@ -245,6 +234,15 @@ extension Peripheral {
         return self.shadow.tryToHandle(ReadRSSIMessage(
             // no arguments
         )) ?? .err(.unhandled)
+    }
+    
+    public var description: String {
+        let attributes = [
+            "uuid = \(self.shadow.uuid)",
+            "name = \(self.name ?? "<nil>")",
+            "state = \(self.state)",
+            ].joined(separator: ", ")
+        return "<DefaultPeripheral \(attributes)>"
     }
 }
 

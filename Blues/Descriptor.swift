@@ -32,19 +32,9 @@ extension DefaultDescriptor: DescriptorDelegate {
     }
 }
 
-extension DefaultDescriptor: CustomStringConvertible {
-
-    public var description: String {
-        let attributes = [
-            "uuid = \(self.uuid)",
-        ].joined(separator: ", ")
-        return "<DefaultDescriptor \(attributes)>"
-    }
-}
-
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
-public protocol Descriptor: class, DescriptorDelegate {
+public protocol Descriptor: class, DescriptorDelegate, CustomStringConvertible {
 
     /// The descriptor's name.
     ///
@@ -132,28 +122,77 @@ extension Descriptor {
             descriptor: self
         )) ?? .err(.unhandled)
     }
+    
+    public var description: String {
+        let className = type(of: self)
+        let attributes = [
+            "uuid = \(self.shadow.uuid)",
+            "name = \(self.name ?? "<nil>")",
+        ].joined(separator: ", ")
+        return "<\(className) \(attributes)>"
+    }
 }
 
 /// A descriptor of a peripheral’s characteristic, providing further information about its value.
 public protocol TypesafeDescriptor: Descriptor {
 
-    /// The descriptor value's type.
+    /// The descriptor's value type.
     associatedtype Value
+    
+    /// The transformation logic for decoding the descriptor's
+    /// data value into type-safe value representation
+    func transform(any: Any) -> Result<Value, TypesafeDescriptorError>
 
-    /// The value of the descriptor.
+    /// The transformation logic for encoding the descriptor's
+    /// type-safe value into a data representation
+    func transform(value: Value) -> Result<Data, TypesafeDescriptorError>
+}
+
+extension TypesafeDescriptor {
+    /// A type-safe value representation of the descriptor.
     ///
     /// - Note:
     ///   This is a thin type-safe wrapper around `Descriptor.data`.
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    var value: Value? { get }
-
-    /// A transformation from `Data` to `Value`.
-    func transform(data: Data) -> Value
-
-    /// A transformation from `Value` to `Data`.
-    func transform(value: Value) -> Data
+    public var value: Result<Value?, TypesafeDescriptorError> {
+        return self.any.mapErr(f: TypesafeDescriptorError.peripheral).andThen { any in
+            guard let any = any else {
+                return .ok(nil)
+            }
+            return self.transform(any: any).map { .some($0) }
+        }
+    }
+    
+    /// Writes the value of a descriptor.
+    ///
+    /// - Note:
+    ///   This is a thin type-safe wrapper around `Descriptor.write(data:type:)`.
+    ///   See its documentation for more information. All this wrapper basically does
+    ///   is transforming `any` into an `Data` object by calling `self.transform(any: any)`
+    ///   and then passing the result to `Descriptor.write(data:type:)`.
+    ///
+    /// - SeeAlso: `Descriptor.write(data:type:)`
+    ///
+    /// - Parameters:
+    ///   - value: The value to be written.
+    ///   - type: The type of write to be executed.
+    ///
+    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    public func write(value: Value, type: WriteType) -> Result<(), TypesafeDescriptorError> {
+        return self.transform(value: value).andThen { data in
+            let answer = self.shadow.tryToHandle(WriteValueForDescriptorMessage(
+                data: data,
+                descriptor: self
+            ))
+            if answer != nil {
+                return .ok(())
+            } else {
+                return .err(.peripheral(.unhandled))
+            }
+        }
+    }
 }
 
 /// A `Descriptor` that supports delegation.

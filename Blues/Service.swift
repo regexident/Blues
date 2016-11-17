@@ -32,18 +32,7 @@ extension DefaultService: ServiceDelegate {
     }
 }
 
-extension DefaultService: CustomStringConvertible {
-
-    public var description: String {
-        let attributes = [
-            "uuid = \(self.shadow.uuid)",
-            "name = \(self.name ?? "<nil>")",
-        ].joined(separator: ", ")
-        return "<DefaultService \(attributes)>"
-    }
-}
-
-public protocol Service: class, ServiceDelegate {
+public protocol Service: class, ServiceDelegate, CustomStringConvertible {
 
     /// The service's name.
     ///
@@ -184,6 +173,15 @@ extension Service {
             uuids: characteristics,
             service: self
         )) ?? .err(.unhandled)
+    }
+    
+    public var description: String {
+        let className = type(of: self)
+        let attributes = [
+            "uuid = \(self.shadow.uuid)",
+            "name = \(self.name ?? "<nil>")",
+        ].joined(separator: ", ")
+        return "<\(className) \(attributes)>"
     }
 }
 

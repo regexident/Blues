@@ -8,6 +8,26 @@
 
 import Foundation
 
+/// Errors related to a descriptor.
+public enum TypesafeDescriptorError: Swift.Error {
+    /// The descriptor failed to encode its value.
+    case encodingFailed(message: String)
+    /// The descriptor failed to decode its value.
+    case decodingFailed(message: String)
+    /// The peripheral encountered an error.
+    case peripheral(PeripheralError)
+}
+
+/// Errors related to a characteristic.
+public enum TypesafeCharacteristicError: Swift.Error {
+    /// The characteristic failed to encode its value.
+    case encodingFailed(message: String)
+    /// The characteristic failed to decode its value.
+    case decodingFailed(message: String)
+    /// The peripheral encountered an error.
+    case peripheral(PeripheralError)
+}
+
 /// Errors related to a peripheral.
 public enum PeripheralError: Swift.Error {
     /// The peripheral is unreachable (e.g. disconnected).

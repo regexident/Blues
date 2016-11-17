@@ -40,17 +40,8 @@ extension DefaultCharacteristic: CharacteristicDelegate {
     }
 }
 
-extension DefaultCharacteristic: CustomStringConvertible {
-    public var description: String {
-        let attributes = [
-            "uuid = \(self.uuid)",
-            "name = \(self.name ?? "<nil>")",
-        ].joined(separator: ", ")
-        return "<DefaultCharacteristic \(attributes)>"
-    }
-}
-
-public protocol Characteristic: class, CharacteristicDelegate {
+/// /// A characteristic of a peripheral’s service, providing further information about one of its value.
+public protocol Characteristic: class, CharacteristicDelegate, CustomStringConvertible {
 
     /// The characteristic's name.
     ///
@@ -79,14 +70,19 @@ public protocol Characteristic: class, CharacteristicDelegate {
     func makeDescriptor(shadow: ShadowDescriptor) -> Descriptor
 }
 
+/// A characteristic of a peripheral’s service, providing further information about one of its value.
 public protocol TypesafeCharacteristic: Characteristic {
+    
+    /// The characteristic's value type.
     associatedtype Value
-
-    /// The value of the descriptor.
-    var value: Value? { get }
-
-    func transform(data: Data) -> Value
-    func transform(value: Value) -> Data
+    
+    /// The transformation logic for decoding the characteristic's
+    /// data value into type-safe value representation
+    func transform(data: Data) -> Result<Value, TypesafeCharacteristicError>
+    
+    /// The transformation logic for encoding the characteristic's
+    /// type-safe value into a data representation
+    func transform(value: Value) -> Result<Data, TypesafeCharacteristicError>
 }
 
 extension Characteristic {
@@ -242,19 +238,31 @@ extension Characteristic {
             characteristic: self
         )) ?? .err(.unhandled)
     }
+    
+    public var description: String {
+        let className = type(of: self)
+        let attributes = [
+            "uuid = \(self.shadow.uuid)",
+            "name = \(self.name ?? "<nil>")",
+            ].joined(separator: ", ")
+        return "<\(className) \(attributes)>"
+    }
 }
 
 extension TypesafeCharacteristic {
-    /// The value of the characteristic.
+    /// A type-safe value representation of the characteristic.
     ///
     /// - Note:
     ///   This is a thin type-safe wrapper around `Characteristic.data`.
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Value?, PeripheralError> {
-        return self.data.andThen {
-            .ok($0.map { self.transform(data: $0) })
+    public var value: Result<Value?, TypesafeCharacteristicError> {
+        return self.data.mapErr(f: TypesafeCharacteristicError.peripheral).andThen { data in
+            guard let data = data else {
+                return .ok(nil)
+            }
+            return self.transform(data: data).map { .some($0) }
         }
     }
 
@@ -269,16 +277,23 @@ extension TypesafeCharacteristic {
     /// - SeeAlso: `Characteristic.write(data:type:)`
     ///
     /// - Parameters:
-    ///   - data: The value to be written.
+    ///   - value: The value to be written.
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Value, type: WriteType) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
-            data: self.transform(value: value),
-            characteristic: self,
-            type: type
-        )) ?? .err(.unhandled)
+    public func write(value: Value, type: WriteType) -> Result<(), TypesafeCharacteristicError> {
+        return self.transform(value: value).andThen { data in
+            let answer = self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
+                data: data,
+                characteristic: self,
+                type: type
+            ))
+            if answer != nil {
+                return .ok(())
+            } else {
+                return .err(.peripheral(.unhandled))
+            }
+        }
     }
 }
 
