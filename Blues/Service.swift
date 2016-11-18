@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Service` protocol.
-public class DefaultService: Service, DelegatedService {
+public class DefaultService: DelegatedService {
 
     public let shadow: ShadowService
 
@@ -18,17 +18,6 @@ public class DefaultService: Service, DelegatedService {
 
     public required init(shadow: ShadowService) {
         self.shadow = shadow
-    }
-}
-
-extension DefaultService: ServiceDelegate {
-
-    public func didDiscover(includedServices: Result<[Service], Error>, forService service: Service) {
-        self.delegate?.didDiscover(includedServices: includedServices, forService: service)
-    }
-
-    public func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service) {
-        self.delegate?.didDiscover(characteristics: characteristics, forService: service)
     }
 }
 
@@ -186,10 +175,25 @@ extension Service {
 }
 
 /// A `Service` that supports delegation.
+///
+/// Note: Conforming to `DelegatedService` adds a default implementation for all
+/// functions found in `ServiceDelegate` which simply forwards all method calls
+/// to its delegate.
 public protocol DelegatedService: Service {
 
     /// The service's delegate.
     weak var delegate: ServiceDelegate? { get set }
+}
+
+extension DelegatedService {
+    
+    public func didDiscover(includedServices: Result<[Service], Error>, forService service: Service) {
+        self.delegate?.didDiscover(includedServices: includedServices, forService: service)
+    }
+    
+    public func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service) {
+        self.delegate?.didDiscover(characteristics: characteristics, forService: service)
+    }
 }
 
 /// A `DelegatedService`'s delegate.

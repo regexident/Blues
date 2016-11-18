@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Descriptor` protocol.
-public class DefaultDescriptor: Descriptor, DelegatedDescriptor {
+public class DefaultDescriptor: DelegatedDescriptor {
 
     public let shadow: ShadowDescriptor
 
@@ -18,17 +18,6 @@ public class DefaultDescriptor: Descriptor, DelegatedDescriptor {
 
     public required init(shadow: ShadowDescriptor) {
         self.shadow = shadow
-    }
-}
-
-extension DefaultDescriptor: DescriptorDelegate {
-
-    public func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        self.delegate?.didUpdate(any: any, forDescriptor: descriptor)
-    }
-
-    public func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        self.delegate?.didWrite(any: any, forDescriptor: descriptor)
     }
 }
 
@@ -196,10 +185,24 @@ extension TypesafeDescriptor {
 }
 
 /// A `Descriptor` that supports delegation.
+///
+/// Note: Conforming to `DelegatedDescriptor` adds a default implementation for all
+/// functions found in `DescriptorDelegate` which simply forwards all method calls
+/// to its delegate.
 public protocol DelegatedDescriptor: Descriptor {
 
     /// The descriptor's delegate.
     weak var delegate: DescriptorDelegate? { get set }
+}
+
+extension DelegatedDescriptor {
+    public func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
+        self.delegate?.didUpdate(any: any, forDescriptor: descriptor)
+    }
+    
+    public func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
+        self.delegate?.didWrite(any: any, forDescriptor: descriptor)
+    }
 }
 
 /// A `DelegatedDescriptor`'s delegate.

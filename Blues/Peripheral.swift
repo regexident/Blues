@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Peripheral` protocol.
-public class DefaultPeripheral: Peripheral, DelegatedPeripheral {
+public class DefaultPeripheral: DelegatedPeripheral {
 
     public let shadow: ShadowPeripheral
 
@@ -18,49 +18,6 @@ public class DefaultPeripheral: Peripheral, DelegatedPeripheral {
 
     public required init(shadow: ShadowPeripheral) {
         self.shadow = shadow
-    }
-}
-
-extension DefaultPeripheral {
-
-    public func willRestore(peripheral: Peripheral) {
-        self.delegate?.willRestore(peripheral: peripheral)
-    }
-
-    public func didRestore(peripheral: Peripheral) {
-        self.delegate?.didRestore(peripheral: peripheral)
-    }
-
-    public func willConnect(peripheral: Peripheral) {
-        self.delegate?.willConnect(peripheral: peripheral)
-    }
-
-    public func didConnect(peripheral: Peripheral) {
-        self.delegate?.didConnect(peripheral: peripheral)
-    }
-
-    public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didDisconnect(peripheral: peripheral, error: error)
-    }
-
-    public func didFailToConnect(peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didFailToConnect(peripheral: peripheral, error: error)
-    }
-
-    public func didUpdate(name: String?, ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didUpdate(name: name, ofPeripheral: peripheral)
-    }
-
-    public func didModify(services: [Service], ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didModify(services: services, ofPeripheral: peripheral)
-    }
-
-    public func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didRead(rssi: rssi, ofPeripheral: peripheral)
-    }
-
-    public func didDiscover(services: Result<[Service], Error>, forPeripheral peripheral: Peripheral) {
-        self.delegate?.didDiscover(services: services, forPeripheral: peripheral)
     }
 }
 
@@ -247,10 +204,57 @@ extension Peripheral {
 }
 
 /// A `Peripheral` that supports delegation.
+///
+/// Note: Conforming to `DelegatedPeripheral` adds a default implementation for all
+/// functions found in `PeripheralDelegate` which simply forwards all method calls
+/// to its delegate.
 public protocol DelegatedPeripheral: Peripheral {
 
     /// The peripheral's delegate.
     weak var delegate: PeripheralDelegate? { get set }
+}
+
+extension DelegatedPeripheral {
+    
+    public func willRestore(peripheral: Peripheral) {
+        self.delegate?.willRestore(peripheral: peripheral)
+    }
+    
+    public func didRestore(peripheral: Peripheral) {
+        self.delegate?.didRestore(peripheral: peripheral)
+    }
+    
+    public func willConnect(peripheral: Peripheral) {
+        self.delegate?.willConnect(peripheral: peripheral)
+    }
+    
+    public func didConnect(peripheral: Peripheral) {
+        self.delegate?.didConnect(peripheral: peripheral)
+    }
+    
+    public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
+        self.delegate?.didDisconnect(peripheral: peripheral, error: error)
+    }
+    
+    public func didFailToConnect(peripheral: Peripheral, error: Swift.Error?) {
+        self.delegate?.didFailToConnect(peripheral: peripheral, error: error)
+    }
+    
+    public func didUpdate(name: String?, ofPeripheral peripheral: Peripheral) {
+        self.delegate?.didUpdate(name: name, ofPeripheral: peripheral)
+    }
+    
+    public func didModify(services: [Service], ofPeripheral peripheral: Peripheral) {
+        self.delegate?.didModify(services: services, ofPeripheral: peripheral)
+    }
+    
+    public func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral) {
+        self.delegate?.didRead(rssi: rssi, ofPeripheral: peripheral)
+    }
+    
+    public func didDiscover(services: Result<[Service], Error>, forPeripheral peripheral: Peripheral) {
+        self.delegate?.didDiscover(services: services, forPeripheral: peripheral)
+    }
 }
 
 /// A `DelegatedPeripheral`'s delegate.

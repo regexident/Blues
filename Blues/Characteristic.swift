@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Characteristic` protocol.
-public class DefaultCharacteristic: Characteristic, DelegatedCharacteristic {
+public class DefaultCharacteristic: DelegatedCharacteristic {
 
     public let shadow: ShadowCharacteristic
 
@@ -18,25 +18,6 @@ public class DefaultCharacteristic: Characteristic, DelegatedCharacteristic {
 
     public required init(shadow: ShadowCharacteristic) {
         self.shadow = shadow
-    }
-}
-
-extension DefaultCharacteristic: CharacteristicDelegate {
-
-    public func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        self.delegate?.didUpdate(data: data, forCharacteristic: characteristic)
-    }
-
-    public func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        self.delegate?.didWrite(data: data, forCharacteristic: characteristic)
-    }
-
-    public func didUpdate(notificationState isNotifying: Result<Bool, Error>, forCharacteristic characteristic: Characteristic) {
-        self.delegate?.didUpdate(notificationState: isNotifying, forCharacteristic: characteristic)
-    }
-
-    public func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic) {
-        self.delegate?.didDiscover(descriptors: descriptors, forCharacteristic: characteristic)
     }
 }
 
@@ -298,10 +279,33 @@ extension TypesafeCharacteristic {
 }
 
 /// A `Characteristic` that supports delegation.
+///
+/// Note: Conforming to `DelegatedCharacteristic` adds a default implementation for all
+/// functions found in `CharacteristicDelegate` which simply forwards all method calls
+/// to its delegate.
 public protocol DelegatedCharacteristic: Characteristic {
 
     /// The characteristic's delegate.
     weak var delegate: CharacteristicDelegate? { get set }
+}
+
+extension DelegatedCharacteristic {
+    
+    public func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+        self.delegate?.didUpdate(data: data, forCharacteristic: characteristic)
+    }
+    
+    public func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+        self.delegate?.didWrite(data: data, forCharacteristic: characteristic)
+    }
+    
+    public func didUpdate(notificationState isNotifying: Result<Bool, Error>, forCharacteristic characteristic: Characteristic) {
+        self.delegate?.didUpdate(notificationState: isNotifying, forCharacteristic: characteristic)
+    }
+    
+    public func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic) {
+        self.delegate?.didDiscover(descriptors: descriptors, forCharacteristic: characteristic)
+    }
 }
 
 /// A `DelegatedCharacteristic`'s delegate.
