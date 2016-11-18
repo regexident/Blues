@@ -356,47 +356,6 @@ public protocol CharacteristicDelegate: class {
     func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic)
 }
 
-public protocol TypesafeCharacteristicDelegate: CharacteristicDelegate {
-    /// The characteristic value's type.
-    associatedtype Value
-
-    /// Invoked when you retrieve a specified characteristic’s value,
-    /// or when the peripheral device notifies your app that
-    /// the characteristic’s value has changed.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Characteristic.didUpdate(data:forCharacteristic:)`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    ///
-    /// - SeeAlso: `CharacteristicDelegate.didUpdate(data:forCharacteristic:)`
-    ///
-    /// - Parameters:
-    ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
-    ///   - characteristic: The characteristic whose value has been retrieved.
-    func didUpdate(value: Result<Value, Error>, forCharacteristic characteristic: Characteristic)
-
-    /// Invoked when you write data to a characteristic’s value.
-    ///
-    /// - SeeAlso: `CharacteristicDelegate.didWrite(data:forCharacteristic:)`
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Characteristic.didWrite(data:forCharacteristic:)`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    ///
-    /// - Important:
-    ///   This method is invoked only when your app calls the `write(data:type:)` or
-    ///   `write(value:type:)` method with `.withResponse` specified as the write type.
-    ///
-    /// - Parameters:
-    ///   - data: `.ok(data)` with the written value iff successful, otherwise `.err(error)`.
-    ///   - characteristic: The characteristic whose value has been retrieved.
-    func didWrite(value: Result<Value, Error>, forCharacteristic characteristic: Characteristic)
-}
-
 /// The supporting "shadow" characteristic that does the actual heavy lifting
 /// behind any `Characteristic` implementation.
 public class ShadowCharacteristic {

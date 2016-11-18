@@ -223,37 +223,6 @@ public protocol DescriptorDelegate: class {
     func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor)
 }
 
-/// A `DelegatedDescriptor`'s type-safe delegate.
-public protocol TypesafeDescriptorDelegate: DescriptorDelegate {
-    associatedtype Value
-
-    /// Invoked when you retrieve a specified characteristic descriptor’s value.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Descriptor.didUpdate(data:forDescriptor:)`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    ///
-    /// - Parameters:
-    ///   - value: `.ok(value)` with the updated value iff successful, otherwise `.err(error)`.
-    ///   - descriptor: The descriptor whose value has been retrieved.
-    func didUpdate(value: Result<Value, Error>, forDescriptor descriptor: Descriptor)
-
-    /// Invoked when you write data to a characteristic descriptor’s value.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Descriptor.didWrite(data:forDescriptor:)`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    ///
-    /// - Parameters:
-    ///   - value: `.ok(value)` with the written value iff successful, otherwise `.err(error)`.
-    ///   - descriptor: The descriptor whose value has been retrieved.
-    func didWrite(value: Result<Value, Error>, forDescriptor descriptor: Descriptor)
-}
-
 /// The supporting "shadow" descriptor that does the actual heavy lifting
 /// behind any `Descriptor` implementation.
 public class ShadowDescriptor {
