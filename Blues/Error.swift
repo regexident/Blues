@@ -14,6 +14,11 @@ public enum TypesafeDescriptorError: Swift.Error {
     case encodingFailed(message: String)
     /// The descriptor failed to decode its value.
     case decodingFailed(message: String)
+    /// The descriptor does not implement the given transform
+    ///
+    /// For example a read-only characteristic might choose to not implement the
+    /// encoding transform or a write-only the decoding transform respectively.
+    case transformNotImplemented
     /// The peripheral encountered an error.
     case peripheral(PeripheralError)
 }
@@ -24,6 +29,11 @@ public enum TypesafeCharacteristicError: Swift.Error {
     case encodingFailed(message: String)
     /// The characteristic failed to decode its value.
     case decodingFailed(message: String)
+    /// The characteristic does not implement the given transform
+    ///
+    /// For example a read-only characteristic might choose to not implement the
+    /// encoding transform or a write-only the decoding transform respectively.
+    case transformNotImplemented
     /// The peripheral encountered an error.
     case peripheral(PeripheralError)
 }
