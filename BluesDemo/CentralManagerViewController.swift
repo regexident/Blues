@@ -99,13 +99,6 @@ extension CentralManagerViewController {
     }
 }
 
-extension CentralManagerViewController: CentralManagerDataSource {
-
-    func peripheralClass(forAdvertisement advertisement: Advertisement?, onManager manager: CentralManager) -> Peripheral.Type {
-        return DefaultPeripheral.self
-    }
-}
-
 extension CentralManagerViewController: CentralManagerDelegate {
 
     func willRestore(state: CentralManagerRestoreState, ofManager manager: CentralManager) {
@@ -133,4 +126,11 @@ extension CentralManagerViewController: CentralManagerDelegate {
     func didRetrievePeripherals(peripherals: [Peripheral], fromManager manager: CentralManager) {}
 
     func didRetrieveConnectedPeripherals(peripherals: [Peripheral], fromManager manager: CentralManager) {}
+}
+
+extension CentralManagerViewController: CentralManagerDataSource {
+    
+    func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral {
+        return DefaultPeripheral(shadow: shadow)
+    }
 }

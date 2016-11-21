@@ -10,11 +10,12 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Service` protocol.
-public class DefaultService: DelegatedService {
+public class DefaultService: DelegatedService, DataSourcedService {
 
     public let shadow: ShadowService
 
     public weak var delegate: ServiceDelegate?
+    public weak var dataSource: ServiceDataSource?
 
     public required init(shadow: ShadowService) {
         self.shadow = shadow
@@ -37,18 +38,6 @@ public protocol Service: class, ServiceDelegate, CustomStringConvertible {
     /// - Parameters:
     ///   - shadow: The service's "shadow" service
     init(shadow: ShadowService)
-
-    /// Creates and returns a characteristic for a given shadow characteristic.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given characteristic.
-    ///   The default implementation creates `DefaultCharacteristic`.
-    ///
-    /// - Parameters:
-    ///   - shadow: The service's shadow characteristic.
-    ///
-    /// - Returns: A new characteristic object.
-    func makeCharacteristic(shadow: ShadowCharacteristic) -> Characteristic
 }
 
 extension Service {
@@ -90,20 +79,6 @@ extension Service {
 
     var core: Result<CBService, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
-    }
-
-    /// Creates and returns a characteristic for a given shadow characteristic.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given characteristic.
-    ///   The default implementation creates `DefaultCharacteristic`.
-    ///
-    /// - Parameters:
-    ///   - shadow: The characteristic's shadow characteristic.
-    ///
-    /// - Returns: A new characteristic object.
-    public func makeCharacteristic(shadow: ShadowCharacteristic) -> Characteristic {
-        return DefaultCharacteristic(shadow: shadow)
     }
 
     /// Discovers the specified included services of a service.
@@ -224,6 +199,38 @@ public protocol ServiceDelegate: class {
     ///     were discovered, iff successful, otherwise `.ok(error)`.
     ///   - service: The service that the characteristics belong to.
     func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service)
+}
+
+/// A `Service` that supports delegation.
+///
+/// Note: Conforming to `DataSourcedService` adds a default implementation for all
+/// functions found in `ServiceDataSource` which simply forwards all method calls
+/// to its data source.
+public protocol DataSourcedService: Service {
+    
+    /// The service's delegate.
+    weak var dataSource: ServiceDataSource? { get set }
+}
+
+extension DataSourcedService {
+    func characteristic(shadow: ShadowCharacteristic, forService service: Service) -> Characteristic {
+        return DefaultCharacteristic(shadow: shadow)
+    }
+}
+
+/// A `Service`'s data source.
+public protocol ServiceDataSource: class {
+    /// Creates and returns a descriptor for a given shadow descriptor.
+    ///
+    /// - Note:
+    ///   Override this property to provide a custom type for the given descriptor.
+    ///   The default implementation creates `DefaultDescriptor`.
+    ///
+    /// - Parameters:
+    ///   - shadow: The descriptor's shadow descriptor.
+    ///
+    /// - Returns: A new descriptor object.
+    func characteristic(shadow: ShadowCharacteristic, forService service: Service) -> Characteristic
 }
 
 /// The supporting "shadow" service that does the actual heavy lifting

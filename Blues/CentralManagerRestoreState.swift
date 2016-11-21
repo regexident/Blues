@@ -118,7 +118,7 @@ public struct CentralManagerRestoreState {
     /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
     ///
     /// - Parameter dictionary: The dictionary to take values from.
-    init(dictionary: [String: Any], makePeripheral: (CBPeripheral) -> Peripheral) {
+    init(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
         guard let scanOptions = dictionary[Keys.scanOptions] as? [String: Any]? else {
             fatalError()
         }
@@ -129,7 +129,7 @@ public struct CentralManagerRestoreState {
         guard let peripherals = dictionary[Keys.peripherals] as? [CBPeripheral]? else {
             fatalError()
         }
-        self.peripherals = peripherals?.map { makePeripheral($0) }
+        self.peripherals = peripherals?.map { closure($0) }
 
         guard let scanServices = dictionary[Keys.scanServices] as? [CBUUID]? else {
             fatalError()

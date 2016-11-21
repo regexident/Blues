@@ -10,11 +10,12 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Peripheral` protocol.
-public class DefaultPeripheral: DelegatedPeripheral {
+public class DefaultPeripheral: DelegatedPeripheral, DataSourcedPeripheral {
 
     public let shadow: ShadowPeripheral
 
     public weak var delegate: PeripheralDelegate?
+    public weak var dataSource: PeripheralDataSource?
 
     public required init(shadow: ShadowPeripheral) {
         self.shadow = shadow
@@ -37,18 +38,6 @@ public protocol Peripheral: class, PeripheralDelegate, CustomStringConvertible {
     /// - Parameters:
     ///   - shadow: The peripheral's "shadow" peripheral
     init(shadow: ShadowPeripheral)
-
-    /// Creates and returns a service for a given shadow service.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given service.
-    ///   The default implementation creates `DefaultService`.
-    ///
-    /// - Parameters:
-    ///   - shadow: The service's shadow service.
-    ///
-    /// - Returns: A new service object.
-    func makeService(shadow: ShadowService) -> Service
 }
 
 extension Peripheral {
@@ -89,20 +78,6 @@ extension Peripheral {
 
     var core: CBPeripheral {
         return self.shadow.core
-    }
-
-    /// Creates and returns a service for a given shadow service.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given service.
-    ///   The default implementation creates `DefaultService`.
-    ///
-    /// - Parameters:
-    ///   - shadow: The service's shadow service.
-    ///
-    /// - Returns: A new service object.
-    public func makeService(shadow: ShadowService) -> Service {
-        return DefaultService(shadow: shadow)
     }
 
     /// Establishes a local connection to a peripheral.
@@ -296,4 +271,36 @@ public protocol PeripheralDelegate: class {
     func didModify(services: [Service], ofPeripheral peripheral: Peripheral)
     func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral)
     func didDiscover(services: Result<[Service], Error>, forPeripheral peripheral: Peripheral)
+}
+
+/// A `Peripheral` that supports delegation.
+///
+/// Note: Conforming to `DataSourcedPeripheral` adds a default implementation for all
+/// functions found in `PeripheralDataSource` which simply forwards all method calls
+/// to its data source.
+public protocol DataSourcedPeripheral: Peripheral {
+    
+    /// The peripheral's delegate.
+    weak var dataSource: PeripheralDataSource? { get set }
+}
+
+extension DataSourcedPeripheral {
+    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+        return DefaultService(shadow: shadow)
+    }
+}
+
+/// A `Peripheral`'s data source.
+public protocol PeripheralDataSource: class {
+    /// Creates and returns a descriptor for a given shadow descriptor.
+    ///
+    /// - Note:
+    ///   Override this property to provide a custom type for the given descriptor.
+    ///   The default implementation creates `DefaultDescriptor`.
+    ///
+    /// - Parameters:
+    ///   - shadow: The descriptor's shadow descriptor.
+    ///
+    /// - Returns: A new descriptor object.
+    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service
 }

@@ -10,14 +10,8 @@ import Foundation
 
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
-public protocol CentralManagerDataSource: class {
-    func peripheralClass(forAdvertisement advertisement: Advertisement?, onManager manager: CentralManager) -> Peripheral.Type
-}
-
-/// The `CentralManagerDelegate` protocol defines the methods
-/// that a delegate of a `CentralManager` object must adopt.
 public protocol CentralManagerDelegate: class {
-
+    
     /// Invoked when the central manager is about to be restored by the system.
     ///
     /// - Note:
@@ -57,4 +51,16 @@ public protocol CentralManagerDelegate: class {
     /// - parameter peripherals: The array of all peripherals currently connected to the system.
     /// - parameter manager:     The central manager providing this information.
     func didRetrieveConnectedPeripherals(peripherals: [Peripheral], fromManager manager: CentralManager)
+}
+
+/// The `CentralManagerDelegate` protocol defines the methods
+/// that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerDataSource: class {
+    /// Invoked when the central manager is has discovered or is about to restore a device.
+    ///
+    /// - Parameters:
+    ///   - advertisement: The advertisement received during discovery.
+    ///   - manager: The central manager providing this information.
+    /// - Returns: The class that is to be instantiated for the given peripheral.
+    func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral
 }

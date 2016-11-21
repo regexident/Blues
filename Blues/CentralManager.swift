@@ -80,6 +80,18 @@ public class CentralManager: NSObject {
             }
         }
     }
+    
+    func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral {
+        let peripheral: Peripheral
+        if let dataSource = centralManager.dataSource {
+            peripheral = dataSource.peripheral(shadow: shadow, forCentralManager: self)
+        } else {
+            peripheral = DefaultPeripheral(shadow: shadow)
+        }
+        peripheral.shadow.peripheral = peripheral
+        self.peripherals[peripheral.uuid] = peripheral
+        return peripheral
+    }
 }
 
 extension CentralManager: CentralManagerHandling {
@@ -108,28 +120,15 @@ extension CentralManager: CentralManagerHandling {
         }
         return .ok(())
     }
-
-    func makePeripheral(core: CBPeripheral, advertisement: Advertisement?) -> Peripheral {
-        let shadowPeripheral = ShadowPeripheral(core: core, centralManager: self)
-        let peripheralClass: Peripheral.Type
-        if let dataSource = self.dataSource {
-            peripheralClass = dataSource.peripheralClass(forAdvertisement: advertisement, onManager: self)
-        } else {
-            peripheralClass = DefaultPeripheral.self
-        }
-        let peripheral = peripheralClass.init(shadow: shadowPeripheral)
-        peripheral.shadow.peripheral = peripheral
-        self.peripherals[peripheral.uuid] = peripheral
-        return peripheral
-    }
 }
 
 extension CentralManager: CBCentralManagerDelegate {
 
     @objc public func centralManager(_ central: CBCentralManager, willRestoreState dictionary: [String: Any]) {
         self.queue.async {
-            let restoreState = CentralManagerRestoreState(dictionary: dictionary) {
-                self.makePeripheral(core: $0, advertisement: nil)
+            let restoreState = CentralManagerRestoreState(dictionary: dictionary) { core in
+                let shadow = ShadowPeripheral(core: core, centralManager: self, advertisement: nil)
+                return self.peripheral(shadow: shadow, forCentralManager: self)
             }
             self.delegate?.willRestore(state: restoreState, ofManager: self)
         }
@@ -176,7 +175,8 @@ extension CentralManager: CBCentralManagerDelegate {
                 return
             }
             let advertisement = Advertisement(dictionary: advertisementData)
-            let peripheral = self.makePeripheral(core: peripheral, advertisement: advertisement)
+            let shadow = ShadowPeripheral(core: peripheral, centralManager: self, advertisement: advertisement)
+            let peripheral = self.peripheral(shadow: shadow, forCentralManager: self)
             self.delegate?.didDiscover(peripheral: peripheral, advertisement: advertisement, withManager: self)
         }
     }

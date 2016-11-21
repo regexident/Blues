@@ -16,14 +16,17 @@ public class ShadowPeripheral: NSObject {
     /// The Bluetooth-specific identifier of the service.
     public let uuid: Identifier
 
+    public let advertisement: Advertisement?
+    
     let core: CBPeripheral
     weak var peripheral: Peripheral?
     var connectionOptions: ConnectionOptions?
     var services: [Identifier: Service]?
     weak var centralManager: CentralManager?
 
-    init(core: CBPeripheral, centralManager: CentralManager) {
+    init(core: CBPeripheral, centralManager: CentralManager, advertisement: Advertisement?) {
         self.uuid = Identifier(uuid: core.identifier)
+        self.advertisement = advertisement
         self.core = core
         self.centralManager = centralManager
         super.init()
@@ -84,6 +87,36 @@ public class ShadowPeripheral: NSObject {
         for service in services {
             service.shadow.detach()
         }
+    }
+    
+    func descriptor(shadow: ShadowDescriptor, forCharacteristic characteristic: Characteristic) -> Descriptor {
+        guard let characteristic = characteristic as? DataSourcedCharacteristic else {
+            return DefaultDescriptor(shadow: shadow)
+        }
+        guard let dataSource = characteristic.dataSource else {
+            return DefaultDescriptor(shadow: shadow)
+        }
+        return dataSource.descriptor(shadow: shadow, forCharacteristic: characteristic)
+    }
+    
+    func characteristic(shadow: ShadowCharacteristic, forService service: Service) -> Characteristic {
+        guard let service = service as? DataSourcedService else {
+            return DefaultCharacteristic(shadow: shadow)
+        }
+        guard let dataSource = service.dataSource else {
+            return DefaultCharacteristic(shadow: shadow)
+        }
+        return dataSource.characteristic(shadow: shadow, forService: service)
+    }
+    
+    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+        guard let peripheral = peripheral as? DataSourcedPeripheral else {
+            return DefaultService(shadow: shadow)
+        }
+        guard let dataSource = peripheral.dataSource else {
+            return DefaultService(shadow: shadow)
+        }
+        return dataSource.service(shadow: shadow, forPeripheral: peripheral)
     }
 }
 
@@ -174,11 +207,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
             }
-            let shadowServices = invalidatedServices.map {
+            let shadowService = invalidatedServices.map {
                 ShadowService(core: $0, peripheral: wrapper)
             }
-            let services = shadowServices.map { shadowService -> Service in
-                let service = wrapper.makeService(shadow: shadowService)
+            let services = shadowService.map { shadowService -> Service in
+                let service = self.service(shadow: shadowService, forPeripheral: wrapper)
                 wrapper.shadow.services?[shadowService.uuid] = service
                 return service
             }
@@ -209,8 +242,8 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             var discoveredServices: [Service] = []
             var services: [Identifier: Service] = wrapper.shadow.services ?? [:]
             for coreService in coreServices {
-                let shadowServices = ShadowService(core: coreService, peripheral: wrapper)
-                let service = wrapper.makeService(shadow: shadowServices)
+                let shadowService = ShadowService(core: coreService, peripheral: wrapper)
+                let service = self.service(shadow: shadowService, forPeripheral: wrapper)
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -234,8 +267,8 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             var discoveredServices: [Service] = []
             var services: [Identifier: Service] = wrapper.shadow.includedServices ?? [:]
             for coreService in coreServices {
-                let shadowServices = ShadowService(core: coreService, peripheral: peripheral)
-                let service = peripheral.makeService(shadow: shadowServices)
+                let shadowService = ShadowService(core: coreService, peripheral: peripheral)
+                let service = self.service(shadow: shadowService, forPeripheral: peripheral)
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -257,7 +290,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             var characteristics: [Identifier: Characteristic] = wrapper.shadow.characteristics ?? [:]
             for coreCharacteristic in coreCharacteristics {
                 let shadowCharacteristic = ShadowCharacteristic(core: coreCharacteristic, service: wrapper)
-                let characteristic = wrapper.makeCharacteristic(shadow: shadowCharacteristic)
+                let characteristic = self.characteristic(shadow: shadowCharacteristic, forService: wrapper)
                 discoveredCharacteristics.append(characteristic)
                 characteristics[characteristic.uuid] = characteristic
             }
@@ -309,7 +342,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let descriptors = shadowDescriptors.map { shadowDescriptors -> [Descriptor] in
                 shadowDescriptors.map { shadowDescriptor in
-                    let descriptor = wrapper.makeDescriptor(shadow: shadowDescriptor)
+                    let descriptor = self.descriptor(shadow: shadowDescriptor, forCharacteristic: wrapper)
                     wrapper.shadow.descriptors[shadowDescriptor.uuid] = descriptor
                     return descriptor
                 }

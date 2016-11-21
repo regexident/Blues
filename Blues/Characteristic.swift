@@ -10,11 +10,12 @@ import Foundation
 import CoreBluetooth
 
 /// Default implementation of `Characteristic` protocol.
-public class DefaultCharacteristic: DelegatedCharacteristic {
+public class DefaultCharacteristic: DelegatedCharacteristic, DataSourcedCharacteristic {
 
     public let shadow: ShadowCharacteristic
 
     public weak var delegate: CharacteristicDelegate?
+    public weak var dataSource: CharacteristicDataSource?
 
     public required init(shadow: ShadowCharacteristic) {
         self.shadow = shadow
@@ -37,18 +38,6 @@ public protocol Characteristic: class, CharacteristicDelegate, CustomStringConve
     /// - Parameters:
     ///   - shadow: The characteristic's "shadow" characteristic
     init(shadow: ShadowCharacteristic)
-
-    /// Creates and returns a descriptor for a given shadow descriptor.
-    ///
-    /// - Note:
-    ///   Override this property to provide a custom type for the given descriptor.
-    ///   The default implementation creates `DefaultDescriptor`.
-    ///
-    /// - Parameters:
-    ///   - shadow: The descriptor's shadow descriptor.
-    ///
-    /// - Returns: A new descriptor object.
-    func makeDescriptor(shadow: ShadowDescriptor) -> Descriptor
 }
 
 /// A characteristic of a peripheral’s service, providing further information about one of its value.
@@ -117,10 +106,6 @@ extension Characteristic {
 
     var core: Result<CBCharacteristic, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
-    }
-
-    public func makeDescriptor(shadow: ShadowDescriptor) -> Descriptor {
-        return DefaultDescriptor(shadow: shadow)
     }
 
     /// Discovers the descriptors of a characteristic.
@@ -308,7 +293,7 @@ extension DelegatedCharacteristic {
     }
 }
 
-/// A `DelegatedCharacteristic`'s delegate.
+/// A `Characteristic`'s delegate.
 public protocol CharacteristicDelegate: class {
 
     /// Invoked when you retrieve a specified characteristic’s value,
@@ -354,6 +339,38 @@ public protocol CharacteristicDelegate: class {
     ///     were discovered, iff successful, otherwise `.ok(error)`.
     ///   - characteristic: The characteristic that the characteristic descriptors belong to.
     func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic)
+}
+
+/// A `Characteristic` that supports delegation.
+///
+/// Note: Conforming to `DataSourcedCharacteristic` adds a default implementation for all
+/// functions found in `CharacteristicDataSource` which simply forwards all method calls
+/// to its data source.
+public protocol DataSourcedCharacteristic: Characteristic {
+    
+    /// The characteristic's delegate.
+    weak var dataSource: CharacteristicDataSource? { get set }
+}
+
+extension DataSourcedCharacteristic {
+    func descriptor(shadow: ShadowDescriptor, forCharacteristic characteristic: Characteristic) -> Descriptor {
+        return DefaultDescriptor(shadow: shadow)
+    }
+}
+
+/// A `Characteristic`'s data source.
+public protocol CharacteristicDataSource: class {
+    /// Creates and returns a descriptor for a given shadow descriptor.
+    ///
+    /// - Note:
+    ///   Override this property to provide a custom type for the given descriptor.
+    ///   The default implementation creates `DefaultDescriptor`.
+    ///
+    /// - Parameters:
+    ///   - shadow: The descriptor's shadow descriptor.
+    ///
+    /// - Returns: A new descriptor object.
+    func descriptor(shadow: ShadowDescriptor, forCharacteristic characteristic: Characteristic) -> Descriptor
 }
 
 /// The supporting "shadow" characteristic that does the actual heavy lifting
