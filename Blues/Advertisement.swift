@@ -83,20 +83,20 @@ public struct Advertisement {
             return serviceData
         }
 
-        guard let serviceUUIDs = dictionary[Keys.serviceUUIDs] as? [CBUUID]? else {
+        guard let services = dictionary[Keys.serviceUUIDs] as? [CBUUID]? else {
             fatalError()
         }
-        self.serviceUUIDs = serviceUUIDs?.map { Identifier(uuid: $0) }
+        self.serviceUUIDs = services?.map { Identifier(uuid: $0) }
 
         guard let overflowServiceUUIDs = dictionary[Keys.overflowServiceUUIDs] as? [CBUUID]? else {
             fatalError()
         }
         self.overflowServiceUUIDs = overflowServiceUUIDs?.map { Identifier(uuid: $0) }
 
-        guard let solicitedServiceUUIDs = dictionary[Keys.solicitedServiceUUIDs] as? [CBUUID]? else {
+        guard let solicitedServices = dictionary[Keys.solicitedServiceUUIDs] as? [CBUUID]? else {
             fatalError()
         }
-        self.solicitedServiceUUIDs = solicitedServiceUUIDs?.map { Identifier(uuid: $0) }
+        self.solicitedServiceUUIDs = solicitedServices?.map { Identifier(uuid: $0) }
 
         guard let txPowerLevel = dictionary[Keys.txPowerLevel] as? Int? else {
             fatalError()

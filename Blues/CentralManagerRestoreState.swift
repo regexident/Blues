@@ -41,10 +41,10 @@ public struct CentralManagerScanningOptions {
             self.allowDuplicates = nil
         }
 
-        let solicitedServiceIdentifiersKey = CBCentralManagerRestoredStateScanOptionsKey
-        if let value = dictionary[solicitedServiceIdentifiersKey] {
+        let solicitedServicesKey = CBCentralManagerRestoredStateScanOptionsKey
+        if let value = dictionary[solicitedServicesKey] {
             guard let solicitedServiceIdentifiers = value as? [CBUUID] else {
-                fatalError("Unexpected value: \"\(value)\" for key \(solicitedServiceIdentifiersKey)")
+                fatalError("Unexpected value: \"\(value)\" for key \(solicitedServicesKey)")
             }
             self.solicitedServiceIdentifiers = solicitedServiceIdentifiers.map {
                 Identifier(uuid: $0)

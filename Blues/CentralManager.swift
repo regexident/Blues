@@ -30,14 +30,25 @@ public class CentralManager: NSObject {
 
     let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
 
-    public init(delegate: CentralManagerDelegate? = nil, dataSource: CentralManagerDataSource? = nil, options: CentralManagerOptions? = nil) {
+    public init(
+        delegate: CentralManagerDelegate? = nil,
+        dataSource: CentralManagerDataSource? = nil,
+        options: CentralManagerOptions? = nil
+    ) {
         self.delegate = delegate
         self.dataSource = dataSource
         super.init()
-        self.inner = CBCentralManager(delegate: self, queue: self.queue, options: options?.dictionary)
+        self.inner = CBCentralManager(
+            delegate: self,
+            queue: self.queue,
+            options: options?.dictionary
+        )
     }
 
-    public func startScanningForPeripherals(advertisingWithServices services: [String]? = nil, options: CentralManagerScanningOptions? = nil) {
+    public func startScanningForPeripherals(
+        advertisingWithServices services: [String]? = nil,
+        options: CentralManagerScanningOptions? = nil
+    ) {
         guard !self.inner.isScanning else {
             return
         }
@@ -80,8 +91,11 @@ public class CentralManager: NSObject {
             }
         }
     }
-    
-    func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral {
+
+    func peripheral(
+        shadow: ShadowPeripheral,
+        forCentralManager centralManager: CentralManager
+    ) -> Peripheral {
         let peripheral: Peripheral
         if let dataSource = centralManager.dataSource {
             peripheral = dataSource.peripheral(shadow: shadow, forCentralManager: self)
@@ -96,7 +110,10 @@ public class CentralManager: NSObject {
 
 extension CentralManager: CentralManagerHandling {
 
-    func connect(peripheral: Peripheral, options: ConnectionOptions? = nil) -> Result<(), PeripheralError> {
+    func connect(
+        peripheral: Peripheral,
+        options: ConnectionOptions? = nil
+    ) -> Result<(), PeripheralError> {
         guard peripheral.state != .connected else {
             return .ok(())
         }
@@ -124,10 +141,17 @@ extension CentralManager: CentralManagerHandling {
 
 extension CentralManager: CBCentralManagerDelegate {
 
-    @objc public func centralManager(_ central: CBCentralManager, willRestoreState dictionary: [String: Any]) {
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        willRestoreState dictionary: [String: Any]
+    ) {
         self.queue.async {
             let restoreState = CentralManagerRestoreState(dictionary: dictionary) { core in
-                let shadow = ShadowPeripheral(core: core, centralManager: self, advertisement: nil)
+                let shadow = ShadowPeripheral(
+                    core: core,
+                    centralManager: self,
+                    advertisement: nil
+                )
                 return self.peripheral(shadow: shadow, forCentralManager: self)
             }
             self.delegate?.willRestore(state: restoreState, ofManager: self)
@@ -141,7 +165,7 @@ extension CentralManager: CBCentralManagerDelegate {
             self.didUpdateStateToPoweredOff()
         }
 
-        if #available(iOSApplicationExtension 10.0, *) {
+        if #available (iOSApplicationExtension 10.0, *) {
             let state = CentralManagerState(from: central.state)
             self.delegate?.didUpdate(state: state, ofManager: self)
         }
@@ -165,7 +189,12 @@ extension CentralManager: CBCentralManagerDelegate {
         return self.peripherals[uuid] != nil
     }
 
-    @objc public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didDiscover peripheral: CBPeripheral,
+        advertisementData: [String: Any],
+        rssi RSSI: NSNumber
+    ) {
         guard RSSI as Int >= -80 else {
             print("Ignoring peripheral due to RSSI: \(RSSI as Int)")
             return
@@ -175,13 +204,24 @@ extension CentralManager: CBCentralManagerDelegate {
                 return
             }
             let advertisement = Advertisement(dictionary: advertisementData)
-            let shadow = ShadowPeripheral(core: peripheral, centralManager: self, advertisement: advertisement)
+            let shadow = ShadowPeripheral(
+                core: peripheral,
+                centralManager: self,
+                advertisement: advertisement
+            )
             let peripheral = self.peripheral(shadow: shadow, forCentralManager: self)
-            self.delegate?.didDiscover(peripheral: peripheral, advertisement: advertisement, withManager: self)
+            self.delegate?.didDiscover(
+                peripheral: peripheral,
+                advertisement: advertisement,
+                withManager: self
+            )
         }
     }
 
-    @objc public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didConnect peripheral: CBPeripheral
+    ) {
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -192,7 +232,11 @@ extension CentralManager: CBCentralManagerDelegate {
         }
     }
 
-    @objc public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Swift.Error?) {
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didFailToConnect peripheral: CBPeripheral,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -203,7 +247,11 @@ extension CentralManager: CBCentralManagerDelegate {
         }
     }
 
-    @objc public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Swift.Error?) {
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didDisconnectPeripheral peripheral: CBPeripheral,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {

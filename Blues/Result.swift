@@ -18,7 +18,9 @@ public enum Result<T, E> {
     case err(E)
 
     /// Converts from `Result<T, E>` to `Option<T>`
-    /// Converts `self` into an `Option<T>`, consuming `self`, and discarding the error, if any.
+    /// 
+    /// - Note: Converts `self` into an `Option<T>`, consuming `self`,
+    ///   and discarding the error, if any.
     public var asOk: T? {
         switch self {
         case .ok(let value): return value
@@ -27,7 +29,9 @@ public enum Result<T, E> {
     }
 
     /// Converts from `Result<T, E>` to `Option<E>`
-    /// Converts `self` into an `Option<E>`, consuming self, and discarding the success value, if any.
+    ///
+    /// - Note: Converts `self` into an `Option<E>`, consuming self,
+    ///   and discarding the success value, if any.
     public var asErr: E? {
         switch self {
         case .ok(_): return nil
@@ -51,35 +55,37 @@ public enum Result<T, E> {
         }
     }
 
-    /// Maps a `Result<T, E>` to `Result<U, E>` by applying a function `f` to a contained `ok` value, leaving an `err` value untouched.
-    public func map<U>(f: (T) -> U) -> Result<U, E> {
+    /// Maps a `Result<T, E>` to `Result<U, E>` by applying a function `closure` to a
+    ///  contained `ok` value, leaving an `err` value untouched.
+    public func map<U>(closure: (T) -> U) -> Result<U, E> {
         switch self {
-        case .ok(let value): return .ok(f(value))
+        case .ok(let value): return .ok(closure(value))
         case .err(let error): return .err(error)
         }
     }
 
-    /// Maps a `Result<T, E>` to `Result<T, F>` by applying a function `f` to a contained `err` value, leaving an `ok` value untouched.
-    public func mapErr<F>(f: (E) -> F) -> Result<T, F> {
+    /// Maps a `Result<T, E>` to `Result<T, F>` by applying a function `closure` to a
+    /// contained `err` value, leaving an `ok` value untouched.
+    public func mapErr<F>(closure: (E) -> F) -> Result<T, F> {
         switch self {
         case .ok(let value): return .ok(value)
-        case .err(let error): return .err(f(error))
+        case .err(let error): return .err(closure(error))
         }
     }
 
-    /// Calls `f` if the result is `ok`, otherwise returns the `err` value of self.
-    public func andThen<U>(f: (T) -> Result<U, E>) -> Result<U, E> {
+    /// Calls `closure` if the result is `ok`, otherwise returns the `err` value of self.
+    public func andThen<U>(closure: (T) -> Result<U, E>) -> Result<U, E> {
         switch self {
-        case .ok(let value): return f(value)
+        case .ok(let value): return closure(value)
         case .err(let error): return .err(error)
         }
     }
 
-    /// Calls `f` if the result is `err`, otherwise returns the `ok` value of self.
-    public func orElse<F>(f: (E) -> Result<T, F>) -> Result<T, F> {
+    /// Calls `closure` if the result is `err`, otherwise returns the `ok` value of self.
+    public func orElse<F>(closure: (E) -> Result<T, F>) -> Result<T, F> {
         switch self {
         case .ok(let value): return .ok(value)
-        case .err(let error): return f(error)
+        case .err(let error): return closure(error)
         }
     }
 }
@@ -129,22 +135,22 @@ extension Optional {
 
 /*
  extension Result where E: Error {
-     // Construct a `Result` from a Swift `throws` error handling function
-     public init(_ capturing: () throws -> T) {
-         do {
-             self = .ok(try capturing())
-         } catch let error {
-             self = .err(error)
-         }
-     }
+ // Construct a `Result` from a Swift `throws` error handling function
+ public init(_ capturing: () throws -> T) {
+ do {
+ self = .ok(try capturing())
+ } catch let error {
+ self = .err(error)
+ }
+ }
 
-     // Convert the `Result` back to typical Swift `throws` error handling
-     public func unwrap() throws -> T {
-         switch self {
-         case .ok(let v): return v
-         case .err(let e): throw e
-         }
-     }
+ // Convert the `Result` back to typical Swift `throws` error handling
+ public func unwrap() throws -> T {
+ switch self {
+ case .ok(let v): return v
+ case .err(let e): throw e
+ }
+ }
  }
  */
 

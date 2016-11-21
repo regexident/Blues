@@ -18,6 +18,10 @@
 		BF90BDA91DC3D2E900160828 /* ShadowPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF90BDA81DC3D2E900160828 /* ShadowPeripheral.swift */; };
 		BFACE1511DC3E2B900328A63 /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */; };
 		BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */; };
+		BFB360541DE2FEAC00B7931F /* CharacteristicProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */; };
+		BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
+		BFB360581DE2FF0400B7931F /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */; };
+		BFB3605A1DE2FF8400B7931F /* PeripheralProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */; };
 		BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; };
 		BFCB8DFF1DC0E22200D5430D /* BluesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */; };
 		BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
@@ -84,6 +88,10 @@
 		BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerState.swift; sourceTree = "<group>"; };
 		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerOptions.swift; sourceTree = "<group>"; };
 		BF90BDA81DC3D2E900160828 /* ShadowPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowPeripheral.swift; sourceTree = "<group>"; };
+		BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProtocols.swift; sourceTree = "<group>"; };
+		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
+		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
+		BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralProtocols.swift; sourceTree = "<group>"; };
 		BFCB8DF01DC0E22200D5430D /* Blues.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Blues.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
 		BFCB8DF41DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -213,9 +221,13 @@
 				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
 				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
 				BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */,
+				BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */,
 				BF3FFE661DC2D99200870202 /* Characteristic.swift */,
+				BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */,
 				BFCB8E121DC1104400D5430D /* Service.swift */,
+				BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */,
 				BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */,
+				BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */,
 				BF90BDA81DC3D2E900160828 /* ShadowPeripheral.swift */,
 				BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */,
 				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
@@ -390,8 +402,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFB360541DE2FEAC00B7931F /* CharacteristicProtocols.swift in Sources */,
 				BFE23EA61DC551A700F94D20 /* CentralManagerHandling.swift in Sources */,
 				BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */,
+				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
 				BFE23E961DC5013F00F94D20 /* Result.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */,
@@ -403,6 +417,7 @@
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
 				BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */,
 				BFACE1511DC3E2B900328A63 /* CentralManager.swift in Sources */,
+				BFB360581DE2FF0400B7931F /* ServiceProtocols.swift in Sources */,
 				BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */,
 				BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */,
 				BF90BDA91DC3D2E900160828 /* ShadowPeripheral.swift in Sources */,
@@ -411,6 +426,7 @@
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
 				BFCB8E131DC1104400D5430D /* Service.swift in Sources */,
 				BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */,
+				BFB3605A1DE2FF8400B7931F /* PeripheralProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

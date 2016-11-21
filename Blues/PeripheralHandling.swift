@@ -144,14 +144,16 @@ struct ReadRSSIMessage: Message {
 
 protocol PeripheralHandling {
     func discover(services: [CBUUID]?) -> Result<(), PeripheralError>
-    func discover(includedServices: [CBUUID]?, for service: CBService) -> Result<(), PeripheralError>
+    func discover(includedServices: [CBUUID]?, for service: CBService)
+        -> Result<(), PeripheralError>
     func discover(characteristics: [CBUUID]?, for service: CBService) -> Result<(), PeripheralError>
     func discoverDescriptors(for characteristic: CBCharacteristic) -> Result<(), PeripheralError>
 
     func readData(for characteristic: CBCharacteristic) -> Result<(), PeripheralError>
     func readData(for descriptor: CBDescriptor) -> Result<(), PeripheralError>
 
-    func write(data: Data, for characteristic: CBCharacteristic, type: WriteType) -> Result<(), PeripheralError>
+    func write(data: Data, for characteristic: CBCharacteristic, type: WriteType)
+        -> Result<(), PeripheralError>
     func write(data: Data, for descriptor: CBDescriptor) -> Result<(), PeripheralError>
 
     func set(notifyValue: Bool, for characteristic: CBCharacteristic) -> Result<(), PeripheralError>

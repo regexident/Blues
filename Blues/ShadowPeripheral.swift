@@ -17,7 +17,7 @@ public class ShadowPeripheral: NSObject {
     public let uuid: Identifier
 
     public let advertisement: Advertisement?
-    
+
     let core: CBPeripheral
     weak var peripheral: Peripheral?
     var connectionOptions: ConnectionOptions?
@@ -88,8 +88,11 @@ public class ShadowPeripheral: NSObject {
             service.shadow.detach()
         }
     }
-    
-    func descriptor(shadow: ShadowDescriptor, forCharacteristic characteristic: Characteristic) -> Descriptor {
+
+    func descriptor(
+        shadow: ShadowDescriptor,
+        forCharacteristic characteristic: Characteristic
+    ) -> Descriptor {
         guard let characteristic = characteristic as? DataSourcedCharacteristic else {
             return DefaultDescriptor(shadow: shadow)
         }
@@ -98,8 +101,11 @@ public class ShadowPeripheral: NSObject {
         }
         return dataSource.descriptor(shadow: shadow, forCharacteristic: characteristic)
     }
-    
-    func characteristic(shadow: ShadowCharacteristic, forService service: Service) -> Characteristic {
+
+    func characteristic(
+        shadow: ShadowCharacteristic,
+        forService service: Service
+    ) -> Characteristic {
         guard let service = service as? DataSourcedService else {
             return DefaultCharacteristic(shadow: shadow)
         }
@@ -108,7 +114,7 @@ public class ShadowPeripheral: NSObject {
         }
         return dataSource.characteristic(shadow: shadow, forService: service)
     }
-    
+
     func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
         guard let peripheral = peripheral as? DataSourcedPeripheral else {
             return DefaultService(shadow: shadow)
@@ -136,13 +142,19 @@ extension ShadowPeripheral: PeripheralHandling {
         }
     }
 
-    func discover(includedServices: [CBUUID]?, for service: CBService) -> Result<(), PeripheralError> {
+    func discover(
+        includedServices: [CBUUID]?,
+        for service: CBService
+    ) -> Result<(), PeripheralError> {
         return self.reachability().map {
             self.core.discoverIncludedServices(includedServices, for: service)
         }
     }
 
-    func discover(characteristics: [CBUUID]?, for service: CBService) -> Result<(), PeripheralError> {
+    func discover(
+        characteristics: [CBUUID]?,
+        for service: CBService
+    ) -> Result<(), PeripheralError> {
         return self.reachability().map {
             self.core.discoverCharacteristics(characteristics, for: service)
         }
@@ -166,7 +178,11 @@ extension ShadowPeripheral: PeripheralHandling {
         }
     }
 
-    func write(data: Data, for characteristic: CBCharacteristic, type: WriteType) -> Result<(), PeripheralError> {
+    func write(
+        data: Data,
+        for characteristic: CBCharacteristic,
+        type: WriteType
+    ) -> Result<(), PeripheralError> {
         return self.reachability().map {
             self.core.writeValue(data, for: characteristic, type: type.inner)
         }
@@ -178,7 +194,10 @@ extension ShadowPeripheral: PeripheralHandling {
         }
     }
 
-    func set(notifyValue: Bool, for characteristic: CBCharacteristic) -> Result<(), PeripheralError> {
+    func set(
+        notifyValue: Bool,
+        for characteristic: CBCharacteristic
+    ) -> Result<(), PeripheralError> {
         return self.reachability().map {
             self.core.setNotifyValue(notifyValue, for: characteristic)
         }
@@ -202,7 +221,10 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didModifyServices invalidatedServices: [CBService]
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -219,7 +241,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didReadRSSI rssi: NSNumber, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didReadRSSI rssi: NSNumber,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -252,7 +278,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverIncludedServicesFor service: CBService,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let peripheral = self.peripheral else {
                 return
@@ -277,7 +307,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverCharacteristicsFor service: CBService,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(service: service) else {
                 return
@@ -287,19 +321,32 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return wrapper.didDiscover(characteristics: .err(error!), forService: wrapper)
             }
             var discoveredCharacteristics: [Characteristic] = []
-            var characteristics: [Identifier: Characteristic] = wrapper.shadow.characteristics ?? [:]
+            var characteristics = wrapper.shadow.characteristics ?? [:]
             for coreCharacteristic in coreCharacteristics {
-                let shadowCharacteristic = ShadowCharacteristic(core: coreCharacteristic, service: wrapper)
-                let characteristic = self.characteristic(shadow: shadowCharacteristic, forService: wrapper)
+                let shadowCharacteristic = ShadowCharacteristic(
+                    core: coreCharacteristic,
+                    service: wrapper
+                )
+                let characteristic = self.characteristic(
+                    shadow: shadowCharacteristic,
+                    forService: wrapper
+                )
                 discoveredCharacteristics.append(characteristic)
                 characteristics[characteristic.uuid] = characteristic
             }
             wrapper.shadow.characteristics = characteristics
-            wrapper.didDiscover(characteristics: .ok(discoveredCharacteristics), forService: wrapper)
+            wrapper.didDiscover(
+                characteristics: .ok(discoveredCharacteristics),
+                forService: wrapper
+            )
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -309,7 +356,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -319,7 +370,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateNotificationStateFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -329,7 +384,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverDescriptorsFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -342,7 +401,10 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let descriptors = shadowDescriptors.map { shadowDescriptors -> [Descriptor] in
                 shadowDescriptors.map { shadowDescriptor in
-                    let descriptor = self.descriptor(shadow: shadowDescriptor, forCharacteristic: wrapper)
+                    let descriptor = self.descriptor(
+                        shadow: shadowDescriptor,
+                        forCharacteristic: wrapper
+                    )
                     wrapper.shadow.descriptors[shadowDescriptor.uuid] = descriptor
                     return descriptor
                 }
@@ -351,7 +413,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
@@ -361,7 +427,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
         self.queue.async {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
@@ -374,7 +444,10 @@ extension ShadowPeripheral: CBPeripheralDelegate {
 
 extension ShadowPeripheral: Responder {
     var nextResponder: Responder? {
-        return .some(self.centralManager as! Responder)
+        guard let centralManager = self.centralManager as? Responder else {
+            fatalError("Expected object conforming to `Responder` protocol.")
+        }
+        return .some(centralManager)
     }
 }
 

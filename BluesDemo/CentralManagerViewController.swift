@@ -129,7 +129,7 @@ extension CentralManagerViewController: CentralManagerDelegate {
 }
 
 extension CentralManagerViewController: CentralManagerDataSource {
-    
+
     func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral {
         return DefaultPeripheral(shadow: shadow)
     }

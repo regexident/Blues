@@ -11,7 +11,7 @@ import Foundation
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
 public protocol CentralManagerDelegate: class {
-    
+
     /// Invoked when the central manager is about to be restored by the system.
     ///
     /// - Note:
@@ -38,7 +38,11 @@ public protocol CentralManagerDelegate: class {
     /// - parameter peripheral:    The discovered peripheral.
     /// - parameter advertisement: The advertisement data.
     /// - parameter manager:       The central manager providing the update.
-    func didDiscover(peripheral: Peripheral, advertisement: Advertisement, withManager manager: CentralManager)
+    func didDiscover(
+        peripheral: Peripheral,
+        advertisement: Advertisement,
+        withManager manager: CentralManager
+    )
 
     /// Invoked when the central manager retrieves a list of known peripherals.
     ///
@@ -46,11 +50,15 @@ public protocol CentralManagerDelegate: class {
     /// - parameter manager:     The central manager providing this information.
     func didRetrievePeripherals(peripherals: [Peripheral], fromManager manager: CentralManager)
 
-    /// Invoked when the central manager retrieves a list of peripherals currently connected to the system.
+    /// Invoked when the central manager retrieves a list
+    /// of peripherals currently connected to the system.
     ///
     /// - parameter peripherals: The array of all peripherals currently connected to the system.
     /// - parameter manager:     The central manager providing this information.
-    func didRetrieveConnectedPeripherals(peripherals: [Peripheral], fromManager manager: CentralManager)
+    func didRetrieveConnectedPeripherals(
+        peripherals: [Peripheral],
+        fromManager manager: CentralManager
+    )
 }
 
 /// The `CentralManagerDelegate` protocol defines the methods
@@ -62,5 +70,8 @@ public protocol CentralManagerDataSource: class {
     ///   - advertisement: The advertisement received during discovery.
     ///   - manager: The central manager providing this information.
     /// - Returns: The class that is to be instantiated for the given peripheral.
-    func peripheral(shadow: ShadowPeripheral, forCentralManager centralManager: CentralManager) -> Peripheral
+    func peripheral(
+        shadow: ShadowPeripheral,
+        forCentralManager centralManager: CentralManager
+    ) -> Peripheral
 }
