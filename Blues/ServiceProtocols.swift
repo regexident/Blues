@@ -81,7 +81,7 @@ extension DelegatedService {
     }
 }
 
-/// A `Service` that supports delegation.
+/// A `Service` that supports data sourcing.
 ///
 /// Note: Conforming to `DataSourcedService` adds a default implementation for all
 /// functions found in `ServiceDataSource` which simply forwards all method calls
@@ -93,10 +93,14 @@ public protocol DataSourcedService: Service {
 }
 
 extension DataSourcedService {
-    func characteristic(
+    public func characteristic(
         shadow: ShadowCharacteristic,
         forService service: Service
     ) -> Characteristic {
-        return DefaultCharacteristic(shadow: shadow)
+        if let dataSource = self.dataSource {
+            return dataSource.characteristic(shadow: shadow, forService: service)
+        } else {
+            return DefaultCharacteristic(shadow: shadow)
+        }
     }
 }

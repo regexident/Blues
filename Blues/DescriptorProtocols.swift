@@ -26,6 +26,11 @@ public protocol DescriptorDelegate: class {
     func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor)
 }
 
+/// A `Descriptor`'s data source.
+public protocol DescriptorDataSource: class {
+
+}
+
 /// A `Descriptor` that supports delegation.
 ///
 /// Note: Conforming to `DelegatedDescriptor` adds a default implementation for all
@@ -45,4 +50,19 @@ extension DelegatedDescriptor {
     public func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
         self.delegate?.didWrite(any: any, forDescriptor: descriptor)
     }
+}
+
+/// A `Descriptor` that supports data sourcing.
+///
+/// Note: Conforming to `DataSourcedDescriptor` adds a default implementation for all
+/// functions found in `DescriptorDataSource` which simply forwards all method calls
+/// to its data source.
+public protocol DataSourcedDescriptor: Descriptor {
+
+    /// The descriptor's delegate.
+    weak var dataSource: DescriptorDataSource? { get set }
+}
+
+extension DelegatedDescriptor {
+
 }

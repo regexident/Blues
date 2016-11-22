@@ -22,7 +22,8 @@ public class DefaultPeripheral: DelegatedPeripheral, DataSourcedPeripheral {
     }
 }
 
-public protocol Peripheral: class, PeripheralDelegate, CustomStringConvertible {
+public protocol Peripheral:
+    class, PeripheralDataSource, PeripheralDelegate, CustomStringConvertible {
 
     /// The peripheral's name.
     ///

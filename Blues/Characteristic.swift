@@ -24,7 +24,8 @@ public class DefaultCharacteristic: DelegatedCharacteristic, DataSourcedCharacte
 
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
-public protocol Characteristic: class, CharacteristicDelegate, CustomStringConvertible {
+public protocol Characteristic:
+    class, CharacteristicDataSource, CharacteristicDelegate, CustomStringConvertible {
 
     /// The characteristic's name.
     ///

@@ -22,7 +22,7 @@ public class DefaultService: DelegatedService, DataSourcedService {
     }
 }
 
-public protocol Service: class, ServiceDelegate, CustomStringConvertible {
+public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomStringConvertible {
 
     /// The service's name.
     ///

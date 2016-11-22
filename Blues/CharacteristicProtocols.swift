@@ -122,7 +122,7 @@ extension DelegatedCharacteristic {
     }
 }
 
-/// A `Characteristic` that supports delegation.
+/// A `Characteristic` that supports data sourcing.
 ///
 /// Note: Conforming to `DataSourcedCharacteristic` adds a default implementation for all
 /// functions found in `CharacteristicDataSource` which simply forwards all method calls
@@ -134,10 +134,14 @@ public protocol DataSourcedCharacteristic: Characteristic {
 }
 
 extension DataSourcedCharacteristic {
-    func descriptor(
+    public func descriptor(
         shadow: ShadowDescriptor,
         forCharacteristic characteristic: Characteristic
     ) -> Descriptor {
-        return DefaultDescriptor(shadow: shadow)
+        if let dataSource = self.dataSource {
+            return dataSource.descriptor(shadow: shadow, forCharacteristic: characteristic)
+        } else {
+            return DefaultDescriptor(shadow: shadow)
+        }
     }
 }

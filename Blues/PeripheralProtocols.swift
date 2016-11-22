@@ -121,7 +121,7 @@ extension DelegatedPeripheral {
     }
 }
 
-/// A `Peripheral` that supports delegation.
+/// A `Peripheral` that supports data sourcing.
 ///
 /// Note: Conforming to `DataSourcedPeripheral` adds a default implementation for all
 /// functions found in `PeripheralDataSource` which simply forwards all method calls
@@ -133,7 +133,11 @@ public protocol DataSourcedPeripheral: Peripheral {
 }
 
 extension DataSourcedPeripheral {
-    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
-        return DefaultService(shadow: shadow)
+    public func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+        if let dataSource = self.dataSource {
+            return dataSource.service(shadow: shadow, forPeripheral: peripheral)
+        } else {
+            return DefaultService(shadow: shadow)
+        }
     }
 }
