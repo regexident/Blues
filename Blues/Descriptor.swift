@@ -65,6 +65,11 @@ extension Descriptor {
         return self.shadow.characteristic
     }
 
+    /// The peripheral that this descriptor belongs to.
+    public var peripheral: Peripheral? {
+        return self.shadow.peripheral
+    }
+
     var core: Result<CBDescriptor, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
     }
@@ -196,6 +201,7 @@ public class ShadowDescriptor {
     public let uuid: Identifier
 
     weak var core: CBDescriptor?
+    weak var peripheral: Peripheral?
     weak var characteristic: Characteristic?
 
     init(core: CBDescriptor, characteristic: Characteristic) {

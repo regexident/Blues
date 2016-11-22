@@ -107,6 +107,11 @@ extension Characteristic {
         return self.shadow.service
     }
 
+    /// The peripheral that this characteristic belongs to.
+    public var peripheral: Peripheral? {
+        return self.shadow.peripheral
+    }
+
     var core: Result<CBCharacteristic, PeripheralError> {
         return self.shadow.core.okOr(.unreachable)
     }
@@ -278,6 +283,7 @@ public class ShadowCharacteristic {
     public let uuid: Identifier
 
     weak var core: CBCharacteristic?
+    weak var peripheral: Peripheral?
     weak var service: Service?
     var descriptors: [Identifier: Descriptor] = [:]
 
