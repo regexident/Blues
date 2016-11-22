@@ -264,6 +264,10 @@ extension TypesafeCharacteristic {
             }
         }
     }
+
+    public func transform(data: Result<Data, Error>) -> Result<Value, TypesafeCharacteristicError> {
+        return data.mapErr { .peripheral(.other($0)) }.andThen { self.transform(data: $0) }
+    }
 }
 
 /// The supporting "shadow" characteristic that does the actual heavy lifting

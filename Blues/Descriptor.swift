@@ -182,6 +182,10 @@ extension TypesafeDescriptor {
             }
         }
     }
+
+    public func transform(any: Result<Any, Error>) -> Result<Value, TypesafeDescriptorError> {
+        return any.mapErr { .peripheral(.other($0)) }.andThen { self.transform(any: $0) }
+    }
 }
 
 /// The supporting "shadow" descriptor that does the actual heavy lifting
