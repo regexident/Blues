@@ -44,4 +44,6 @@ public enum PeripheralError: Swift.Error {
     case unreachable
     /// The action was not handled by the internal responder chain.
     case unhandled
+    /// Another error has occured
+    case other(Swift.Error)
 }
