@@ -111,7 +111,7 @@ extension CentralManagerViewController: CentralManagerDelegate {
         }
     }
 
-    func didDiscover(peripheral: Peripheral, advertisement: Advertisement, withManager manager: CentralManager) {
+    func didDiscover(peripheral: Peripheral, advertisement: Advertisement, rssi: Int, withManager manager: CentralManager) {
         DispatchQueue.main.async {
             let section = Section.peripherals.rawValue
             let row = self.cachedPeripherals.count

@@ -43,6 +43,7 @@ public protocol CentralManagerDelegate: class {
     func didDiscover(
         peripheral: Peripheral,
         advertisement: Advertisement,
+        rssi: Int,
         withManager manager: CentralManager
     )
 

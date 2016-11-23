@@ -195,10 +195,6 @@ extension CentralManager: CBCentralManagerDelegate {
         advertisementData: [String: Any],
         rssi RSSI: NSNumber
     ) {
-        guard RSSI as Int >= -80 else {
-            print("Ignoring peripheral due to RSSI: \(RSSI as Int)")
-            return
-        }
         self.queue.async {
             guard !self.hasAlreadyDiscovered(peripheral: peripheral) else {
                 return
@@ -213,6 +209,7 @@ extension CentralManager: CBCentralManagerDelegate {
             self.delegate?.didDiscover(
                 peripheral: peripheral,
                 advertisement: advertisement,
+                rssi: RSSI as Int,
                 withManager: self
             )
         }
