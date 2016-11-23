@@ -14,7 +14,6 @@ public class CentralManager: NSObject {
 
     private struct Constants {
         static let queueLabel = "com.nwtnberlin.blues.queue"
-        static let sharedRestoreIdentifier = "com.nwtnberlin.blues.sharedRestoreIdentifier"
     }
 
     public var state: CentralManagerState {

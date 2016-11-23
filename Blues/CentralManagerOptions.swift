@@ -9,6 +9,20 @@
 import Foundation
 import CoreBluetooth
 
+public enum RestoreIdentifier {
+    case shared
+    case custom(String)
+
+    var string: String {
+        switch self {
+        case .shared:
+            return "com.nwtnberlin.blues.sharedRestoreIdentifier"
+        case .custom(let string):
+            return string
+        }
+    }
+}
+
 /// Thin struct wrapper around the options of a given `CentralManager`s connection.
 public struct CentralManagerOptions {
     /// A unique identifier (UID) for the manager that is being instantiated
@@ -19,7 +33,7 @@ public struct CentralManagerOptions {
     ///
     /// - note: Pass `nil` if you have a single shared manager, or a custom
     /// UID if you have multiple background instances of CentralManager in the app.
-    public var restoreIdentifier: String? = nil
+    public var restoreIdentifier: RestoreIdentifier? = nil
 
     /// System should display a warning dialog to the user
     /// if Bluetooth is powered off when the manager is instantiated.
@@ -56,7 +70,7 @@ public struct CentralManagerOptions {
         guard let restoreIdentifier = dictionary[Keys.restoreIdentifier] as? String? else {
             fatalError()
         }
-        self.restoreIdentifier = restoreIdentifier
+        self.restoreIdentifier = restoreIdentifier.map { .custom($0) }
 
         guard let showPowerAlert = dictionary[Keys.showPowerAlert] as? Bool? else {
             fatalError()
