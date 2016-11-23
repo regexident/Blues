@@ -57,7 +57,8 @@ public struct ConnectionOptions {
 
     /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
     ///
-    /// - Parameter dictionary: The dictionary to take values from.
+    /// - Parameters
+    ///   - dictionary: The dictionary to take values from.
     init(dictionary: [String: Any]) {
         guard let notifyOnConnection = dictionary[Keys.notifyOnConnection] as? Bool? else {
             fatalError()

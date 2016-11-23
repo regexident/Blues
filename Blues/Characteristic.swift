@@ -198,12 +198,12 @@ extension Characteristic {
     ///   enables notifications only. You can disable notifications and indications for a
     ///   characteristic’s value by calling this method with the enabled parameter set to `false`.
     ///
-    /// - Parameter notifyValue:
-    ///   A Boolean value indicating whether you wish to
-    ///   receive notifications or indications whenever the characteristic’s
-    ///   value changes. `true` if you want to enable notifications or indications
-    ///   for the characteristic’s value. `false` if you do not want to receive
-    ///   notifications or indications whenever the characteristic’s value changes.
+    /// - Parameters
+    ///   - notifyValue: A Boolean value indicating whether you wish to
+    ///     receive notifications or indications whenever the characteristic’s
+    ///     value changes. `true` if you want to enable notifications or indications
+    ///     for the characteristic’s value. `false` if you do not want to receive
+    ///     notifications or indications whenever the characteristic’s value changes.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func set(notifyValue: Bool) -> Result<(), PeripheralError> {

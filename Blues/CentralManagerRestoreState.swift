@@ -117,7 +117,8 @@ public struct CentralManagerRestoreState {
 
     /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
     ///
-    /// - Parameter dictionary: The dictionary to take values from.
+    /// - Parameters:
+    ///   - dictionary: The dictionary to take values from.
     init(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
         guard let scanOptions = dictionary[Keys.scanOptions] as? [String: Any]? else {
             fatalError()

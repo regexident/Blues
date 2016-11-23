@@ -31,7 +31,10 @@ public struct CentralManagerOptions {
     /// As a result, the UID must remain the same for subsequent executions
     /// of the app in order for the manager to be successfully restored.
     ///
-    /// - note: Pass `nil` if you have a single shared manager, or a custom
+    /// - Important: Restore identifiers require the `Info.plist`'s `"UIBackgroundModes"`
+    ///   array to contain an entry with: `"bluetooth-central"`.
+    ///
+    /// - Note: Pass `nil` if you have a single shared manager, or a custom
     /// UID if you have multiple background instances of CentralManager in the app.
     public var restoreIdentifier: RestoreIdentifier? = nil
 
@@ -65,7 +68,8 @@ public struct CentralManagerOptions {
 
     /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
     ///
-    /// - Parameter dictionary: The dictionary to take values from.
+    /// - Parameters:
+    ///   - dictionary: The dictionary to take values from.
     init(dictionary: [String: Any]) {
         guard let restoreIdentifier = dictionary[Keys.restoreIdentifier] as? String? else {
             fatalError()

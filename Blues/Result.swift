@@ -112,7 +112,7 @@ extension Optional {
 
     /// Transforms the `Optional<Wrapped>` into a `Result<Wrapped, E>`
     ///
-    /// - returns: `.ok(some)` iff self is `.some(some)`, else `.err(error)`.
+    /// - Returns: `.ok(some)` iff self is `.some(some)`, else `.err(error)`.
     func okOr<E>(_ error: E) -> Result<Wrapped, E> {
         if let some = self {
             return .ok(some)
@@ -123,7 +123,7 @@ extension Optional {
 
     /// Transforms the `Optional<Wrapped>` into a `Result<Wrapped, E>`
     ///
-    /// - returns: `.ok(some)` iff self is `.some(some)`, else `.err(error())`.
+    /// - Returns: `.ok(some)` iff self is `.some(some)`, else `.err(error())`.
     func okOrElse<E>(_ error: () -> E) -> Result<Wrapped, E> {
         if let some = self {
             return .ok(some)

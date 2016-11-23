@@ -35,7 +35,8 @@ public enum PeripheralState {
 
     /// Initializes an instance of `State` from an instance of `CBPeripheralState`.
     ///
-    /// - Parameter state: The original state to initialize from.
+    /// - Parameters
+    ///   - state: The original state to initialize from.
     init(state: CBPeripheralState) {
         switch state {
         case .disconnected: self = .disconnected
