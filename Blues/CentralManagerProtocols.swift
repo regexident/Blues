@@ -28,16 +28,18 @@ public protocol CentralManagerDelegate: class {
 
     /// Invoked when the central manager’s state is updated.
     ///
-    /// - parameter state:   The state of the central manager object.
-    /// - parameter manager: The central manager whose state has changed.
+    /// - Parameters:
+    ///   - state:   The state of the central manager object.
+    ///   - manager: The central manager whose state has changed.
     @available(iOSApplicationExtension 10.0, *)
     func didUpdate(state: CentralManagerState, ofManager manager: CentralManager)
 
     /// Invoked when the central manager discovers a peripheral while scanning.
     ///
-    /// - parameter peripheral:    The discovered peripheral.
-    /// - parameter advertisement: The advertisement data.
-    /// - parameter manager:       The central manager providing the update.
+    /// - Parameters:
+    ///   - peripheral:    The discovered peripheral.
+    ///   - advertisement: The advertisement data.
+    ///   - manager:       The central manager providing the update.
     func didDiscover(
         peripheral: Peripheral,
         advertisement: Advertisement,
@@ -46,15 +48,17 @@ public protocol CentralManagerDelegate: class {
 
     /// Invoked when the central manager retrieves a list of known peripherals.
     ///
-    /// - parameter peripherals: An array of peripherals currently known by the central manager.
-    /// - parameter manager:     The central manager providing this information.
+    /// - Parameters:
+    ///   - peripherals: An array of peripherals currently known by the central manager.
+    ///   - manager:     The central manager providing this information.
     func didRetrievePeripherals(peripherals: [Peripheral], fromManager manager: CentralManager)
 
     /// Invoked when the central manager retrieves a list
     /// of peripherals currently connected to the system.
     ///
-    /// - parameter peripherals: The array of all peripherals currently connected to the system.
-    /// - parameter manager:     The central manager providing this information.
+    /// - Parameters:
+    ///   - peripherals: The array of all peripherals currently connected to the system.
+    ///   - manager:     The central manager providing this information.
     func didRetrieveConnectedPeripherals(
         peripherals: [Peripheral],
         fromManager manager: CentralManager

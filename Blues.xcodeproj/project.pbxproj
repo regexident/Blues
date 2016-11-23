@@ -91,7 +91,7 @@
 		BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProtocols.swift; sourceTree = "<group>"; };
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
-		BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralProtocols.swift; sourceTree = "<group>"; };
+		BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PeripheralProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8DF01DC0E22200D5430D /* Blues.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Blues.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
 		BFCB8DF41DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 		BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Peripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Advertisement.swift; sourceTree = "<group>"; };
 		BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
-		BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerProtocols.swift; sourceTree = "<group>"; };
+		BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8E121DC1104400D5430D /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Service.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFE23E951DC5013F00F94D20 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		BFE23EA11DC5372700F94D20 /* ResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderChain.swift; sourceTree = "<group>"; };
