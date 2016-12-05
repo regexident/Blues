@@ -10,6 +10,8 @@ import Foundation
 import CoreBluetooth
 
 /// Abstraction layer around `CBManagerState`.
+@available(iOS 10.0, *)
+@available(iOSApplicationExtension 10.0, *)
 public enum CentralManagerState {
     /// The current state of the manager is unknown; an update is imminent.
     case unknown
@@ -24,7 +26,6 @@ public enum CentralManagerState {
     /// Bluetooth is currently powered on and available to use.
     case poweredOn
 
-    @available(iOSApplicationExtension 10.0, *)
     init(from state: CBManagerState) {
         switch state {
         case .unknown: self = .unknown

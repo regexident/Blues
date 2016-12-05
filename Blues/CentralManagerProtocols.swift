@@ -31,6 +31,7 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - state:   The state of the central manager object.
     ///   - manager: The central manager whose state has changed.
+    @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
     func didUpdate(state: CentralManagerState, ofManager manager: CentralManager)
 

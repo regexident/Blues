@@ -16,6 +16,8 @@ public class CentralManager: NSObject {
         static let queueLabel = "com.nwtnberlin.blues.queue"
     }
 
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
     public var state: CentralManagerState {
         return CentralManagerState(from: self.inner.state)
     }
@@ -164,7 +166,7 @@ extension CentralManager: CBCentralManagerDelegate {
             self.didUpdateStateToPoweredOff()
         }
 
-        if #available (iOSApplicationExtension 10.0, *) {
+        if #available (iOS 10.0, iOSApplicationExtension 10.0, *) {
             let state = CentralManagerState(from: central.state)
             self.delegate?.didUpdate(state: state, ofManager: self)
         }
