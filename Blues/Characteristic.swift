@@ -321,6 +321,7 @@ public class ShadowCharacteristic {
         self.uuid = Identifier(uuid: core.uuid)
         self.core = core
         self.service = service
+        self.peripheral = service.peripheral
     }
 
     func attach(core: CBCharacteristic) {

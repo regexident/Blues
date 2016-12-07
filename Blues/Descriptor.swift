@@ -208,6 +208,7 @@ public class ShadowDescriptor {
         self.uuid = Identifier(uuid: core.uuid)
         self.core = core
         self.characteristic = characteristic
+        self.peripheral = characteristic.peripheral
     }
 
     func attach(core: CBDescriptor) {
