@@ -275,6 +275,16 @@ extension TypesafeCharacteristic {
     }
 }
 
+extension Characteristic {
+    
+    func descriptor(
+        shadow: ShadowDescriptor,
+        forCharacteristic characteristic: Characteristic
+    ) -> Descriptor {
+        return DefaultDescriptor(shadow: shadow)
+    }
+}
+
 /// The supporting "shadow" characteristic that does the actual heavy lifting
 /// behind any `Characteristic` implementation.
 public class ShadowCharacteristic {

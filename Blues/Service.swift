@@ -149,6 +149,16 @@ extension Service {
     }
 }
 
+extension Service {
+
+    func characteristic(
+        shadow: ShadowCharacteristic,
+        forService service: Service
+    ) -> Characteristic {
+        return DefaultCharacteristic(shadow: shadow)
+    }
+}
+
 /// The supporting "shadow" service that does the actual heavy lifting
 /// behind any `Service` implementation.
 public class ShadowService {

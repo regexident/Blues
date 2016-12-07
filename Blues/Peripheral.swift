@@ -179,3 +179,10 @@ extension Peripheral {
         return "<DefaultPeripheral \(attributes)>"
     }
 }
+
+extension Peripheral {
+
+    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+        return DefaultService(shadow: shadow)
+    }
+}

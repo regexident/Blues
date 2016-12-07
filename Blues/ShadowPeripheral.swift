@@ -89,41 +89,23 @@ public class ShadowPeripheral: NSObject {
         }
     }
 
-    func descriptor(
-        shadow: ShadowDescriptor,
-        forCharacteristic characteristic: Characteristic
-    ) -> Descriptor {
-        guard let characteristic = characteristic as? DataSourcedCharacteristic else {
-            return DefaultDescriptor(shadow: shadow)
-        }
-        guard let dataSource = characteristic.dataSource else {
-            return DefaultDescriptor(shadow: shadow)
-        }
-        return dataSource.descriptor(shadow: shadow, forCharacteristic: characteristic)
-    }
-
-    func characteristic(
-        shadow: ShadowCharacteristic,
-        forService service: Service
-    ) -> Characteristic {
-        guard let service = service as? DataSourcedService else {
-            return DefaultCharacteristic(shadow: shadow)
-        }
-        guard let dataSource = service.dataSource else {
-            return DefaultCharacteristic(shadow: shadow)
-        }
-        return dataSource.characteristic(shadow: shadow, forService: service)
-    }
-
-    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
-        guard let peripheral = peripheral as? DataSourcedPeripheral else {
-            return DefaultService(shadow: shadow)
-        }
-        guard let dataSource = peripheral.dataSource else {
-            return DefaultService(shadow: shadow)
-        }
-        return dataSource.service(shadow: shadow, forPeripheral: peripheral)
-    }
+//    func descriptor(
+//        shadow: ShadowDescriptor,
+//        forCharacteristic characteristic: Characteristic
+//    ) -> Descriptor {
+//        return characteristic.descriptor(shadow: shadow, forCharacteristic: characteristic)
+//    }
+//
+//    func characteristic(
+//        shadow: ShadowCharacteristic,
+//        forService service: Service
+//    ) -> Characteristic {
+//        return service.characteristic(shadow: shadow, forService: service)
+//    }
+//
+//    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+//        return peripheral.service(shadow: shadow, forPeripheral: peripheral)
+//    }
 }
 
 extension ShadowPeripheral: PeripheralHandling {
@@ -233,7 +215,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 ShadowService(core: $0, peripheral: wrapper)
             }
             let services = shadowService.map { shadowService -> Service in
-                let service = self.service(shadow: shadowService, forPeripheral: wrapper)
+                let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
                 wrapper.shadow.services?[shadowService.uuid] = service
                 return service
             }
@@ -269,7 +251,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             var services: [Identifier: Service] = wrapper.shadow.services ?? [:]
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: wrapper)
-                let service = self.service(shadow: shadowService, forPeripheral: wrapper)
+                let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -298,7 +280,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             var services: [Identifier: Service] = wrapper.shadow.includedServices ?? [:]
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: peripheral)
-                let service = self.service(shadow: shadowService, forPeripheral: peripheral)
+                let service = peripheral.service(shadow: shadowService, forPeripheral: peripheral)
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -327,7 +309,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     core: coreCharacteristic,
                     service: wrapper
                 )
-                let characteristic = self.characteristic(
+                let characteristic = wrapper.characteristic(
                     shadow: shadowCharacteristic,
                     forService: wrapper
                 )
@@ -401,7 +383,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let descriptors = shadowDescriptors.map { shadowDescriptors -> [Descriptor] in
                 shadowDescriptors.map { shadowDescriptor in
-                    let descriptor = self.descriptor(
+                    let descriptor = wrapper.descriptor(
                         shadow: shadowDescriptor,
                         forCharacteristic: wrapper
                     )
