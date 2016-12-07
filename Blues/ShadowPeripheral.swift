@@ -88,24 +88,6 @@ public class ShadowPeripheral: NSObject {
             service.shadow.detach()
         }
     }
-
-//    func descriptor(
-//        shadow: ShadowDescriptor,
-//        forCharacteristic characteristic: Characteristic
-//    ) -> Descriptor {
-//        return characteristic.descriptor(shadow: shadow, forCharacteristic: characteristic)
-//    }
-//
-//    func characteristic(
-//        shadow: ShadowCharacteristic,
-//        forService service: Service
-//    ) -> Characteristic {
-//        return service.characteristic(shadow: shadow, forService: service)
-//    }
-//
-//    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
-//        return peripheral.service(shadow: shadow, forPeripheral: peripheral)
-//    }
 }
 
 extension ShadowPeripheral: PeripheralHandling {
@@ -216,6 +198,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let services = shadowService.map { shadowService -> Service in
                 let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
+                if service.shouldDiscoverCharacteristicsAutomatically {
+                    if case let .err(error) = service.discover(characteristics: nil) {
+                        print("Error: \(error)")
+                    }
+                }
                 wrapper.shadow.services?[shadowService.uuid] = service
                 return service
             }
@@ -252,6 +239,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: wrapper)
                 let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
+                if service.shouldDiscoverCharacteristicsAutomatically {
+                    if case let .err(error) = service.discover(characteristics: nil) {
+                        print("Error: \(error)")
+                    }
+                }
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -281,6 +273,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: peripheral)
                 let service = peripheral.service(shadow: shadowService, forPeripheral: peripheral)
+                if service.shouldDiscoverCharacteristicsAutomatically {
+                    if case let .err(error) = service.discover(characteristics: nil) {
+                        print("Error: \(error)")
+                    }
+                }
                 discoveredServices.append(service)
                 services[service.uuid] = service
             }
@@ -313,6 +310,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     shadow: shadowCharacteristic,
                     forService: wrapper
                 )
+                if characteristic.shouldDiscoverDescriptorsAutomatically {
+                    if case let .err(error) = characteristic.discoverDescriptors() {
+                        print("Error: \(error)")
+                    }
+                }
                 discoveredCharacteristics.append(characteristic)
                 characteristics[characteristic.uuid] = characteristic
             }

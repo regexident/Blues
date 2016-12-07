@@ -36,6 +36,12 @@ public protocol Characteristic:
     /// The supporting "shadow" characteristic that does the heavy lifting.
     var shadow: ShadowCharacteristic { get }
 
+    /// Whether the characteristic should discover descriptors automatically
+    ///
+    /// - Note:
+    ///   Default implementation returns `true`
+    var shouldDiscoverDescriptorsAutomatically: Bool { get }
+
     /// Initializes a `Characteristic` as a shim for a provided shadow characteristic.
     /// - Parameters:
     ///   - shadow: The characteristic's "shadow" characteristic
@@ -67,6 +73,10 @@ extension Characteristic {
 
     public var name: String? {
         return nil
+    }
+
+    public var shouldDiscoverDescriptorsAutomatically: Bool {
+        return true
     }
 
     /// The value data of the characteristic.
