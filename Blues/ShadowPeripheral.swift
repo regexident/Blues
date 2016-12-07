@@ -310,6 +310,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     shadow: shadowCharacteristic,
                     forService: wrapper
                 )
+                if characteristic.shouldSubscribeToNotificationsAutomatically {
+                    if case let .err(error) = characteristic.set(notifyValue: true) {
+                        print("Error: \(error)")
+                    }
+                }
                 if characteristic.shouldDiscoverDescriptorsAutomatically {
                     if case let .err(error) = characteristic.discoverDescriptors() {
                         print("Error: \(error)")

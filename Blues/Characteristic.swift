@@ -42,6 +42,12 @@ public protocol Characteristic:
     ///   Default implementation returns `true`
     var shouldDiscoverDescriptorsAutomatically: Bool { get }
 
+    /// Whether the characteristic should subscribe to notifications automatically
+    ///
+    /// - Note:
+    ///   Default implementation returns `true`
+    var shouldSubscribeToNotificationsAutomatically: Bool { get }
+
     /// Initializes a `Characteristic` as a shim for a provided shadow characteristic.
     /// - Parameters:
     ///   - shadow: The characteristic's "shadow" characteristic
@@ -76,6 +82,10 @@ extension Characteristic {
     }
 
     public var shouldDiscoverDescriptorsAutomatically: Bool {
+        return true
+    }
+
+    public var shouldSubscribeToNotificationsAutomatically: Bool {
         return true
     }
 
