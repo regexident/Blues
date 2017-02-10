@@ -56,7 +56,7 @@ public struct CentralManagerOptions {
         var dictionary: [String: Any] = [:]
 
         if let restoreIdentifier = self.restoreIdentifier {
-            dictionary[Keys.restoreIdentifier] = restoreIdentifier
+            dictionary[Keys.restoreIdentifier] = restoreIdentifier.string
         }
 
         if let showPowerAlert = self.showPowerAlert {
