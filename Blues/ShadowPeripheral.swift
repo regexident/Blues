@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// The supporting "shadow" peripheral that does the actual heavy lifting
 /// behind any `Peripheral` implementation.
 public class ShadowPeripheral: NSObject {
@@ -437,21 +439,5 @@ extension ShadowPeripheral: Responder {
             fatalError("Expected object conforming to `Responder` protocol.")
         }
         return .some(centralManager)
-    }
-}
-
-extension Result {
-
-    init(success: T?, failure: E?) {
-        switch (success, failure) {
-        case (.some(let value), nil):
-            self = .ok(value)
-        case (nil, .some(let error)):
-            self = .err(error)
-        case (.some(_), .some(let error)):
-            self = .err(error)
-        case (nil, nil):
-            fatalError("Result accepts either `success` or `failure` to be nil, not both")
-        }
     }
 }

@@ -27,7 +27,6 @@
 		BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
 		BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */; };
 		BFCB8E131DC1104400D5430D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
-		BFE23E961DC5013F00F94D20 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23E951DC5013F00F94D20 /* Result.swift */; };
 		BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA11DC5372700F94D20 /* ResponderChain.swift */; };
 		BFE23EA41DC550F500F94D20 /* PeripheralHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */; };
 		BFE23EA61DC551A700F94D20 /* CentralManagerHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */; };
@@ -37,6 +36,7 @@
 		BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB11DC694FC00F94D20 /* Identifier.swift */; };
 		BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB51DC6BC0000F94D20 /* Error.swift */; };
 		BFE2FD251DCA0031002F1394 /* ServiceNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2FD241DCA0031002F1394 /* ServiceNames.swift */; };
+		BFE7A7501E64B76600F51068 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFE7A74F1E64B76600F51068 /* Result.framework */; };
 		BFE903611DC3EA3600F1BF42 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903601DC3EA3600F1BF42 /* AppDelegate.swift */; };
 		BFE903631DC3EA3600F1BF42 /* CentralManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903621DC3EA3600F1BF42 /* CentralManagerViewController.swift */; };
 		BFE903651DC3EA3600F1BF42 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE903641DC3EA3600F1BF42 /* PeripheralViewController.swift */; };
@@ -103,7 +103,6 @@
 		BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
 		BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8E121DC1104400D5430D /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Service.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFE23E951DC5013F00F94D20 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		BFE23EA11DC5372700F94D20 /* ResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderChain.swift; sourceTree = "<group>"; };
 		BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralHandling.swift; sourceTree = "<group>"; };
 		BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerHandling.swift; sourceTree = "<group>"; };
@@ -113,6 +112,7 @@
 		BFE23EB11DC694FC00F94D20 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		BFE23EB51DC6BC0000F94D20 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		BFE2FD241DCA0031002F1394 /* ServiceNames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceNames.swift; sourceTree = "<group>"; };
+		BFE7A74F1E64B76600F51068 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		BFE9035E1DC3EA3600F1BF42 /* BluesDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluesDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE903601DC3EA3600F1BF42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFE903621DC3EA3600F1BF42 /* CentralManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerViewController.swift; sourceTree = "<group>"; };
@@ -128,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFE7A7501E64B76600F51068 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,6 +157,7 @@
 				BFCB8DF21DC0E22200D5430D /* Blues */,
 				BFCB8DFD1DC0E22200D5430D /* BluesTests */,
 				BFE9035F1DC3EA3600F1BF42 /* BluesDemo */,
+				BFE7A7511E64B76800F51068 /* Frameworks */,
 				BFCB8DF11DC0E22200D5430D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -210,7 +212,6 @@
 				BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */,
 				BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */,
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
-				BFE23E951DC5013F00F94D20 /* Result.swift */,
 			);
 			name = Auxiliaries;
 			sourceTree = "<group>";
@@ -235,6 +236,14 @@
 				BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */,
 			);
 			name = "Generic Attributes";
+			sourceTree = "<group>";
+		};
+		BFE7A7511E64B76800F51068 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BFE7A74F1E64B76600F51068 /* Result.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BFE9035F1DC3EA3600F1BF42 /* BluesDemo */ = {
@@ -406,7 +415,6 @@
 				BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */,
 				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
-				BFE23E961DC5013F00F94D20 /* Result.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */,
 				BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */,
 				BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */,
@@ -604,7 +612,7 @@
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "-.Blues";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nwtnberlin.Blues;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -630,7 +638,7 @@
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "-.Blues";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nwtnberlin.Blues;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
