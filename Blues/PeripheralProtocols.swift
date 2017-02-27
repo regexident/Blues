@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 /// A `DelegatedPeripheral`'s delegate.
 public protocol PeripheralDelegate: class {
 

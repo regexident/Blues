@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 /// A `Characteristic`'s delegate.
 public protocol CharacteristicDelegate: class {
 

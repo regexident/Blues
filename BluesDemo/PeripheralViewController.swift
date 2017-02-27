@@ -9,6 +9,8 @@
 import UIKit
 import Blues
 
+import Result
+
 class PeripheralViewController: UITableViewController {
 
     var characteristicViewController: CharacteristicViewController?

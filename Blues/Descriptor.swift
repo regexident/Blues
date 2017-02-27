@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// Default implementation of `Descriptor` protocol.
 public class DefaultDescriptor: DelegatedDescriptor {
 
@@ -151,7 +153,7 @@ extension TypesafeDescriptor {
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Value?, TypesafeDescriptorError> {
-        return self.any.mapErr(closure: TypesafeDescriptorError.peripheral).andThen { any in
+        return self.any.mapErr(TypesafeDescriptorError.peripheral).andThen { any in
             guard let any = any else {
                 return .ok(nil)
             }

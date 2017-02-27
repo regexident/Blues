@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// Default implementation of `Peripheral` protocol.
 public class DefaultPeripheral: DelegatedPeripheral, DataSourcedPeripheral {
 

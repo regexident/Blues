@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 struct ConnectPeripheralMessage: Message {
     typealias Handler = CentralManagerHandling
     typealias Output = Result<(), PeripheralError>

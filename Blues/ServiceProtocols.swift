@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 /// A `DelegatedService`'s delegate.
 public protocol ServiceDelegate: class {
 

@@ -9,6 +9,8 @@
 import UIKit
 import Blues
 
+import Result
+
 class CharacteristicViewController: UITableViewController {
 
     enum Section: Int {

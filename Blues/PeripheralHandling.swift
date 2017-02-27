@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 struct DiscoverServicesMessage: Message {
     typealias Handler = PeripheralHandling
     typealias Output = Result<(), PeripheralError>

@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// Default implementation of `Characteristic` protocol.
 public class DefaultCharacteristic: DelegatedCharacteristic, DataSourcedCharacteristic {
 
@@ -252,7 +254,7 @@ extension TypesafeCharacteristic {
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Value?, TypesafeCharacteristicError> {
-        return self.data.mapErr(closure: TypesafeCharacteristicError.peripheral).andThen { data in
+        return self.data.mapErr(TypesafeCharacteristicError.peripheral).andThen { data in
             guard let data = data else {
                 return .ok(nil)
             }

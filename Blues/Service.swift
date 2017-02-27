@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// Default implementation of `Service` protocol.
 public class DefaultService: DelegatedService, DataSourcedService {
 

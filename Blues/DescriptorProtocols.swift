@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 /// A `DelegatedDescriptor`'s delegate.
 public protocol DescriptorDelegate: class {
 

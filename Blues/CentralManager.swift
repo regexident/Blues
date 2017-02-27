@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 /// Abstraction layer around `CBCentralManager`.
 public class CentralManager: NSObject {
 
