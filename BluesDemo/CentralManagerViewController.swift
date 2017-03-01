@@ -23,6 +23,7 @@ class CentralManagerViewController: UITableViewController {
         }
     }
 
+    let queue: DispatchQueue = .init(label: "serial")
     var peripheralViewController: PeripheralViewController?
     var centralManager: CentralManager!
 
@@ -40,7 +41,7 @@ class CentralManagerViewController: UITableViewController {
         self.tableView.reloadData()
     }
 
-    var cachedPeripherals: [Peripheral] = []
+    var sortedPeripherals: [Peripheral] = []
 
     // MARK: - Segues
 
@@ -49,7 +50,7 @@ class CentralManagerViewController: UITableViewController {
             guard let indexPath = self.tableView.indexPathForSelectedRow else {
                 return
             }
-            let peripherals = self.cachedPeripherals
+            let peripherals = self.sortedPeripherals
             let peripheral = peripherals[indexPath.row]
 
             let controller = (segue.destination as! UINavigationController).topViewController as! PeripheralViewController
@@ -74,15 +75,14 @@ extension CentralManagerViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Section(rawValue: section)! {
         case .peripherals:
-            return self.cachedPeripherals.count
+            return self.sortedPeripherals.count
         }
     }
 
-    func cellForPeripheral(at index: Int) -> UITableViewCell {
-        let indexPath = IndexPath(row: index, section: Section.peripherals.rawValue)
+    func cellForPeripheral(at indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PeripheralCell", for: indexPath)
 
-        let peripherals = self.cachedPeripherals
+        let peripherals = self.sortedPeripherals
         let peripheral = peripherals[indexPath.row]
 
         cell.textLabel!.text = peripheral.name ?? "Unnamed"
@@ -94,7 +94,7 @@ extension CentralManagerViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch Section(rawValue: indexPath.section)! {
         case .peripherals:
-            return self.cellForPeripheral(at: indexPath.row)
+            return self.cellForPeripheral(at: indexPath)
         }
     }
 }
@@ -106,20 +106,20 @@ extension CentralManagerViewController: CentralManagerDelegate {
 
     @available(iOSApplicationExtension 10.0, *)
     func didUpdate(state: CentralManagerState, ofManager manager: CentralManager) {
-        if state == .poweredOn {
+        self.queue.async {
             self.centralManager.startScanningForPeripherals(advertisingWithServices: nil, options: nil)
         }
     }
 
     func didDiscover(peripheral: Peripheral, advertisement: Advertisement, rssi: Int, withManager manager: CentralManager) {
-        DispatchQueue.main.async {
-            let section = Section.peripherals.rawValue
-            let row = self.cachedPeripherals.count
-            self.cachedPeripherals.append(peripheral)
-            let indexPath = IndexPath(row: row, section: section)
-            self.tableView.beginUpdates()
-            self.tableView.insertRows(at: [indexPath], with: .automatic)
-            self.tableView.endUpdates()
+        self.queue.async {
+            self.sortedPeripherals.append(peripheral)
+            self.sortedPeripherals.sort {
+                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 

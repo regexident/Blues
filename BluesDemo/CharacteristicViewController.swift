@@ -40,6 +40,7 @@ class CharacteristicViewController: UITableViewController {
             }
         }
         didSet {
+            self.sortedDescriptors = []
             if let characteristic = self.characteristic as? DelegatedCharacteristic {
                 self.previousCharacteristicDelegate = characteristic.delegate
                 characteristic.delegate = self
@@ -49,7 +50,8 @@ class CharacteristicViewController: UITableViewController {
         }
     }
 
-    var cachedDescriptors: [Descriptor] = []
+    let queue: DispatchQueue = .init(label: "serial")
+    var sortedDescriptors: [Descriptor] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,6 +81,15 @@ class CharacteristicViewController: UITableViewController {
         let _ = characteristic.set(notifyValue: true)
     }
 
+    override func willMove(toParentViewController parent: UIViewController?) {
+        super.willMove(toParentViewController: parent)
+
+        // The back button was pressed or interactive gesture used:
+        if parent == nil {
+            self.characteristic = nil
+        }
+    }
+
     func update() {
         if let characteristic = self.characteristic {
             DispatchQueue.main.async {
@@ -89,6 +100,7 @@ class CharacteristicViewController: UITableViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
     }
 
     func humanReadableProperties(of characteristic: Characteristic) -> [String] {
@@ -132,7 +144,7 @@ class CharacteristicViewController: UITableViewController {
     }
 
     func numberOfDescriptors(of characteristic: Characteristic) -> Int {
-        return self.cachedDescriptors.count
+        return self.sortedDescriptors.count
     }
 
     func numberOfProperties(of characteristic: Characteristic) -> Int {
@@ -160,7 +172,7 @@ class CharacteristicViewController: UITableViewController {
         let indexPath = IndexPath(row: index, section: Section.descriptors.rawValue)
         let cell = tableView.dequeueReusableCell(withIdentifier: "DescriptorCell", for: indexPath)
 
-        let descriptor = self.cachedDescriptors[index]
+        let descriptor = self.sortedDescriptors[index]
         guard case let .ok(any) = descriptor.any else {
             return cell
         }
@@ -228,20 +240,24 @@ extension CharacteristicViewController {
 extension CharacteristicViewController: CharacteristicDelegate {
 
     func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 
     func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 
@@ -252,14 +268,13 @@ extension CharacteristicViewController: CharacteristicDelegate {
         guard case let .ok(descriptors) = descriptors else {
             return
         }
-        DispatchQueue.main.async {
-            self.cachedDescriptors = descriptors
-            let section = Section.descriptors.rawValue
-            let rowCount = self.cachedDescriptors.count
-            let indexPaths = (0 ..< rowCount).map { IndexPath(row: $0, section: section) }
-            self.tableView.beginUpdates()
-            self.tableView.insertRows(at: indexPaths, with: .automatic)
-            self.tableView.endUpdates()
+        self.queue.async {
+            self.sortedDescriptors = descriptors.sorted {
+                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 }
@@ -267,24 +282,28 @@ extension CharacteristicViewController: CharacteristicDelegate {
 extension CharacteristicViewController: DescriptorDelegate {
 
     func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let section = Section.descriptors.rawValue
-            let row = self.cachedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
+            let row = self.sortedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
             let indexPath = IndexPath(row: row, section: section)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 
     func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let section = Section.descriptors.rawValue
-            let row = self.cachedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
+            let row = self.sortedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
             let indexPath = IndexPath(row: row, section: section)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 }

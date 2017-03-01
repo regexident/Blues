@@ -27,8 +27,10 @@ class PeripheralViewController: UITableViewController {
             }
         }
         didSet {
+            self.sortedServices = []
             guard let peripheral = self.peripheral as? DelegatedPeripheral else {
                 self.previousPeripheralDelegate = nil
+                let _ = oldValue?.disconnect()
                 return
             }
             self.previousPeripheralDelegate = peripheral.delegate
@@ -37,63 +39,41 @@ class PeripheralViewController: UITableViewController {
         }
     }
 
-    var cachedServices: [Service] = []
-    var cachedCharacteristicsByService: [Identifier: [Characteristic]] = [:]
+    let queue: DispatchQueue = .init(label: "serial")
+    var sortedServices: [Service] = []
+    var sortedCharacteristicsByService: [Identifier: [Characteristic]] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        guard let peripheral = self.peripheral else {
+            return
+        }
+        self.title = self.title(for: peripheral)
         self.clearsSelectionOnViewWillAppear = true
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
-        guard let peripheral = self.peripheral else {
+        guard let peripheral = self.peripheral as? DelegatedPeripheral else {
             return
         }
-        if let services = peripheral.services?.values {
-            self.cachedServices = Array(services)
-        } else {
-            self.cachedServices = []
-        }
-        for service in self.cachedServices {
-            let cachedCharacteristics: [Characteristic]
-            if let characteristics = service.characteristics?.values {
-                cachedCharacteristics = Array(characteristics)
-            } else {
-                cachedCharacteristics = []
-            }
-            self.cachedCharacteristicsByService[service.uuid] = cachedCharacteristics
-            for characteristic in cachedCharacteristics {
-                guard let characteristic = characteristic as? DelegatedCharacteristic else {
-                    continue
-                }
-                characteristic.delegate = self
-                let _ = characteristic.read()
-                let _ = characteristic.set(notifyValue: true)
-            }
-        }
-        DispatchQueue.main.async {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-                title: peripheral.state == .connected ? "Disconnect" : "Connect",
-                style: .plain,
-                target: self,
-                action: #selector(self.toggleConnection(_:))
-            )
-            self.title = self.title(for: peripheral)
-            self.tableView.reloadData()
+
+        if peripheral.delegate === self {
+            peripheral.delegate = self.previousPeripheralDelegate
         }
     }
 
-    func toggleConnection(_ sender: UIBarButtonItem?) {
-        guard let peripheral = self.peripheral else {
-            return
-        }
-        if peripheral.state == .connected {
-            let _ = peripheral.disconnect()
-        } else {
-            let _ = peripheral.connect()
+    override func willMove(toParentViewController parent: UIViewController?) {
+        super.willMove(toParentViewController: parent)
+
+        // Caution: Due to http://www.openradar.me/18002763 this methods is actually never called.
+        // Look into Main.storyboard for more info.
+
+        // The back button was pressed or interactive gesture used:
+        if parent == nil {
+            self.peripheral = nil
         }
     }
 
@@ -110,8 +90,8 @@ class PeripheralViewController: UITableViewController {
             guard let indexPath = self.tableView.indexPathForSelectedRow else {
                 return
             }
-            let service = self.cachedServices[indexPath.section]
-            let characteristics = self.cachedCharacteristicsByService[service.uuid]!
+            let service = self.sortedServices[indexPath.section]
+            let characteristics = self.sortedCharacteristicsByService[service.uuid]!
             let characteristic = characteristics[indexPath.row]
 
             let controller = segue.destination as! CharacteristicViewController
@@ -126,36 +106,35 @@ class PeripheralViewController: UITableViewController {
 extension PeripheralViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.cachedServices.count
+        return self.sortedServices.count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let service = self.cachedServices[section]
+        let service = self.sortedServices[section]
         return ServiceNames.nameOf(service: service.uuid) ?? service.name ?? service.uuid.string
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let service = self.cachedServices[section]
-        let characteristics = self.cachedCharacteristicsByService[service.uuid] ?? []
+        let service = self.sortedServices[section]
+        let characteristics = self.sortedCharacteristicsByService[service.uuid] ?? []
         return characteristics.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CharacteristicCell", for: indexPath)
 
-        let service = self.cachedServices[indexPath.section]
-        let characteristics = self.cachedCharacteristicsByService[service.uuid]!
+        let service = self.sortedServices[indexPath.section]
+        let characteristics = self.sortedCharacteristicsByService[service.uuid]!
         let characteristic = characteristics[indexPath.row]
-
-        cell.textLabel!.text = self.title(for: characteristic)
 
         if case let .ok(data) = characteristic.data {
             if let hexString = data?.hexString {
-                cell.detailTextLabel!.text = "Hex: \(hexString)"
+                cell.textLabel!.text = "Hex: \(hexString)"
             } else {
-                cell.detailTextLabel!.text = "No Value"
+                cell.textLabel!.text = "No Value"
             }
         }
+        cell.detailTextLabel!.text = self.title(for: characteristic)
 
         return cell
     }
@@ -164,6 +143,7 @@ extension PeripheralViewController {
 extension PeripheralViewController: PeripheralDelegate {
 
     public func willRestore(peripheral: Peripheral) {
+
     }
 
     public func didRestore(peripheral: Peripheral) {
@@ -176,18 +156,13 @@ extension PeripheralViewController: PeripheralDelegate {
         if case let .err(error) = peripheral.discover(services: nil) {
             print("Error: \(error)")
         }
-        DispatchQueue.main.async {
-            self.navigationItem.rightBarButtonItem?.title = "Disconnect"
-        }
     }
 
     public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
-        DispatchQueue.main.async {
-            self.navigationItem.rightBarButtonItem?.title = "Connect"
-        }
     }
 
     public func didFailToConnect(peripheral: Peripheral, error: Swift.Error?) {
+        print("Error: \(error)")
     }
 
     func didUpdate(name: String?, ofPeripheral peripheral: Peripheral) {
@@ -204,15 +179,19 @@ extension PeripheralViewController: PeripheralDelegate {
         guard case let .ok(services) = services else {
             return
         }
-        self.cachedServices = services
-        for service in services {
-            let _ = service.discover(characteristics: nil)
-            if let service = service as? DelegatedService {
-                service.delegate = self
+        self.queue.async {
+            self.sortedServices = services.sorted {
+                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
             }
-        }
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+            for service in services {
+                let _ = service.discover(characteristics: nil)
+                if let service = service as? DelegatedService {
+                    service.delegate = self
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 }
@@ -226,8 +205,8 @@ extension PeripheralViewController: ServiceDelegate {
         guard case let .ok(characteristics) = characteristics else {
             return
         }
-        DispatchQueue.main.async {
-            self.cachedCharacteristicsByService[service.uuid] = characteristics
+        self.queue.async {
+            self.sortedCharacteristicsByService[service.uuid] = characteristics
             for characteristic in characteristics {
                 let _ = characteristic.discoverDescriptors()
                 if let characteristic = characteristic as? DelegatedCharacteristic {
@@ -236,12 +215,9 @@ extension PeripheralViewController: ServiceDelegate {
                     characteristic.delegate = self
                 }
             }
-            let section = self.cachedServices.index(where: { $0.uuid == service.uuid })!
-            let rowCount = self.cachedCharacteristicsByService[service.uuid]!.count
-            let indexPaths = (0 ..< rowCount).map { IndexPath(row: $0, section: section) }
-            self.tableView.beginUpdates()
-            self.tableView.insertRows(at: indexPaths, with: .automatic)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 }
@@ -249,34 +225,38 @@ extension PeripheralViewController: ServiceDelegate {
 extension PeripheralViewController: CharacteristicDelegate {
 
     func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let service = characteristic.service!
-            let cachedCharacteristics = self.cachedCharacteristicsByService[service.uuid]!
-            let section = self.cachedServices.index(where: { $0.uuid == service.uuid })!
-            let row = cachedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
+            let sortedCharacteristics = self.sortedCharacteristicsByService[service.uuid]!
+            let section = self.sortedServices.index(where: { $0.uuid == service.uuid })!
+            let row = sortedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
             let indexPath = IndexPath(row: row, section: section)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 
     func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
-        DispatchQueue.main.async {
+        self.queue.async {
             let service = characteristic.service!
-            let cachedCharacteristics = self.cachedCharacteristicsByService[service.uuid]!
-            let section = self.cachedServices.index(where: { $0.uuid == service.uuid })!
-            let row = cachedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
+            let sortedCharacteristics = self.sortedCharacteristicsByService[service.uuid]!
+            let section = self.sortedServices.index(where: { $0.uuid == service.uuid })!
+            let row = sortedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
             let indexPath = IndexPath(row: row, section: section)
-            self.tableView.beginUpdates()
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-            self.tableView.endUpdates()
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.endUpdates()
+            }
         }
     }
 
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, forCharacteristic characteristic: Characteristic) {
     }
-
+    
     func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic) {
     }
 }
