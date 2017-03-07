@@ -13,18 +13,6 @@ import Result
 /// A `DelegatedPeripheral`'s delegate.
 public protocol PeripheralDelegate: class {
 
-    /// Invoked when the central manager is about to restore a peripheral's state.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that will be restored.
-    func willRestore(peripheral: Peripheral)
-
-    /// Invoked when the central manager has restored a peripheral's state.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that has been restored.
-    func didRestore(peripheral: Peripheral)
-
     /// Invoked when a connection is about to be created with a peripheral.
     ///
     /// - Parameters:
@@ -102,14 +90,6 @@ public protocol DelegatedPeripheral: Peripheral {
 }
 
 extension DelegatedPeripheral {
-
-    public func willRestore(peripheral: Peripheral) {
-        self.delegate?.willRestore(peripheral: peripheral)
-    }
-
-    public func didRestore(peripheral: Peripheral) {
-        self.delegate?.didRestore(peripheral: peripheral)
-    }
 
     public func willConnect(peripheral: Peripheral) {
         self.delegate?.willConnect(peripheral: peripheral)
