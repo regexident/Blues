@@ -134,6 +134,7 @@ extension CentralManager: CentralManagerHandling {
             return .err(.unreachable)
         }
         self.queue.async {
+            peripheral.willDisconnect(peripheral: peripheral)
             peripheral.shadow.connectionOptions = nil
             let innerPeripheral = peripheral.core
             self.inner.cancelPeripheralConnection(innerPeripheral)

@@ -143,7 +143,6 @@ extension PeripheralViewController {
 extension PeripheralViewController: PeripheralDelegate {
 
     public func willRestore(peripheral: Peripheral) {
-
     }
 
     public func didRestore(peripheral: Peripheral) {
@@ -156,6 +155,9 @@ extension PeripheralViewController: PeripheralDelegate {
         if case let .err(error) = peripheral.discover(services: nil) {
             print("Error: \(error)")
         }
+    }
+
+    public func willDisconnect(peripheral: Peripheral) {
     }
 
     public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {

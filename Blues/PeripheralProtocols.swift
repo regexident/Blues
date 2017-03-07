@@ -25,6 +25,12 @@ public protocol PeripheralDelegate: class {
     ///   - peripheral: The peripheral that has been connected to the system.
     func didConnect(peripheral: Peripheral)
 
+    /// Invoked when a connection is about to be created with a peripheral.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral that will be connected to the system.
+    func willDisconnect(peripheral: Peripheral)
+
     /// Invoked when an existing connection with a peripheral is torn down.
     ///
     /// - Parameters:
@@ -97,6 +103,10 @@ extension DelegatedPeripheral {
 
     public func didConnect(peripheral: Peripheral) {
         self.delegate?.didConnect(peripheral: peripheral)
+    }
+
+    public func willDisconnect(peripheral: Peripheral) {
+        self.delegate?.willDisconnect(peripheral: peripheral)
     }
 
     public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
