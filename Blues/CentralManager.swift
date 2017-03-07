@@ -24,6 +24,10 @@ public class CentralManager: NSObject {
         return CentralManagerState(from: self.inner.state)
     }
 
+    public var isScanning: Bool {
+        return self.inner.isScanning
+    }
+
     fileprivate(set) public var peripherals: [Identifier: Peripheral] = [:]
 
     fileprivate(set) public weak var dataSource: CentralManagerDataSource?
