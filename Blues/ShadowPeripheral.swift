@@ -18,6 +18,11 @@ public class ShadowPeripheral: NSObject {
     /// The Bluetooth-specific identifier of the service.
     public let uuid: Identifier
 
+    /// The Bluetooth-specific identifier of the service.
+    public var name: String? {
+        return self.core.name
+    }
+
     let core: CBPeripheral
     weak var peripheral: Peripheral?
     var connectionOptions: ConnectionOptions?
