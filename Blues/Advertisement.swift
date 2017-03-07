@@ -13,19 +13,37 @@ import CoreBluetooth
 public struct Advertisement {
 
     /// A string (an instance of `String`) containing the local name of a peripheral.
-    public let localName: String?
+    public var localName: String? {
+        return self.dictionary[Keys.localName] as? String
+    }
 
     /// A `Data` object containing the manufacturer data of a peripheral.
-    public let manufacturerData: Data?
+    public var manufacturerData: Data? {
+        return self.dictionary[Keys.manufacturerData] as? Data
+    }
 
     /// A dictionary containing service-specific advertisement data.
     ///
     /// The keys are `Identifier` objects, representing `Service` identifiers.
     /// The values are `Data` objects, representing service-specific data.
-    public let serviceData: [Identifier: Data]?
+    public var serviceData: [Identifier: Data]? {
+        guard let dict = self.dictionary[Keys.serviceData] as? [CBUUID: Data] else {
+            return nil
+        }
+        var serviceDataDict: [Identifier: Data] = [:]
+        for (uuid, data) in dict {
+            serviceDataDict[Identifier(uuid: uuid)] = data
+        }
+        return serviceDataDict
+    }
 
     /// An array of service identifiers.
-    public let serviceUUIDs: [Identifier]?
+    public var serviceUUIDs: [Identifier]? {
+        guard let uuids = self.dictionary[Keys.serviceUUIDs] as? [CBUUID] else {
+            return nil
+        }
+        return uuids.map { Identifier(uuid: $0) }
+    }
 
     /// An array of one or more `Identifier` objects, representing `Service` identifiers
     /// that were found in the “overflow” area of the advertisement data.
@@ -35,22 +53,56 @@ public struct Advertisement {
     /// identifiers listed here are “best effort” and may not always be accurate.
     /// For details about the overflow area of advertisement data,
     /// see the `startAdvertising(_:)` method in `PeripheralManager`.
-    public let overflowServiceUUIDs: [Identifier]?
+    public var overflowServiceUUIDs: [Identifier]? {
+        guard let uuids = self.dictionary[Keys.overflowServiceUUIDs] as? [CBUUID] else {
+            return nil
+        }
+        return uuids.map { Identifier(uuid: $0) }
+    }
 
     /// An array of one or more `Identifier` objects, representing `Service` identifiers.
-    public let solicitedServiceUUIDs: [Identifier]?
+    public var solicitedServiceUUIDs: [Identifier]? {
+        guard let uuids = self.dictionary[Keys.solicitedServiceUUIDs] as? [CBUUID] else {
+            return nil
+        }
+        return uuids.map { Identifier(uuid: $0) }
+    }
 
     /// The transmit power of a peripheral commonly ranging from
     /// -100 dBm to +20 dBm to a resolution of 1 dBm.
     ///
     /// - Note:
     ///   Using the RSSI value and the Tx power level, it is possible to calculate path loss.
-    public let txPowerLevel: Int?
+    public var txPowerLevel: Int? {
+        return self.dictionary[Keys.txPowerLevel] as? Int
+    }
 
     /// A Boolean value that indicates whether the advertising event type is connectable.
-    public let isConnectable: Bool?
+    public var isConnectable: Bool? {
+        return self.dictionary[Keys.isConnectable] as? Bool
+    }
 
-    enum Keys {
+    /// An opaque and plist-compatible `Data` representation of the advertisement.
+    public var data: Data {
+        let dictionary = self.dictionary
+        var plist: [String : Any] = [:]
+        let mapUUIDs: (Any?) -> [String]? = {
+            ($0 as? [CBUUID]).map { $0.map { $0.uuidString } }
+        }
+        plist[Keys.localName] = dictionary[Keys.localName]
+        plist[Keys.manufacturerData] = dictionary[Keys.manufacturerData]
+        plist[Keys.serviceData] = dictionary[Keys.serviceData]
+        plist[Keys.serviceUUIDs] = mapUUIDs(dictionary[Keys.serviceUUIDs])
+        plist[Keys.overflowServiceUUIDs] = mapUUIDs(dictionary[Keys.overflowServiceUUIDs])
+        plist[Keys.solicitedServiceUUIDs] = mapUUIDs(dictionary[Keys.solicitedServiceUUIDs])
+        plist[Keys.txPowerLevel] = dictionary[Keys.txPowerLevel]
+        plist[Keys.isConnectable] = dictionary[Keys.isConnectable]
+        return NSKeyedArchiver.archivedData(withRootObject: plist)
+    }
+
+    fileprivate let dictionary: [String: Any]
+
+    private enum Keys {
         static let localName = CBAdvertisementDataLocalNameKey
         static let manufacturerData = CBAdvertisementDataManufacturerDataKey
         static let serviceData = CBAdvertisementDataServiceDataKey
@@ -62,56 +114,36 @@ public struct Advertisement {
     }
 
     init(dictionary: [String: Any]) {
-        guard let localName = dictionary[Keys.localName] as? String? else {
-            fatalError()
-        }
-        self.localName = localName
+        assert(dictionary.count <= 8)
+        self.dictionary = dictionary
+    }
 
-        guard let manufacturerData = dictionary[Keys.manufacturerData] as? Data? else {
-            fatalError()
+    /// Creates an advertisement from an opaque plist-compatible `Data` representation.
+    public init(data: Data) {
+        let unarchivedObject = NSKeyedUnarchiver.unarchiveObject(with: data)
+        guard let plist = unarchivedObject as? [String : Any] else {
+            let typeName = String(describing: type(of: unarchivedObject!))
+            fatalError("Expected archived value of type '[String: Any]', found '\(typeName)'.")
         }
-        self.manufacturerData = manufacturerData
-
-        guard let serviceData = dictionary[Keys.serviceData] as? [CBUUID: Data]? else {
-            fatalError()
+        var dictionary: [String : Any] = [:]
+        let mapUUIDs: (Any?) -> [CBUUID]? = {
+            ($0 as? [String]).map { $0.flatMap { CBUUID(string: $0) } }
         }
-        self.serviceData = serviceData.map { dictionary in
-            var serviceData: [Identifier: Data] = [:]
-            dictionary.forEach { key, value in
-                serviceData[Identifier(uuid: key)] = value
-            }
-            return serviceData
-        }
-
-        guard let services = dictionary[Keys.serviceUUIDs] as? [CBUUID]? else {
-            fatalError()
-        }
-        self.serviceUUIDs = services?.map { Identifier(uuid: $0) }
-
-        guard let overflowServiceUUIDs = dictionary[Keys.overflowServiceUUIDs] as? [CBUUID]? else {
-            fatalError()
-        }
-        self.overflowServiceUUIDs = overflowServiceUUIDs?.map { Identifier(uuid: $0) }
-
-        guard let solicitedServices = dictionary[Keys.solicitedServiceUUIDs] as? [CBUUID]? else {
-            fatalError()
-        }
-        self.solicitedServiceUUIDs = solicitedServices?.map { Identifier(uuid: $0) }
-
-        guard let txPowerLevel = dictionary[Keys.txPowerLevel] as? Int? else {
-            fatalError()
-        }
-        self.txPowerLevel = txPowerLevel
-
-        guard let isConnectable = dictionary[Keys.isConnectable] as? Bool? else {
-            fatalError()
-        }
-        self.isConnectable = isConnectable
+        dictionary[Keys.localName] = plist[Keys.localName]
+        dictionary[Keys.manufacturerData] = plist[Keys.manufacturerData]
+        dictionary[Keys.serviceData] = plist[Keys.serviceData]
+        dictionary[Keys.serviceUUIDs] = mapUUIDs(plist[Keys.serviceUUIDs])
+        dictionary[Keys.overflowServiceUUIDs] = mapUUIDs(plist[Keys.overflowServiceUUIDs])
+        dictionary[Keys.solicitedServiceUUIDs] = mapUUIDs(plist[Keys.solicitedServiceUUIDs])
+        dictionary[Keys.txPowerLevel] = plist[Keys.txPowerLevel]
+        dictionary[Keys.isConnectable] = plist[Keys.isConnectable]
+        self.dictionary = dictionary
     }
 }
 
-extension Advertisement: CustomStringConvertible {
+extension Advertisement : CustomStringConvertible {
     public var description: String {
+        let className = String(describing: type(of: self))
         let properties = [
             "localName: \(self.localName)",
             "manufacturerData: \(self.manufacturerData)",
@@ -122,6 +154,6 @@ extension Advertisement: CustomStringConvertible {
             "txPowerLevel: \(self.txPowerLevel)",
             "isConnectable: \(self.isConnectable)",
         ].joined(separator: ", ")
-        return "<Advertisement \(properties)>"
+        return "<\(className) \(properties)>"
     }
 }
