@@ -183,12 +183,13 @@ extension Peripheral {
     }
 
     public var description: String {
+        let className = String(describing: type(of: self))
         let attributes = [
             "uuid = \(self.shadow.uuid)",
             "name = \(self.name ?? "<nil>")",
             "state = \(self.state)",
         ].joined(separator: ", ")
-        return "<DefaultPeripheral \(attributes)>"
+        return "<\(className) \(attributes)>"
     }
 }
 
