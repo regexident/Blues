@@ -18,17 +18,14 @@ public class ShadowPeripheral: NSObject {
     /// The Bluetooth-specific identifier of the service.
     public let uuid: Identifier
 
-    public let advertisement: Advertisement?
-
     let core: CBPeripheral
     weak var peripheral: Peripheral?
     var connectionOptions: ConnectionOptions?
     var services: [Identifier: Service]?
     weak var centralManager: CentralManager?
 
-    init(core: CBPeripheral, centralManager: CentralManager, advertisement: Advertisement?) {
+    init(core: CBPeripheral, centralManager: CentralManager) {
         self.uuid = Identifier(uuid: core.identifier)
-        self.advertisement = advertisement
         self.core = core
         self.centralManager = centralManager
         super.init()
