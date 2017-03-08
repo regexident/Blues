@@ -76,9 +76,7 @@ public class CentralManager: NSObject {
         let cbuuids = identifiers.map {
             $0.core.uuidString
         }
-        print(cbuuids)
         let nsuuids = cbuuids.flatMap { UUID(uuidString: $0) }
-        print(nsuuids)
         let innerPeripherals = self.inner.retrievePeripherals(withIdentifiers: nsuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
         return self.peripherals.flatMap { uuid, peripheral in
