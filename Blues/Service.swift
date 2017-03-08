@@ -60,7 +60,7 @@ extension Service {
     }
 
     public var shouldDiscoverCharacteristicsAutomatically: Bool {
-        return true
+        return false
     }
 
     /// `.ok(isPrimary)` with a boolean value indicating whether the type

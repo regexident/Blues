@@ -84,11 +84,11 @@ extension Characteristic {
     }
 
     public var shouldDiscoverDescriptorsAutomatically: Bool {
-        return true
+        return false
     }
 
     public var shouldSubscribeToNotificationsAutomatically: Bool {
-        return true
+        return false
     }
 
     /// The value data of the characteristic.

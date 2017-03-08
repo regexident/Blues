@@ -61,7 +61,7 @@ extension Peripheral {
     }
 
     public var shouldDiscoverServicesAutomatically: Bool {
-        return true
+        return false
     }
 
     /// The state of the peripheral
