@@ -57,3 +57,9 @@ extension Identifier: Hashable {
         return self.core.hashValue
     }
 }
+
+extension Identifier: CustomStringConvertible {
+    public var description: String {
+        return self.string
+    }
+}
