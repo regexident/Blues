@@ -13,6 +13,11 @@ import CoreBluetooth
 public struct Identifier {
     let core: CBUUID
 
+    /// The identifier represented as a `CBUUID`.
+    public var uuid: CBUUID {
+        return self.core
+    }
+
     /// The identifier represented as a string.
     public var string: String {
         return self.core.uuidString
