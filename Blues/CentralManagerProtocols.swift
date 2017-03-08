@@ -53,7 +53,7 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - peripherals: An array of peripherals currently known by the central manager.
     ///   - manager:     The central manager providing this information.
-    func didRetrievePeripherals(peripherals: [Peripheral], fromManager manager: CentralManager)
+    func didRetrieve(peripherals: [Peripheral], fromManager manager: CentralManager)
 
     /// Invoked when the central manager retrieves a list
     /// of peripherals currently connected to the system.
@@ -61,8 +61,8 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - peripherals: The array of all peripherals currently connected to the system.
     ///   - manager:     The central manager providing this information.
-    func didRetrieveConnectedPeripherals(
-        peripherals: [Peripheral],
+    func didRetrieve(
+        connectedPeripherals: [Peripheral],
         fromManager manager: CentralManager
     )
 }

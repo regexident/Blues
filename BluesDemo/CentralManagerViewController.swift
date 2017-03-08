@@ -123,9 +123,9 @@ extension CentralManagerViewController: CentralManagerDelegate {
         }
     }
 
-    func didRetrievePeripherals(peripherals: [Peripheral], fromManager manager: CentralManager) {}
+    func didRetrieve(peripherals: [Peripheral], fromManager manager: CentralManager) {}
 
-    func didRetrieveConnectedPeripherals(peripherals: [Peripheral], fromManager manager: CentralManager) {}
+    func didRetrieve(connectedPeripherals: [Peripheral], fromManager manager: CentralManager) {}
 }
 
 extension CentralManagerViewController: CentralManagerDataSource {

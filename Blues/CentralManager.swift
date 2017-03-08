@@ -295,6 +295,38 @@ extension CentralManager: CBCentralManagerDelegate {
             peripheral.didDisconnect(peripheral: peripheral, error: error)
         }
     }
+
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didRetrievePeripherals peripherals: [CBPeripheral]
+    ) {
+        self.queue.async {
+            let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
+                let uuid = Identifier(uuid: peripheral.identifier)
+                guard let peripheral = self.peripherals[uuid] else {
+                    return nil
+                }
+                return peripheral
+            }
+            self.delegate?.didRetrieve(peripherals: peripherals, fromManager: self)
+        }
+    }
+
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didRetrieveConnectedPeripherals peripherals: [CBPeripheral]
+        ) {
+        self.queue.async {
+            let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
+                let uuid = Identifier(uuid: peripheral.identifier)
+                guard let peripheral = self.peripherals[uuid] else {
+                    return nil
+                }
+                return peripheral
+            }
+            self.delegate?.didRetrieve(connectedPeripherals: peripherals, fromManager: self)
+        }
+    }
 }
 
 // MARK: - Responder:
