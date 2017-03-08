@@ -180,7 +180,12 @@ extension ShadowPeripheral: PeripheralHandling {
 
 extension ShadowPeripheral: CBPeripheralDelegate {
 
-    public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
+    public func peripheralDidUpdateName(
+        _ peripheral: CBPeripheral
+    ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -193,6 +198,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         _ peripheral: CBPeripheral,
         didModifyServices invalidatedServices: [CBService]
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -219,6 +227,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didReadRSSI rssi: NSNumber,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -229,7 +240,13 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         }
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Swift.Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverServices error: Swift.Error?
+    ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
@@ -261,6 +278,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didDiscoverIncludedServicesFor service: CBService,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let peripheral = self.peripheral else {
                 return
@@ -295,6 +315,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didDiscoverCharacteristicsFor service: CBService,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(service: service) else {
                 return
@@ -340,6 +363,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didUpdateValueFor characteristic: CBCharacteristic,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -354,6 +380,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didWriteValueFor characteristic: CBCharacteristic,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -368,6 +397,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didUpdateNotificationStateFor characteristic: CBCharacteristic,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -382,6 +414,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didDiscoverDescriptorsFor characteristic: CBCharacteristic,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
@@ -411,6 +446,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didUpdateValueFor descriptor: CBDescriptor,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
@@ -425,6 +463,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         didWriteValueFor descriptor: CBDescriptor,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return

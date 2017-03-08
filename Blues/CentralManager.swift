@@ -182,6 +182,9 @@ extension CentralManager: CBCentralManagerDelegate {
         _ central: CBCentralManager,
         willRestoreState dictionary: [String: Any]
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let restoreState = CentralManagerRestoreState(dictionary: dictionary) { core in
                 let shadow = ShadowPeripheral(
@@ -195,6 +198,9 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             if central.state == .poweredOn {
                 // nothing for now
@@ -214,19 +220,19 @@ extension CentralManager: CBCentralManagerDelegate {
         }
     }
 
-    private func hasAlreadyDiscovered(peripheral: CBPeripheral) -> Bool {
-        let uuid = Identifier(uuid: peripheral.identifier)
-        return self.peripherals[uuid] != nil
-    }
-
     @objc public func centralManager(
         _ central: CBCentralManager,
         didDiscover peripheral: CBPeripheral,
         advertisementData: [String: Any],
         rssi RSSI: NSNumber
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
-            guard !self.hasAlreadyDiscovered(peripheral: peripheral) else {
+            let uuid = Identifier(uuid: peripheral.identifier)
+            let wasAlreadyDiscovered = self.peripherals[uuid] != nil
+            guard !wasAlreadyDiscovered else {
                 return
             }
             let advertisement = Advertisement(dictionary: advertisementData)
@@ -252,6 +258,9 @@ extension CentralManager: CBCentralManagerDelegate {
         _ central: CBCentralManager,
         didConnect peripheral: CBPeripheral
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -272,6 +281,9 @@ extension CentralManager: CBCentralManagerDelegate {
         didFailToConnect peripheral: CBPeripheral,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -287,6 +299,9 @@ extension CentralManager: CBCentralManagerDelegate {
         didDisconnectPeripheral peripheral: CBPeripheral,
         error: Swift.Error?
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let uuid = Identifier(uuid: peripheral.identifier)
             guard let peripheral = self.peripherals[uuid] else {
@@ -301,6 +316,9 @@ extension CentralManager: CBCentralManagerDelegate {
         _ central: CBCentralManager,
         didRetrievePeripherals peripherals: [CBPeripheral]
     ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
                 let uuid = Identifier(uuid: peripheral.identifier)
@@ -316,7 +334,10 @@ extension CentralManager: CBCentralManagerDelegate {
     @objc public func centralManager(
         _ central: CBCentralManager,
         didRetrieveConnectedPeripherals peripherals: [CBPeripheral]
-        ) {
+    ) {
+        #if DEBUG_PRINT
+            print("\(String(describing: type(of: self))).\(#function)")
+        #endif
         self.queue.async {
             let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
                 let uuid = Identifier(uuid: peripheral.identifier)
