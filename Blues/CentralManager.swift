@@ -72,16 +72,23 @@ public class CentralManager: NSObject {
         }
     }
 
-    public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [Peripheral] {
-        let innerPeripherals = self.inner.retrievePeripherals(withIdentifiers: identifiers)
+    public func retrievePeripherals(withIdentifiers identifiers: [Identifier]) -> [Peripheral] {
+        let cbuuids = identifiers.map {
+            $0.core.uuidString
+        }
+        print(cbuuids)
+        let nsuuids = cbuuids.flatMap { UUID(uuidString: $0) }
+        print(nsuuids)
+        let innerPeripherals = self.inner.retrievePeripherals(withIdentifiers: nsuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
         return self.peripherals.flatMap { uuid, peripheral in
             peripheralIdentifiers.contains(uuid.core) ? peripheral : nil
         }
     }
 
-    public func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [Peripheral] {
-        let innerPeripherals = self.inner.retrieveConnectedPeripherals(withServices: serviceUUIDs)
+    public func retrieveConnectedPeripherals(withServices serviceUUIDs: [Identifier]) -> [Peripheral] {
+        let cbuuids = serviceUUIDs.map { $0.core }
+        let innerPeripherals = self.inner.retrieveConnectedPeripherals(withServices: cbuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
         return self.peripherals.flatMap { uuid, peripheral in
             peripheralIdentifiers.contains(uuid.core) ? peripheral : nil
