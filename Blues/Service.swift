@@ -51,8 +51,8 @@ public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomString
 extension Service {
 
     /// The Bluetooth-specific identifier of the service.
-    public var uuid: Identifier {
-        return self.shadow.uuid
+    public var identifier: Identifier {
+        return self.shadow.identifier
     }
 
     public var name: String? {
@@ -154,7 +154,7 @@ extension Service {
     public var description: String {
         let className = type(of: self)
         let attributes = [
-            "uuid = \(self.shadow.uuid)",
+            "identifier = \(self.shadow.identifier)",
             "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
@@ -176,7 +176,7 @@ extension Service {
 public class ShadowService {
 
     /// The Bluetooth-specific identifier of the service.
-    public let uuid: Identifier
+    public let identifier: Identifier
 
     weak var core: CBService?
     weak var peripheral: Peripheral?
@@ -185,7 +185,7 @@ public class ShadowService {
     var includedServices: [Identifier: Service]?
 
     init(core: CBService, peripheral: Peripheral) {
-        self.uuid = Identifier(uuid: core.uuid)
+        self.identifier = Identifier(uuid: core.uuid)
         self.core = core
         self.peripheral = peripheral
     }

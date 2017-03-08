@@ -122,7 +122,7 @@ public class CentralManager: NSObject {
             peripheral = DefaultPeripheral(shadow: shadow)
         }
         peripheral.shadow.peripheral = peripheral
-        self.peripherals[peripheral.uuid] = peripheral
+        self.peripherals[peripheral.identifier] = peripheral
         return peripheral
     }
 
@@ -137,7 +137,7 @@ public class CentralManager: NSObject {
             peripheral = DefaultPeripheral(shadow: shadow)
         }
         peripheral.shadow.peripheral = peripheral
-        self.peripherals[peripheral.uuid] = peripheral
+        self.peripherals[peripheral.identifier] = peripheral
         return peripheral
     }
 }

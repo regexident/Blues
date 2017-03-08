@@ -16,7 +16,7 @@ import Result
 public class ShadowPeripheral: NSObject {
 
     /// The Bluetooth-specific identifier of the service.
-    public let uuid: Identifier
+    public let identifier: Identifier
 
     /// The Bluetooth-specific identifier of the service.
     public var name: String? {
@@ -30,7 +30,7 @@ public class ShadowPeripheral: NSObject {
     weak var centralManager: CentralManager?
 
     init(core: CBPeripheral, centralManager: CentralManager) {
-        self.uuid = Identifier(uuid: core.identifier)
+        self.identifier = Identifier(uuid: core.identifier)
         self.core = core
         self.centralManager = centralManager
         super.init()
@@ -215,7 +215,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                         print("Error: \(error)")
                     }
                 }
-                wrapper.shadow.services?[shadowService.uuid] = service
+                wrapper.shadow.services?[shadowService.identifier] = service
                 return service
             }
             wrapper.didModify(services: services, ofPeripheral: wrapper)
@@ -266,7 +266,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     }
                 }
                 discoveredServices.append(service)
-                services[service.uuid] = service
+                services[service.identifier] = service
             }
             wrapper.shadow.services = services
             wrapper.didDiscover(services: .ok(discoveredServices), forPeripheral: wrapper)
@@ -303,7 +303,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     }
                 }
                 discoveredServices.append(service)
-                services[service.uuid] = service
+                services[service.identifier] = service
             }
             wrapper.shadow.includedServices = services
             wrapper.didDiscover(includedServices: .ok(discoveredServices), forService: wrapper)
@@ -348,7 +348,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     }
                 }
                 discoveredCharacteristics.append(characteristic)
-                characteristics[characteristic.uuid] = characteristic
+                characteristics[characteristic.identifier] = characteristic
             }
             wrapper.shadow.characteristics = characteristics
             wrapper.didDiscover(
@@ -433,7 +433,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                         shadow: shadowDescriptor,
                         forCharacteristic: wrapper
                     )
-                    wrapper.shadow.descriptors[shadowDescriptor.uuid] = descriptor
+                    wrapper.shadow.descriptors[shadowDescriptor.identifier] = descriptor
                     return descriptor
                 }
             }

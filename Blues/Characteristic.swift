@@ -75,8 +75,8 @@ public protocol TypesafeCharacteristic: Characteristic {
 extension Characteristic {
 
     /// The Bluetooth-specific identifier of the characteristic.
-    public var uuid: Identifier {
-        return self.shadow.uuid
+    public var identifier: Identifier {
+        return self.shadow.identifier
     }
 
     public var name: String? {
@@ -238,7 +238,7 @@ extension Characteristic {
     public var description: String {
         let className = type(of: self)
         let attributes = [
-            "uuid = \(self.shadow.uuid)",
+            "identifier = \(self.shadow.identifier)",
             "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
@@ -312,7 +312,7 @@ extension Characteristic {
 public class ShadowCharacteristic {
 
     /// The Bluetooth-specific identifier of the characteristic.
-    public let uuid: Identifier
+    public let identifier: Identifier
 
     weak var core: CBCharacteristic?
     weak var peripheral: Peripheral?
@@ -320,7 +320,7 @@ public class ShadowCharacteristic {
     var descriptors: [Identifier: Descriptor] = [:]
 
     init(core: CBCharacteristic, service: Service) {
-        self.uuid = Identifier(uuid: core.uuid)
+        self.identifier = Identifier(uuid: core.uuid)
         self.core = core
         self.service = service
         self.peripheral = service.peripheral

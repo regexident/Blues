@@ -52,8 +52,8 @@ public protocol Peripheral:
 extension Peripheral {
 
     /// The Bluetooth-specific identifier of the peripheral.
-    public var uuid: Identifier {
-        return self.shadow.uuid
+    public var identifier: Identifier {
+        return self.shadow.identifier
     }
 
     public var name: String? {
@@ -185,7 +185,7 @@ extension Peripheral {
     public var description: String {
         let className = String(describing: type(of: self))
         let attributes = [
-            "uuid = \(self.shadow.uuid)",
+            "identifier = \(self.shadow.identifier)",
             "name = \(self.name ?? "<nil>")",
             "state = \(self.state)",
         ].joined(separator: ", ")

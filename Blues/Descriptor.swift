@@ -43,8 +43,8 @@ public protocol Descriptor: class, DescriptorDelegate, CustomStringConvertible {
 extension Descriptor {
 
     /// The Bluetooth-specific identifier of the descriptor.
-    public var uuid: Identifier {
-        return self.shadow.uuid
+    public var identifier: Identifier {
+        return self.shadow.identifier
     }
 
     /// The descriptor's name.
@@ -122,7 +122,7 @@ extension Descriptor {
     public var description: String {
         let className = type(of: self)
         let attributes = [
-            "uuid = \(self.shadow.uuid)",
+            "identifier = \(self.shadow.identifier)",
             "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
@@ -200,14 +200,14 @@ extension TypesafeDescriptor {
 public class ShadowDescriptor {
 
     /// The Bluetooth-specific identifier of the descriptor.
-    public let uuid: Identifier
+    public let identifier: Identifier
 
     weak var core: CBDescriptor?
     weak var peripheral: Peripheral?
     weak var characteristic: Characteristic?
 
     init(core: CBDescriptor, characteristic: Characteristic) {
-        self.uuid = Identifier(uuid: core.uuid)
+        self.identifier = Identifier(uuid: core.uuid)
         self.core = core
         self.characteristic = characteristic
         self.peripheral = characteristic.peripheral
