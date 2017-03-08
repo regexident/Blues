@@ -195,20 +195,22 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            // nothing for now
-        } else if central.state == .poweredOff {
-            let connectedPeripherals = self.peripherals.values.filter {
-                $0.state != .disconnected
+        self.queue.async {
+            if central.state == .poweredOn {
+                // nothing for now
+            } else if central.state == .poweredOff {
+                let connectedPeripherals = self.peripherals.values.filter {
+                    $0.state != .disconnected
+                }
+                for peripheral in connectedPeripherals {
+                    peripheral.didDisconnect(peripheral: peripheral, error: nil)
+                }
             }
-            for peripheral in connectedPeripherals {
-                peripheral.didDisconnect(peripheral: peripheral, error: nil)
-            }
-        }
 
-        if #available (iOS 10.0, iOSApplicationExtension 10.0, *) {
-            let state = CentralManagerState(from: central.state)
-            self.delegate?.didUpdate(state: state, ofManager: self)
+            if #available (iOS 10.0, iOSApplicationExtension 10.0, *) {
+                let state = CentralManagerState(from: central.state)
+                self.delegate?.didUpdate(state: state, ofManager: self)
+            }
         }
     }
 
