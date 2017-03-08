@@ -47,7 +47,7 @@ public class CentralManager: NSObject {
         super.init()
         self.inner = CBCentralManager(
             delegate: self,
-            queue: DispatchQueue.global(qos: .background),
+            queue: DispatchQueue.main, // global(qos: .background),
             options: options?.dictionary
         )
     }
