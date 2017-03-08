@@ -35,11 +35,12 @@ public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomString
     /// The supporting "shadow" service that does the heavy lifting.
     var shadow: ShadowService { get }
 
-    /// Whether the service should discover characteristics automatically
+    /// Which characteristics the service should discover automatically.
+    /// Return `nil` to discover all available characteristics.
     ///
     /// - Note:
     ///   Default implementation returns `true`
-    var shouldDiscoverCharacteristicsAutomatically: Bool { get }
+    var automaticallyDiscoveredCharacteristics: [Identifier]? { get }
 
     /// Initializes a `Service` as a shim for a provided shadow service.
     ///
@@ -59,8 +60,8 @@ extension Service {
         return nil
     }
 
-    public var shouldDiscoverCharacteristicsAutomatically: Bool {
-        return false
+    public var automaticallyDiscoveredCharacteristics: [Identifier]? {
+        return nil
     }
 
     /// `.ok(isPrimary)` with a boolean value indicating whether the type

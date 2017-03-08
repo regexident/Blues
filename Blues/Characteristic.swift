@@ -84,7 +84,7 @@ extension Characteristic {
     }
 
     public var shouldDiscoverDescriptorsAutomatically: Bool {
-        return false
+        return true
     }
 
     public var shouldSubscribeToNotificationsAutomatically: Bool {

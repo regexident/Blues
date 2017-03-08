@@ -210,10 +210,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let services = shadowService.map { shadowService -> Service in
                 let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
-                if service.shouldDiscoverCharacteristicsAutomatically {
-                    if case let .err(error) = service.discover(characteristics: nil) {
-                        print("Error: \(error)")
-                    }
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
                 }
                 wrapper.shadow.services?[shadowService.identifier] = service
                 return service
@@ -260,10 +259,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: wrapper)
                 let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
-                if service.shouldDiscoverCharacteristicsAutomatically {
-                    if case let .err(error) = service.discover(characteristics: nil) {
-                        print("Error: \(error)")
-                    }
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
                 }
                 discoveredServices.append(service)
                 services[service.identifier] = service
@@ -297,10 +295,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: peripheral)
                 let service = peripheral.service(shadow: shadowService, forPeripheral: peripheral)
-                if service.shouldDiscoverCharacteristicsAutomatically {
-                    if case let .err(error) = service.discover(characteristics: nil) {
-                        print("Error: \(error)")
-                    }
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
                 }
                 discoveredServices.append(service)
                 services[service.identifier] = service

@@ -36,11 +36,12 @@ public protocol Peripheral:
     /// The supporting "shadow" peripheral that does the heavy lifting.
     var shadow: ShadowPeripheral { get }
 
-    /// Whether the peripheral should discover services automatically
+    /// Which services the peripheral should discover automatically.
+    /// Return `nil` to discover all available services.
     ///
     /// - Note:
     ///   Default implementation returns `true`
-    var shouldDiscoverServicesAutomatically: Bool { get }
+    var automaticallyDiscoveredServices: [Identifier]? { get }
 
     /// Initializes a `Peripheral` as a shim for a provided shadow service.
     ///
@@ -60,8 +61,8 @@ extension Peripheral {
         return self.core.name
     }
 
-    public var shouldDiscoverServicesAutomatically: Bool {
-        return false
+    public var automaticallyDiscoveredServices: [Identifier]? {
+        return nil
     }
 
     /// The state of the peripheral

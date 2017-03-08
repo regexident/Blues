@@ -267,10 +267,9 @@ extension CentralManager: CBCentralManagerDelegate {
                 return
             }
             peripheral.shadow.attach()
-            if peripheral.shouldDiscoverServicesAutomatically {
-                if case let .err(error) = peripheral.discover(services: nil) {
-                    print("Error: \(error)")
-                }
+            let services = peripheral.automaticallyDiscoveredServices
+            if case let .err(error) = peripheral.discover(services: services) {
+                print("Error: \(error)")
             }
             peripheral.didConnect(peripheral: peripheral)
         }
