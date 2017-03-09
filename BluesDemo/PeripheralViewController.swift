@@ -78,11 +78,11 @@ class PeripheralViewController: UITableViewController {
     }
 
     func title(for peripheral: Peripheral) -> String {
-        return peripheral.name ?? "UUID: \(peripheral.uuid.string)"
+        return peripheral.name ?? "UUID: \(peripheral.identifier.string)"
     }
 
     func title(for characteristic: Characteristic) -> String {
-        return characteristic.name ?? "UUID: \(characteristic.uuid.string)"
+        return characteristic.name ?? "UUID: \(characteristic.identifier.string)"
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -91,7 +91,7 @@ class PeripheralViewController: UITableViewController {
                 return
             }
             let service = self.sortedServices[indexPath.section]
-            let characteristics = self.sortedCharacteristicsByService[service.uuid]!
+            let characteristics = self.sortedCharacteristicsByService[service.identifier]!
             let characteristic = characteristics[indexPath.row]
 
             let controller = segue.destination as! CharacteristicViewController
@@ -111,12 +111,12 @@ extension PeripheralViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let service = self.sortedServices[section]
-        return ServiceNames.nameOf(service: service.uuid) ?? service.name ?? service.uuid.string
+        return ServiceNames.nameOf(service: service.identifier) ?? service.name ?? service.identifier.string
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let service = self.sortedServices[section]
-        let characteristics = self.sortedCharacteristicsByService[service.uuid] ?? []
+        let characteristics = self.sortedCharacteristicsByService[service.identifier] ?? []
         return characteristics.count
     }
 
@@ -124,7 +124,7 @@ extension PeripheralViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CharacteristicCell", for: indexPath)
 
         let service = self.sortedServices[indexPath.section]
-        let characteristics = self.sortedCharacteristicsByService[service.uuid]!
+        let characteristics = self.sortedCharacteristicsByService[service.identifier]!
         let characteristic = characteristics[indexPath.row]
 
         if case let .ok(data) = characteristic.data {
@@ -183,7 +183,7 @@ extension PeripheralViewController: PeripheralDelegate {
         }
         self.queue.async {
             self.sortedServices = services.sorted {
-                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
+                ($0.name ?? $0.identifier.string) < ($1.name ?? $1.identifier.string)
             }
             for service in services {
                 let _ = service.discover(characteristics: nil)
@@ -208,7 +208,7 @@ extension PeripheralViewController: ServiceDelegate {
             return
         }
         self.queue.async {
-            self.sortedCharacteristicsByService[service.uuid] = characteristics
+            self.sortedCharacteristicsByService[service.identifier] = characteristics
             for characteristic in characteristics {
                 let _ = characteristic.discoverDescriptors()
                 if let characteristic = characteristic as? DelegatedCharacteristic {
@@ -229,9 +229,9 @@ extension PeripheralViewController: CharacteristicDelegate {
     func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
         self.queue.async {
             let service = characteristic.service!
-            let sortedCharacteristics = self.sortedCharacteristicsByService[service.uuid]!
-            let section = self.sortedServices.index(where: { $0.uuid == service.uuid })!
-            let row = sortedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
+            let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
+            let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
+            let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
                 self.tableView.beginUpdates()
@@ -244,9 +244,9 @@ extension PeripheralViewController: CharacteristicDelegate {
     func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
         self.queue.async {
             let service = characteristic.service!
-            let sortedCharacteristics = self.sortedCharacteristicsByService[service.uuid]!
-            let section = self.sortedServices.index(where: { $0.uuid == service.uuid })!
-            let row = sortedCharacteristics.index(where: { $0.uuid == characteristic.uuid })!
+            let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
+            let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
+            let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
                 self.tableView.beginUpdates()

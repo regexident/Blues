@@ -86,7 +86,7 @@ extension CentralManagerViewController {
         let peripheral = peripherals[indexPath.row]
 
         cell.textLabel!.text = peripheral.name ?? "Unnamed"
-        cell.detailTextLabel!.text = peripheral.uuid.string
+        cell.detailTextLabel!.text = peripheral.identifier.string
 
         return cell
     }
@@ -115,7 +115,7 @@ extension CentralManagerViewController: CentralManagerDelegate {
         self.queue.async {
             self.sortedPeripherals.append(peripheral)
             self.sortedPeripherals.sort {
-                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
+                ($0.name ?? $0.identifier.string) < ($1.name ?? $1.identifier.string)
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

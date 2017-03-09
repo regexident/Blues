@@ -93,7 +93,7 @@ class CharacteristicViewController: UITableViewController {
     func update() {
         if let characteristic = self.characteristic {
             DispatchQueue.main.async {
-                self.title = characteristic.name ?? "UUID: \(characteristic.uuid.string)"
+                self.title = characteristic.name ?? "UUID: \(characteristic.identifier.string)"
                 self.tableView.reloadData()
             }
         }
@@ -185,7 +185,7 @@ class CharacteristicViewController: UITableViewController {
         default:
             cell.textLabel!.text = any.debugDescription
         }
-        cell.detailTextLabel!.text = descriptor.name ?? "UUID: \(descriptor.uuid.string)"
+        cell.detailTextLabel!.text = descriptor.name ?? "UUID: \(descriptor.identifier.string)"
 
         return cell
     }
@@ -270,7 +270,7 @@ extension CharacteristicViewController: CharacteristicDelegate {
         }
         self.queue.async {
             self.sortedDescriptors = descriptors.sorted {
-                ($0.name ?? $0.uuid.string) < ($1.name ?? $1.uuid.string)
+                ($0.name ?? $0.identifier.string) < ($1.name ?? $1.identifier.string)
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -284,7 +284,7 @@ extension CharacteristicViewController: DescriptorDelegate {
     func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue
-            let row = self.sortedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
+            let row = self.sortedDescriptors.index { $0.identifier == descriptor.identifier }!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
                 self.tableView.beginUpdates()
@@ -297,7 +297,7 @@ extension CharacteristicViewController: DescriptorDelegate {
     func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue
-            let row = self.sortedDescriptors.index(where: { $0.uuid == descriptor.uuid })!
+            let row = self.sortedDescriptors.index { $0.identifier == descriptor.identifier }!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
                 self.tableView.beginUpdates()
