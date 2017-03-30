@@ -80,9 +80,9 @@ public struct ConnectionOptions {
 extension ConnectionOptions: CustomStringConvertible {
     public var description: String {
         let properties = [
-            "notifyOnConnection: \(self.notifyOnConnection)",
-            "notifyOnDisconnection: \(self.notifyOnDisconnection)",
-            "notifyOnNotification: \(self.notifyOnNotification)",
+            "notifyOnConnection: \(String(describing: self.notifyOnConnection))",
+            "notifyOnDisconnection: \(String(describing: self.notifyOnDisconnection))",
+            "notifyOnNotification: \(String(describing: self.notifyOnNotification))",
         ].joined(separator: ", ")
         return "<ConnectionOptions \(properties)>"
     }

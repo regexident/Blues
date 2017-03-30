@@ -145,14 +145,14 @@ extension Advertisement : CustomStringConvertible {
     public var description: String {
         let className = String(describing: type(of: self))
         let properties = [
-            "localName: \(self.localName)",
-            "manufacturerData: \(self.manufacturerData)",
-            "serviceData: \(self.serviceData)",
-            "serviceUUIDs: \(self.serviceUUIDs)",
-            "overflowServiceUUIDs: \(self.overflowServiceUUIDs)",
-            "solicitedServiceUUIDs: \(self.solicitedServiceUUIDs)",
-            "txPowerLevel: \(self.txPowerLevel)",
-            "isConnectable: \(self.isConnectable)",
+            "localName: \(String(describing: self.localName))",
+            "manufacturerData: \(String(describing: self.manufacturerData))",
+            "serviceData: \(String(describing: self.serviceData))",
+            "serviceUUIDs: \(String(describing: self.serviceUUIDs))",
+            "overflowServiceUUIDs: \(String(describing: self.overflowServiceUUIDs))",
+            "solicitedServiceUUIDs: \(String(describing: self.solicitedServiceUUIDs))",
+            "txPowerLevel: \(String(describing: self.txPowerLevel))",
+            "isConnectable: \(String(describing: self.isConnectable))",
         ].joined(separator: ", ")
         return "<\(className) \(properties)>"
     }

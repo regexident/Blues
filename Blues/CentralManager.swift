@@ -246,7 +246,7 @@ extension CentralManager: CBCentralManagerDelegate {
             self.delegate?.didDiscover(
                 peripheral: peripheral,
                 advertisement: advertisement,
-                rssi: RSSI as Int,
+                rssi: RSSI as! Int,
                 withManager: self
             )
         }

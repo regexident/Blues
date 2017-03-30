@@ -86,8 +86,8 @@ public struct CentralManagerOptions {
 extension CentralManagerOptions: CustomStringConvertible {
     public var description: String {
         let properties = [
-            "restoreIdentifier: \(self.restoreIdentifier)",
-            "showPowerAlert: \(self.showPowerAlert)",
+            "restoreIdentifier: \(String(describing: self.restoreIdentifier))",
+            "showPowerAlert: \(String(describing: self.showPowerAlert))",
         ].joined(separator: ", ")
         return "<CentralManagerOptions \(properties)>"
     }

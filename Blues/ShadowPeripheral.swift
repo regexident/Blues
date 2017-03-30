@@ -233,7 +233,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
             }
-            let rssi = (rssi != 0) ? rssi as Int : nil
+            let rssi = (rssi != 0) ? rssi as? Int : nil
             let result = Result(success: rssi, failure: error)
             wrapper.didRead(rssi: result, ofPeripheral: wrapper)
         }
@@ -475,7 +475,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
 
 extension ShadowPeripheral: Responder {
     var nextResponder: Responder? {
-        guard let centralManager = self.centralManager as? Responder else {
+        guard let centralManager = self.centralManager else {
             fatalError("Expected object conforming to `Responder` protocol.")
         }
         return .some(centralManager)
