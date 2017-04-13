@@ -58,7 +58,7 @@ public protocol Characteristic:
 
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
-public protocol TypesafeCharacteristic: Characteristic {
+public protocol CharacteristicValueTransformer {
 
     /// The characteristic's value type.
     associatedtype Value
@@ -70,6 +70,12 @@ public protocol TypesafeCharacteristic: Characteristic {
     /// The transformation logic for encoding the characteristic's
     /// type-safe value into a data representation
     func transform(value: Value) -> Result<Data, TypesafeCharacteristicError>
+}
+
+public protocol TypesafeCharacteristic: Characteristic {
+    associatedtype Transformer: CharacteristicValueTransformer
+
+    var transformer: Transformer { get }
 }
 
 extension Characteristic {
@@ -253,12 +259,12 @@ extension TypesafeCharacteristic {
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Value?, TypesafeCharacteristicError> {
+    public var value: Result<Transformer.Value?, TypesafeCharacteristicError> {
         return self.data.mapErr(TypesafeCharacteristicError.peripheral).andThen { data in
             guard let data = data else {
                 return .ok(nil)
             }
-            return self.transform(data: data).map { .some($0) }
+            return self.transformer.transform(data: data).map { .some($0) }
         }
     }
 
@@ -277,8 +283,8 @@ extension TypesafeCharacteristic {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Value, type: WriteType) -> Result<(), TypesafeCharacteristicError> {
-        return self.transform(value: value).andThen { data in
+    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypesafeCharacteristicError> {
+        return self.transformer.transform(value: value).andThen { data in
             let answer = self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
                 data: data,
                 characteristic: self,
@@ -292,8 +298,8 @@ extension TypesafeCharacteristic {
         }
     }
 
-    public func transform(data: Result<Data, Error>) -> Result<Value, TypesafeCharacteristicError> {
-        return data.mapErr { .peripheral(.other($0)) }.andThen { self.transform(data: $0) }
+    public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypesafeCharacteristicError> {
+        return data.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(data: $0) }
     }
 }
 

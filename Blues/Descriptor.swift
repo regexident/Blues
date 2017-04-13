@@ -130,7 +130,7 @@ extension Descriptor {
 }
 
 /// A descriptor of a peripheral’s characteristic, providing further information about its value.
-public protocol TypesafeDescriptor: Descriptor {
+public protocol DescriptorValueTransformer {
 
     /// The descriptor's value type.
     associatedtype Value
@@ -144,6 +144,12 @@ public protocol TypesafeDescriptor: Descriptor {
     func transform(value: Value) -> Result<Data, TypesafeDescriptorError>
 }
 
+public protocol TypesafeDescriptor: Descriptor {
+    associatedtype Transformer: DescriptorValueTransformer
+
+    var transformer: Transformer { get }
+}
+
 extension TypesafeDescriptor {
     /// A type-safe value representation of the descriptor.
     ///
@@ -152,12 +158,12 @@ extension TypesafeDescriptor {
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Value?, TypesafeDescriptorError> {
+    public var value: Result<Transformer.Value?, TypesafeDescriptorError> {
         return self.any.mapErr(TypesafeDescriptorError.peripheral).andThen { any in
             guard let any = any else {
                 return .ok(nil)
             }
-            return self.transform(any: any).map { .some($0) }
+            return self.transformer.transform(any: any).map { .some($0) }
         }
     }
 
@@ -176,8 +182,8 @@ extension TypesafeDescriptor {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Value, type: WriteType) -> Result<(), TypesafeDescriptorError> {
-        return self.transform(value: value).andThen { data in
+    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypesafeDescriptorError> {
+        return self.transformer.transform(value: value).andThen { data in
             let answer = self.shadow.tryToHandle(WriteValueForDescriptorMessage(
                 data: data,
                 descriptor: self
@@ -190,8 +196,8 @@ extension TypesafeDescriptor {
         }
     }
 
-    public func transform(any: Result<Any, Error>) -> Result<Value, TypesafeDescriptorError> {
-        return any.mapErr { .peripheral(.other($0)) }.andThen { self.transform(any: $0) }
+    public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypesafeDescriptorError> {
+        return any.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(any: $0) }
     }
 }
 
