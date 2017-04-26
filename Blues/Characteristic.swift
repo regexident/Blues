@@ -115,6 +115,11 @@ extension Characteristic {
         return self.shadow.descriptors
     }
 
+    /// The descriptor associated with a given type if it has previously been discovered in this characteristic.
+    public func descriptor<D>(ofType type: D.Type) -> D? where D: Descriptor & TypeIdentifiable {
+        return self.descriptors.flatMap { $0[type.identifier] } as? D
+    }
+
     /// The properties of the characteristic.
     public var properties: Result<CharacteristicProperties, PeripheralError> {
         return self.core.map {

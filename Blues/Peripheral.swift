@@ -81,6 +81,11 @@ extension Peripheral {
         return self.shadow.services
     }
 
+    /// The service associated with a given type if it has previously been discovered in this peripheral.
+    public func service<S>(ofType type: S.Type) -> S? where S: Service & TypeIdentifiable {
+        return self.services.flatMap { $0[type.identifier] } as? S
+    }
+
     /// `.ok(connectionOptions) with options customizing the behavior of the
     /// connection iff successful, `.err(error)` otherwise.
     public var connectionOptions: Result<ConnectionOptions, PeripheralError> {

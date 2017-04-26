@@ -9,6 +9,10 @@
 import Foundation
 import CoreBluetooth
 
+public protocol TypeIdentifiable {
+    static var identifier: Identifier { get }
+}
+
 /// Thin wrapper around `CBUUID`.
 public struct Identifier {
     let core: CBUUID

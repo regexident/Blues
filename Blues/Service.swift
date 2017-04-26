@@ -85,6 +85,11 @@ extension Service {
         return self.shadow.characteristics
     }
 
+    /// The characteristic associated with a given type if it has previously been discovered in this service.
+    public func characteristic<C>(ofType type: C.Type) -> C? where C: Characteristic & TypeIdentifiable {
+        return self.characteristics.flatMap { $0[type.identifier] } as? C
+    }
+
     /// The peripheral to which this service belongs.
     public var peripheral: Peripheral? {
         return self.shadow.peripheral
