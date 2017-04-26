@@ -107,7 +107,7 @@ extension Service {
     ///   of the service are returned; setting the parameter to `nil` is considerably
     ///   slower and is not recommended. When the peripheral discovers one or more
     ///   included services of the specified service, it calls the
-    ///   `didDiscover(includedServices:forService:)` method of
+    ///   `didDiscover(includedServices:for:)` method of
     ///   its delegate object. If the included services of a service are successfully
     ///   discovered, you can access them through the service's includedServices property.
     ///
@@ -134,7 +134,7 @@ extension Service {
     ///   is `nil`, all the characteristics of the service are returned;
     ///   setting the parameter to `nil` is considerably slower and is not
     ///   recommended. When the peripheral discovers one or more characteristics
-    ///   of the specified service, it calls the `didDiscover(characteristics:forService:)`
+    ///   of the specified service, it calls the `didDiscover(characteristics:for:)`
     ///   method of its delegate object. If the characteristics of a service are
     ///   successfully discovered, you can access them through the service’s
     ///   characteristics property.
@@ -166,7 +166,7 @@ extension Service {
 
     func characteristic(
         shadow: ShadowCharacteristic,
-        forService service: Service
+        for service: Service
     ) -> Characteristic {
         return DefaultCharacteristic(shadow: shadow)
     }

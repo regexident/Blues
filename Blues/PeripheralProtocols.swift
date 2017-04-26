@@ -17,47 +17,47 @@ public protocol PeripheralDelegate: class {
     ///
     /// - Parameters:
     ///   - peripheral: The peripheral that will be connected to the system.
-    func willConnect(peripheral: Peripheral)
+    func willConnect(to peripheral: Peripheral)
 
     /// Invoked when a connection is successfully created with a peripheral.
     ///
     /// - Parameters:
     ///   - peripheral: The peripheral that has been connected to the system.
-    func didConnect(peripheral: Peripheral)
+    func didConnect(to peripheral: Peripheral)
 
     /// Invoked when a connection is about to be created with a peripheral.
     ///
     /// - Parameters:
     ///   - peripheral: The peripheral that will be connected to the system.
-    func willDisconnect(peripheral: Peripheral)
+    func willDisconnect(from peripheral: Peripheral)
 
     /// Invoked when an existing connection with a peripheral is torn down.
     ///
     /// - Parameters:
     ///   - peripheral: The peripheral that has been disconnected.
     ///   - error:      The cause of the failure.
-    func didDisconnect(peripheral: Peripheral, error: Swift.Error?)
+    func didDisconnect(from peripheral: Peripheral, error: Swift.Error?)
 
     /// Invoked when the central manager fails to create a connection with a peripheral.
     ///
     /// - Parameters:
     ///   - peripheral: The peripheral that failed to connect.
     ///   - error:      The cause of the failure.
-    func didFailToConnect(peripheral: Peripheral, error: Swift.Error?)
+    func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?)
 
     /// Invoked when a peripheral’s name changes.
     ///
     /// - Parameters:
     ///   - name: The peripheral's new name.
     ///   - peripheral: The peripheral providing this information.
-    func didUpdate(name: String?, ofPeripheral peripheral: Peripheral)
+    func didUpdate(name: String?, of peripheral: Peripheral)
 
     /// Invoked when a peripheral’s services have changed.
     ///
     /// - Parameters:
     ///   - services: A list of services that have been invalidated.
     ///   - peripheral: The peripheral providing this information.
-    func didModify(services: [Service], ofPeripheral peripheral: Peripheral)
+    func didModify(services: [Service], of peripheral: Peripheral)
 
     /// Invoked after you call readRSSI() to retrieve the value of the peripheral’s
     /// current RSSI while it is connected to the central manager.
@@ -65,8 +65,8 @@ public protocol PeripheralDelegate: class {
     /// - Parameters:
     ///   - rssi: The RSSI, in decibels, of the peripheral.
     ///   - peripheral: The peripheral providing this information.
-    func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral)
-    func didDiscover(services: Result<[Service], Error>, forPeripheral peripheral: Peripheral)
+    func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral)
+    func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral)
 }
 
 /// A `Peripheral`'s data source.
@@ -81,7 +81,7 @@ public protocol PeripheralDataSource: class {
     ///   - shadow: The descriptor's shadow descriptor.
     ///
     /// - Returns: A new descriptor object.
-    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service
+    func service(shadow: ShadowService, for peripheral: Peripheral) -> Service
 }
 
 /// A `Peripheral` that supports delegation.
@@ -97,43 +97,43 @@ public protocol DelegatedPeripheral: Peripheral {
 
 extension DelegatedPeripheral {
 
-    public func willConnect(peripheral: Peripheral) {
-        self.delegate?.willConnect(peripheral: peripheral)
+    public func willConnect(to peripheral: Peripheral) {
+        self.delegate?.willConnect(to: peripheral)
     }
 
-    public func didConnect(peripheral: Peripheral) {
-        self.delegate?.didConnect(peripheral: peripheral)
+    public func didConnect(to peripheral: Peripheral) {
+        self.delegate?.didConnect(to: peripheral)
     }
 
-    public func willDisconnect(peripheral: Peripheral) {
-        self.delegate?.willDisconnect(peripheral: peripheral)
+    public func willDisconnect(from peripheral: Peripheral) {
+        self.delegate?.willDisconnect(from: peripheral)
     }
 
-    public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didDisconnect(peripheral: peripheral, error: error)
+    public func didDisconnect(from peripheral: Peripheral, error: Swift.Error?) {
+        self.delegate?.didDisconnect(from: peripheral, error: error)
     }
 
-    public func didFailToConnect(peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didFailToConnect(peripheral: peripheral, error: error)
+    public func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
+        self.delegate?.didFailToConnect(to: peripheral, error: error)
     }
 
-    public func didUpdate(name: String?, ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didUpdate(name: name, ofPeripheral: peripheral)
+    public func didUpdate(name: String?, of peripheral: Peripheral) {
+        self.delegate?.didUpdate(name: name, of: peripheral)
     }
 
-    public func didModify(services: [Service], ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didModify(services: services, ofPeripheral: peripheral)
+    public func didModify(services: [Service], of peripheral: Peripheral) {
+        self.delegate?.didModify(services: services, of: peripheral)
     }
 
-    public func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral) {
-        self.delegate?.didRead(rssi: rssi, ofPeripheral: peripheral)
+    public func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral) {
+        self.delegate?.didRead(rssi: rssi, of: peripheral)
     }
 
     public func didDiscover(
         services: Result<[Service], Error>,
-        forPeripheral peripheral: Peripheral
+        for peripheral: Peripheral
     ) {
-        self.delegate?.didDiscover(services: services, forPeripheral: peripheral)
+        self.delegate?.didDiscover(services: services, for: peripheral)
     }
 }
 
@@ -149,9 +149,9 @@ public protocol DataSourcedPeripheral: Peripheral {
 }
 
 extension DataSourcedPeripheral {
-    public func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+    public func service(shadow: ShadowService, for peripheral: Peripheral) -> Service {
         if let dataSource = self.dataSource {
-            return dataSource.service(shadow: shadow, forPeripheral: peripheral)
+            return dataSource.service(shadow: shadow, for: peripheral)
         } else {
             return DefaultService(shadow: shadow)
         }

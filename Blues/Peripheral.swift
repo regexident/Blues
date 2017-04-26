@@ -155,7 +155,7 @@ extension Peripheral {
     ///   If the `services` parameter is `nil`, all the available services of
     ///   the peripheral are returned; setting the parameter to `nil` is
     ///   considerably slower and is not recommended. When the peripheral discovers
-    ///   one or more services, it calls the `didDiscover(services:forPeripheral:)`
+    ///   one or more services, it calls the `didDiscover(services:for:)`
     ///   method of its delegate object.
     ///
     /// - Parameters:
@@ -175,7 +175,7 @@ extension Peripheral {
     /// - Note:
     ///   In iOS and tvOS, when you call this method to retrieve the RSSI of the
     ///   peripheral while it is currently connected to the central manager,
-    ///   the peripheral calls the `didRead(rssi:ofPeripheral:)` method of its
+    ///   the peripheral calls the `didRead(rssi:of:)` method of its
     ///   delegate object, which includes the RSSI value as a parameter.
     public func readRSSI() -> Result<(), PeripheralError> {
         return self.shadow.tryToHandle(ReadRSSIMessage(
@@ -196,7 +196,7 @@ extension Peripheral {
 
 extension Peripheral {
 
-    func service(shadow: ShadowService, forPeripheral peripheral: Peripheral) -> Service {
+    func service(shadow: ShadowService, for peripheral: Peripheral) -> Service {
         return DefaultService(shadow: shadow)
     }
 }

@@ -22,7 +22,7 @@ public protocol ServiceDelegate: class {
     ///   - includedServices: `.ok(includedServices)` with the included services that
     ///     were discovered, iff successful, otherwise `.ok(error)`.
     ///   - service: The service that the included services belong to.
-    func didDiscover(includedServices: Result<[Service], Error>, forService service: Service)
+    func didDiscover(includedServices: Result<[Service], Error>, for service: Service)
 
     /// Invoked when you discover the characteristics of a specified service.
     ///
@@ -37,7 +37,7 @@ public protocol ServiceDelegate: class {
     ///   - characteristics: `.ok(characteristics)` with the characteristics that
     ///     were discovered, iff successful, otherwise `.ok(error)`.
     ///   - service: The service that the characteristics belong to.
-    func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service)
+    func didDiscover(characteristics: Result<[Characteristic], Error>, for service: Service)
 }
 
 /// A `Service`'s data source.
@@ -52,7 +52,7 @@ public protocol ServiceDataSource: class {
     ///   - shadow: The descriptor's shadow descriptor.
     ///
     /// - Returns: A new descriptor object.
-    func characteristic(shadow: ShadowCharacteristic, forService service: Service) -> Characteristic
+    func characteristic(shadow: ShadowCharacteristic, for service: Service) -> Characteristic
 }
 
 /// A `Service` that supports delegation.
@@ -70,16 +70,16 @@ extension DelegatedService {
 
     public func didDiscover(
         includedServices: Result<[Service], Error>,
-        forService service: Service
+        for service: Service
     ) {
-        self.delegate?.didDiscover(includedServices: includedServices, forService: service)
+        self.delegate?.didDiscover(includedServices: includedServices, for: service)
     }
 
     public func didDiscover(
         characteristics: Result<[Characteristic], Error>,
-        forService service: Service
+        for service: Service
     ) {
-        self.delegate?.didDiscover(characteristics: characteristics, forService: service)
+        self.delegate?.didDiscover(characteristics: characteristics, for: service)
     }
 }
 
@@ -97,10 +97,10 @@ public protocol DataSourcedService: Service {
 extension DataSourcedService {
     public func characteristic(
         shadow: ShadowCharacteristic,
-        forService service: Service
+        for service: Service
     ) -> Characteristic {
         if let dataSource = self.dataSource {
-            return dataSource.characteristic(shadow: shadow, forService: service)
+            return dataSource.characteristic(shadow: shadow, for: service)
         } else {
             return DefaultCharacteristic(shadow: shadow)
         }

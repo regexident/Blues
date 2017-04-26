@@ -148,7 +148,7 @@ extension Characteristic {
     ///
     /// - Note:
     ///   When the characteristic discovers one or more descriptors, it calls the
-    ///   `didDiscover(descriptors:forCharacteristic:)` method of its delegate object.
+    ///   `didDiscover(descriptors:for:)` method of its delegate object.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discoverDescriptors() -> Result<(), PeripheralError> {
@@ -161,7 +161,7 @@ extension Characteristic {
     ///
     /// - Note:
     ///   When you call this method to read the value of a characteristic,
-    ///   the peripheral calls the `didUpdate(data:, forCharacteristic:)` method
+    ///   the peripheral calls the `didUpdate(data:, for:)` method
     ///   of its delegate object.
     ///
     /// - Important:
@@ -181,9 +181,9 @@ extension Characteristic {
     ///
     /// - Note:
     ///   When you call this method to write the value of a characteristic,
-    ///   it calls the `didWrite(data:, forCharacteristic:)` method of its
+    ///   it calls the `didWrite(data:, for:)` method of its
     ///   delegate object only if you specified the write type as withResponse.
-    ///   The response you receive through the `didWrite(data:, forCharacteristic:)`
+    ///   The response you receive through the `didWrite(data:, for:)`
     ///   delegate method indicates whether the write was successful;
     ///   if the write failed, it details the cause of the failure in an error.
     ///   If you specify the write type as `.withoutResponse`,
@@ -215,9 +215,9 @@ extension Characteristic {
     ///
     /// - Note:
     ///   When you enable notifications for the characteristic’s value,
-    ///   the peripheral calls the `func didUpdate(notificationState:forCharacteristic:)`
+    ///   the peripheral calls the `func didUpdate(notificationState:for:)`
     ///   method of its delegate object to indicate whether or not the action succeeded.
-    ///   If successful, the peripheral then calls the `didUpdate(data:, forCharacteristic:)`
+    ///   If successful, the peripheral then calls the `didUpdate(data:, for:)`
     ///   method of its delegate object whenever the characteristic value changes.
     ///   Because it is the peripheral that chooses when to send an update,
     ///   your app should be prepared to handle them as long as notifications
@@ -307,7 +307,7 @@ extension Characteristic {
     
     func descriptor(
         shadow: ShadowDescriptor,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) -> Descriptor {
         return DefaultDescriptor(shadow: shadow)
     }

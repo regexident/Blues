@@ -80,7 +80,7 @@ extension Descriptor {
     ///
     /// - Note:
     ///   When you call this method to read the value of a characteristic
-    ///   descriptor, the descriptor calls the `didUpdate(any:forDescriptor:)`
+    ///   descriptor, the descriptor calls the `didUpdate(any:for:)`
     ///   method of its delegate object with the retrieved value, or an error.
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
@@ -94,7 +94,7 @@ extension Descriptor {
     ///
     /// - Note:
     ///   When you call this method to write the value of a characteristic
-    ///   descriptor, the peripheral calls the `didWrite(any:forDescriptor:)`
+    ///   descriptor, the peripheral calls the `didWrite(any:for:)`
     ///   method of its delegate object. The data passed into the data
     ///   parameter is copied, and you can dispose of it after the method returns.
     ///

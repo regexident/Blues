@@ -239,7 +239,7 @@ extension CharacteristicViewController {
 
 extension CharacteristicViewController: CharacteristicDelegate {
 
-    func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+    func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
             DispatchQueue.main.async {
@@ -250,7 +250,7 @@ extension CharacteristicViewController: CharacteristicDelegate {
         }
     }
 
-    func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+    func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
             DispatchQueue.main.async {
@@ -261,10 +261,10 @@ extension CharacteristicViewController: CharacteristicDelegate {
         }
     }
 
-    func didUpdate(notificationState isNotifying: Result<Bool, Error>, forCharacteristic characteristic: Characteristic) {
+    func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
     }
 
-    func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic) {
+    func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
         guard case let .ok(descriptors) = descriptors else {
             return
         }
@@ -281,7 +281,7 @@ extension CharacteristicViewController: CharacteristicDelegate {
 
 extension CharacteristicViewController: DescriptorDelegate {
 
-    func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
+    func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue
             let row = self.sortedDescriptors.index { $0.identifier == descriptor.identifier }!
@@ -294,7 +294,7 @@ extension CharacteristicViewController: DescriptorDelegate {
         }
     }
 
-    func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
+    func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue
             let row = self.sortedDescriptors.index { $0.identifier == descriptor.identifier }!

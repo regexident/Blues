@@ -148,36 +148,36 @@ extension PeripheralViewController: PeripheralDelegate {
     public func didRestore(peripheral: Peripheral) {
     }
 
-    public func willConnect(peripheral: Peripheral) {
+    public func willConnect(to peripheral: Peripheral) {
     }
 
-    public func didConnect(peripheral: Peripheral) {
+    public func didConnect(to peripheral: Peripheral) {
         if case let .err(error) = peripheral.discover(services: nil) {
             print("Error: \(error)")
         }
     }
 
-    public func willDisconnect(peripheral: Peripheral) {
+    public func willDisconnect(from peripheral: Peripheral) {
     }
 
-    public func didDisconnect(peripheral: Peripheral, error: Swift.Error?) {
+    public func didDisconnect(from peripheral: Peripheral, error: Swift.Error?) {
     }
 
-    public func didFailToConnect(peripheral: Peripheral, error: Swift.Error?) {
+    public func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
         print("Error: \(error)")
     }
 
-    func didUpdate(name: String?, ofPeripheral peripheral: Peripheral) {
+    func didUpdate(name: String?, of peripheral: Peripheral) {
         self.title = self.title(for: peripheral)
     }
 
-    func didModify(services: [Service], ofPeripheral peripheral: Peripheral) {
+    func didModify(services: [Service], of peripheral: Peripheral) {
     }
 
-    func didRead(rssi: Result<Int, Error>, ofPeripheral peripheral: Peripheral) {
+    func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral) {
     }
 
-    func didDiscover(services: Result<[Service], Error>, forPeripheral peripheral: Peripheral) {
+    func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral) {
         guard case let .ok(services) = services else {
             return
         }
@@ -200,10 +200,10 @@ extension PeripheralViewController: PeripheralDelegate {
 
 extension PeripheralViewController: ServiceDelegate {
 
-    func didDiscover(includedServices: Result<[Service], Error>, forService service: Service) {
+    func didDiscover(includedServices: Result<[Service], Error>, for service: Service) {
     }
 
-    func didDiscover(characteristics: Result<[Characteristic], Error>, forService service: Service) {
+    func didDiscover(characteristics: Result<[Characteristic], Error>, for service: Service) {
         guard case let .ok(characteristics) = characteristics else {
             return
         }
@@ -226,7 +226,7 @@ extension PeripheralViewController: ServiceDelegate {
 
 extension PeripheralViewController: CharacteristicDelegate {
 
-    func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+    func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let service = characteristic.service!
             let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
@@ -241,7 +241,7 @@ extension PeripheralViewController: CharacteristicDelegate {
         }
     }
 
-    func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic) {
+    func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let service = characteristic.service!
             let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
@@ -256,9 +256,9 @@ extension PeripheralViewController: CharacteristicDelegate {
         }
     }
 
-    func didUpdate(notificationState isNotifying: Result<Bool, Error>, forCharacteristic characteristic: Characteristic) {
+    func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
     }
     
-    func didDiscover(descriptors: Result<[Descriptor], Error>, forCharacteristic characteristic: Characteristic) {
+    func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
     }
 }

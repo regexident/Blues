@@ -18,14 +18,14 @@ public protocol DescriptorDelegate: class {
     /// - Parameters:
     ///   - any: `.ok(any)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
-    func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor)
+    func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor)
 
     /// Invoked when you write data to a characteristic descriptor’s value.
     ///
     /// - Parameters:
     ///   - any: `.ok(any)` with the written value iff successful, otherwise `.err(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
-    func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor)
+    func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
 }
 
 /// A `Descriptor`'s data source.
@@ -45,12 +45,12 @@ public protocol DelegatedDescriptor: Descriptor {
 }
 
 extension DelegatedDescriptor {
-    public func didUpdate(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        self.delegate?.didUpdate(any: any, forDescriptor: descriptor)
+    public func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
+        self.delegate?.didUpdate(any: any, for: descriptor)
     }
 
-    public func didWrite(any: Result<Any, Error>, forDescriptor descriptor: Descriptor) {
-        self.delegate?.didWrite(any: any, forDescriptor: descriptor)
+    public func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
+        self.delegate?.didWrite(any: any, for: descriptor)
     }
 }
 

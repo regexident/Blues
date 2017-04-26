@@ -151,7 +151,7 @@ extension CentralManager: CentralManagerHandling {
             return .ok(())
         }
         self.queue.async {
-            peripheral.willConnect(peripheral: peripheral)
+            peripheral.willConnect(to: peripheral)
             peripheral.shadow.connectionOptions = options
             let innerPeripheral = peripheral.core
             self.inner.connect(innerPeripheral, options: options?.dictionary)
@@ -164,7 +164,7 @@ extension CentralManager: CentralManagerHandling {
             return .err(.unreachable)
         }
         self.queue.async {
-            peripheral.willDisconnect(peripheral: peripheral)
+            peripheral.willDisconnect(from: peripheral)
             peripheral.shadow.connectionOptions = nil
             let innerPeripheral = peripheral.core
             self.inner.cancelPeripheralConnection(innerPeripheral)
@@ -207,7 +207,7 @@ extension CentralManager: CBCentralManagerDelegate {
                     $0.state != .disconnected
                 }
                 for peripheral in connectedPeripherals {
-                    peripheral.didDisconnect(peripheral: peripheral, error: nil)
+                    peripheral.didDisconnect(from: peripheral, error: nil)
                 }
             }
 
@@ -269,7 +269,7 @@ extension CentralManager: CBCentralManagerDelegate {
             if case let .err(error) = peripheral.discover(services: services) {
                 print("Error: \(error)")
             }
-            peripheral.didConnect(peripheral: peripheral)
+            peripheral.didConnect(to: peripheral)
         }
     }
 
@@ -287,7 +287,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 return
             }
             peripheral.shadow.detach()
-            peripheral.didFailToConnect(peripheral: peripheral, error: error)
+            peripheral.didFailToConnect(to: peripheral, error: error)
         }
     }
 
@@ -305,7 +305,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 return
             }
             peripheral.shadow.detach()
-            peripheral.didDisconnect(peripheral: peripheral, error: error)
+            peripheral.didDisconnect(from: peripheral, error: error)
         }
     }
 

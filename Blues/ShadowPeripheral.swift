@@ -190,7 +190,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(peripheral: peripheral) else {
                 return
             }
-            wrapper.didUpdate(name: peripheral.name, ofPeripheral: wrapper)
+            wrapper.didUpdate(name: peripheral.name, of: wrapper)
         }
     }
 
@@ -209,7 +209,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 ShadowService(core: $0, peripheral: wrapper)
             }
             let services = shadowService.map { shadowService -> Service in
-                let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
+                let service = wrapper.service(shadow: shadowService, for: wrapper)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
                 if case let .err(error) = service.discover(characteristics: characteristics) {
                     print("Error: \(error)")
@@ -217,7 +217,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 wrapper.shadow.services?[shadowService.identifier] = service
                 return service
             }
-            wrapper.didModify(services: services, ofPeripheral: wrapper)
+            wrapper.didModify(services: services, of: wrapper)
         }
     }
 
@@ -235,7 +235,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let rssi = (rssi != 0) ? rssi as? Int : nil
             let result = Result(success: rssi, failure: error)
-            wrapper.didRead(rssi: result, ofPeripheral: wrapper)
+            wrapper.didRead(rssi: result, of: wrapper)
         }
     }
 
@@ -252,13 +252,13 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let result = Result(success: peripheral.services, failure: error)
             guard case let .ok(coreServices) = result else {
-                return wrapper.didDiscover(services: .err(error!), forPeripheral: wrapper)
+                return wrapper.didDiscover(services: .err(error!), for: wrapper)
             }
             var discoveredServices: [Service] = []
             var services: [Identifier: Service] = wrapper.shadow.services ?? [:]
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: wrapper)
-                let service = wrapper.service(shadow: shadowService, forPeripheral: wrapper)
+                let service = wrapper.service(shadow: shadowService, for: wrapper)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
                 if case let .err(error) = service.discover(characteristics: characteristics) {
                     print("Error: \(error)")
@@ -267,7 +267,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 services[service.identifier] = service
             }
             wrapper.shadow.services = services
-            wrapper.didDiscover(services: .ok(discoveredServices), forPeripheral: wrapper)
+            wrapper.didDiscover(services: .ok(discoveredServices), for: wrapper)
         }
     }
 
@@ -288,13 +288,13 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let result = Result(success: service.includedServices, failure: error)
             guard case let .ok(coreServices) = result else {
-                return wrapper.didDiscover(includedServices: .err(error!), forService: wrapper)
+                return wrapper.didDiscover(includedServices: .err(error!), for: wrapper)
             }
             var discoveredServices: [Service] = []
             var services: [Identifier: Service] = wrapper.shadow.includedServices ?? [:]
             for coreService in coreServices {
                 let shadowService = ShadowService(core: coreService, peripheral: peripheral)
-                let service = peripheral.service(shadow: shadowService, forPeripheral: peripheral)
+                let service = peripheral.service(shadow: shadowService, for: peripheral)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
                 if case let .err(error) = service.discover(characteristics: characteristics) {
                     print("Error: \(error)")
@@ -303,7 +303,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 services[service.identifier] = service
             }
             wrapper.shadow.includedServices = services
-            wrapper.didDiscover(includedServices: .ok(discoveredServices), forService: wrapper)
+            wrapper.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
         }
     }
 
@@ -321,7 +321,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             }
             let result = Result(success: service.characteristics, failure: error)
             guard case let .ok(coreCharacteristics) = result else {
-                return wrapper.didDiscover(characteristics: .err(error!), forService: wrapper)
+                return wrapper.didDiscover(characteristics: .err(error!), for: wrapper)
             }
             var discoveredCharacteristics: [Characteristic] = []
             var characteristics = wrapper.shadow.characteristics ?? [:]
@@ -332,7 +332,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 )
                 let characteristic = wrapper.characteristic(
                     shadow: shadowCharacteristic,
-                    forService: wrapper
+                    for: wrapper
                 )
                 if characteristic.shouldSubscribeToNotificationsAutomatically {
                     if case let .err(error) = characteristic.set(notifyValue: true) {
@@ -350,7 +350,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             wrapper.shadow.characteristics = characteristics
             wrapper.didDiscover(
                 characteristics: .ok(discoveredCharacteristics),
-                forService: wrapper
+                for: wrapper
             )
         }
     }
@@ -368,7 +368,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.didUpdate(data: result, forCharacteristic: wrapper)
+            wrapper.didUpdate(data: result, for: wrapper)
         }
     }
 
@@ -385,7 +385,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.didWrite(data: result, forCharacteristic: wrapper)
+            wrapper.didWrite(data: result, for: wrapper)
         }
     }
 
@@ -402,7 +402,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.isNotifying, failure: error)
-            wrapper.didUpdate(notificationState: result, forCharacteristic: wrapper)
+            wrapper.didUpdate(notificationState: result, for: wrapper)
         }
     }
 
@@ -428,13 +428,13 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 shadowDescriptors.map { shadowDescriptor in
                     let descriptor = wrapper.descriptor(
                         shadow: shadowDescriptor,
-                        forCharacteristic: wrapper
+                        for: wrapper
                     )
                     wrapper.shadow.descriptors[shadowDescriptor.identifier] = descriptor
                     return descriptor
                 }
             }
-            wrapper.didDiscover(descriptors: descriptors, forCharacteristic: wrapper)
+            wrapper.didDiscover(descriptors: descriptors, for: wrapper)
         }
     }
 
@@ -451,7 +451,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.didUpdate(any: result, forDescriptor: wrapper)
+            wrapper.didUpdate(any: result, for: wrapper)
         }
     }
 
@@ -468,7 +468,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.didWrite(any: result, forDescriptor: wrapper)
+            wrapper.didWrite(any: result, for: wrapper)
         }
     }
 }

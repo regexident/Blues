@@ -20,7 +20,7 @@ public protocol CharacteristicDelegate: class {
     /// - Parameters:
     ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
-    func didUpdate(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic)
+    func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic)
 
     /// Invoked when you write data to a characteristic’s value.
     ///
@@ -31,7 +31,7 @@ public protocol CharacteristicDelegate: class {
     /// - Parameters:
     ///   - data: `.ok(data)` with the written value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
-    func didWrite(data: Result<Data, Error>, forCharacteristic characteristic: Characteristic)
+    func didWrite(data: Result<Data, Error>, for characteristic: Characteristic)
 
     /// Invoked when the peripheral receives a request to start or stop providing
     /// notifications for a specified characteristic’s value.
@@ -46,7 +46,7 @@ public protocol CharacteristicDelegate: class {
     ///   - characteristic: The characteristic whose notification state has been retrieved.
     func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     )
 
     /// Invoked when you discover the descriptors of a specified characteristic.
@@ -60,7 +60,7 @@ public protocol CharacteristicDelegate: class {
     ///   - characteristic: The characteristic that the characteristic descriptors belong to.
     func didDiscover(
         descriptors: Result<[Descriptor], Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     )
 }
 
@@ -78,7 +78,7 @@ public protocol CharacteristicDataSource: class {
     /// - Returns: A new descriptor object.
     func descriptor(
         shadow: ShadowDescriptor,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) -> Descriptor
 }
 
@@ -97,30 +97,30 @@ extension DelegatedCharacteristic {
 
     public func didUpdate(
         data: Result<Data, Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) {
-        self.delegate?.didUpdate(data: data, forCharacteristic: characteristic)
+        self.delegate?.didUpdate(data: data, for: characteristic)
     }
 
     public func didWrite(
         data: Result<Data, Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) {
-        self.delegate?.didWrite(data: data, forCharacteristic: characteristic)
+        self.delegate?.didWrite(data: data, for: characteristic)
     }
 
     public func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) {
-        self.delegate?.didUpdate(notificationState: isNotifying, forCharacteristic: characteristic)
+        self.delegate?.didUpdate(notificationState: isNotifying, for: characteristic)
     }
 
     public func didDiscover(
         descriptors: Result<[Descriptor], Error>,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) {
-        self.delegate?.didDiscover(descriptors: descriptors, forCharacteristic: characteristic)
+        self.delegate?.didDiscover(descriptors: descriptors, for: characteristic)
     }
 }
 
@@ -138,10 +138,10 @@ public protocol DataSourcedCharacteristic: Characteristic {
 extension DataSourcedCharacteristic {
     public func descriptor(
         shadow: ShadowDescriptor,
-        forCharacteristic characteristic: Characteristic
+        for characteristic: Characteristic
     ) -> Descriptor {
         if let dataSource = self.dataSource {
-            return dataSource.descriptor(shadow: shadow, forCharacteristic: characteristic)
+            return dataSource.descriptor(shadow: shadow, for: characteristic)
         } else {
             return DefaultDescriptor(shadow: shadow)
         }
