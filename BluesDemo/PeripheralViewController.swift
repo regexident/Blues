@@ -82,7 +82,7 @@ class PeripheralViewController: UITableViewController {
     }
 
     func title(for characteristic: Characteristic) -> String {
-        return characteristic.name ?? "UUID: \(characteristic.identifier.string)"
+        return characteristic.name 
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -111,7 +111,7 @@ extension PeripheralViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let service = self.sortedServices[section]
-        return ServiceNames.nameOf(service: service.identifier) ?? service.name ?? service.identifier.string
+        return ServiceNames.nameOf(service: service.identifier) ?? service.name
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -164,7 +164,7 @@ extension PeripheralViewController: PeripheralDelegate {
     }
 
     public func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
-        print("Error: \(error)")
+        print("Error: \(String(describing: error))")
     }
 
     func didUpdate(name: String?, of peripheral: Peripheral) {
@@ -183,7 +183,7 @@ extension PeripheralViewController: PeripheralDelegate {
         }
         self.queue.async {
             self.sortedServices = services.sorted {
-                ($0.name ?? $0.identifier.string) < ($1.name ?? $1.identifier.string)
+                $0.name < $1.name
             }
             for service in services {
                 let _ = service.discover(characteristics: nil)

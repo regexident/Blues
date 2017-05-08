@@ -32,8 +32,8 @@ public protocol Characteristic:
     /// The characteristic's name.
     ///
     /// - Note:
-    ///   Default implementation returns `nil`
-    var name: String? { get }
+    ///   Default implementation returns class name.
+    var name: String { get }
 
     /// The supporting "shadow" characteristic that does the heavy lifting.
     var shadow: ShadowCharacteristic { get }
@@ -85,8 +85,8 @@ extension Characteristic {
         return self.shadow.identifier
     }
 
-    public var name: String? {
-        return nil
+    public var name: String {
+        return String(describing: type(of: self))
     }
 
     public var shouldDiscoverDescriptorsAutomatically: Bool {
@@ -250,7 +250,7 @@ extension Characteristic {
         let className = type(of: self)
         let attributes = [
             "identifier = \(self.shadow.identifier)",
-            "name = \(self.name ?? "<nil>")",
+            "name = \(self.name)",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }

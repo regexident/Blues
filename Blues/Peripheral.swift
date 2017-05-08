@@ -30,7 +30,7 @@ public protocol Peripheral:
     /// The peripheral's name.
     ///
     /// - Note:
-    ///   Default implementation returns `nil`
+    ///   Default implementation returns class name.
     var name: String? { get }
 
     /// The supporting "shadow" peripheral that does the heavy lifting.

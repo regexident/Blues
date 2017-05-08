@@ -29,8 +29,8 @@ public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomString
     /// The service's name.
     ///
     /// - Note:
-    ///   Default implementation returns `nil`
-    var name: String? { get }
+    ///   Default implementation returns class name.
+    var name: String { get }
 
     /// The supporting "shadow" service that does the heavy lifting.
     var shadow: ShadowService { get }
@@ -56,8 +56,8 @@ extension Service {
         return self.shadow.identifier
     }
 
-    public var name: String? {
-        return nil
+    public var name: String {
+        return String(describing: type(of: self))
     }
 
     public var automaticallyDiscoveredCharacteristics: [Identifier]? {
@@ -161,7 +161,7 @@ extension Service {
         let className = type(of: self)
         let attributes = [
             "identifier = \(self.shadow.identifier)",
-            "name = \(self.name ?? "<nil>")",
+            "name = \(self.name)",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }

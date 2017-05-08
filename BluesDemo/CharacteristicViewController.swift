@@ -93,7 +93,7 @@ class CharacteristicViewController: UITableViewController {
     func update() {
         if let characteristic = self.characteristic {
             DispatchQueue.main.async {
-                self.title = characteristic.name ?? "UUID: \(characteristic.identifier.string)"
+                self.title = characteristic.name 
                 self.tableView.reloadData()
             }
         }
@@ -185,7 +185,7 @@ class CharacteristicViewController: UITableViewController {
         default:
             cell.textLabel!.text = any.debugDescription
         }
-        cell.detailTextLabel!.text = descriptor.name ?? "UUID: \(descriptor.identifier.string)"
+        cell.detailTextLabel!.text = descriptor.name 
 
         return cell
     }
@@ -270,7 +270,7 @@ extension CharacteristicViewController: CharacteristicDelegate {
         }
         self.queue.async {
             self.sortedDescriptors = descriptors.sorted {
-                ($0.name ?? $0.identifier.string) < ($1.name ?? $1.identifier.string)
+                $0.name < $1.name
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

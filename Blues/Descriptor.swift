@@ -30,8 +30,8 @@ public protocol Descriptor: class, DescriptorDelegate, CustomStringConvertible {
     /// The descriptor's name.
     ///
     /// - Note:
-    ///   Default implementation returns `nil`
-    var name: String? { get }
+    ///   Default implementation returns class name.
+    var name: String { get }
 
     /// The supporting "shadow" descriptor that does the heavy lifting.
     var shadow: ShadowDescriptor { get }
@@ -51,8 +51,8 @@ extension Descriptor {
     ///
     /// - Note:
     ///   Override this property to provide a name for your custom descriptor type.
-    public var name: String? {
-        return nil
+    public var name: String {
+        return String(describing: type(of: self))
     }
 
     /// The value of the descriptor, or an error.
@@ -123,7 +123,7 @@ extension Descriptor {
         let className = type(of: self)
         let attributes = [
             "identifier = \(self.shadow.identifier)",
-            "name = \(self.name ?? "<nil>")",
+            "name = \(self.name)",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }
