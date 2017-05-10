@@ -12,6 +12,9 @@ import Result
 
 /// A `DelegatedDescriptor`'s delegate.
 public protocol DescriptorDelegate: class {
+}
+
+public protocol ReadableDescriptorDelegate: DescriptorDelegate {
 
     /// Invoked when you retrieve a specified characteristic descriptor’s value.
     ///
@@ -19,7 +22,9 @@ public protocol DescriptorDelegate: class {
     ///   - any: `.ok(any)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor)
+}
 
+public protocol WritableDescriptorDelegate: DescriptorDelegate {
     /// Invoked when you write data to a characteristic descriptor’s value.
     ///
     /// - Parameters:
@@ -28,43 +33,6 @@ public protocol DescriptorDelegate: class {
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
 }
 
-/// A `Descriptor`'s data source.
-public protocol DescriptorDataSource: class {
-
-}
-
-/// A `Descriptor` that supports delegation.
-///
-/// Note: Conforming to `DelegatedDescriptor` adds a default implementation for all
-/// functions found in `DescriptorDelegate` which simply forwards all method calls
-/// to its delegate.
-public protocol DelegatedDescriptor: Descriptor {
-
-    /// The descriptor's delegate.
-    weak var delegate: DescriptorDelegate? { get set }
-}
-
-extension DelegatedDescriptor {
-    public func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
-        self.delegate?.didUpdate(any: any, for: descriptor)
-    }
-
-    public func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
-        self.delegate?.didWrite(any: any, for: descriptor)
-    }
-}
-
-/// A `Descriptor` that supports data sourcing.
-///
-/// Note: Conforming to `DataSourcedDescriptor` adds a default implementation for all
-/// functions found in `DescriptorDataSource` which simply forwards all method calls
-/// to its data source.
-public protocol DataSourcedDescriptor: Descriptor {
-
-    /// The descriptor's delegate.
-    weak var dataSource: DescriptorDataSource? { get set }
-}
-
-extension DelegatedDescriptor {
-
-}
+public typealias FullblownDescriptorDelegate =
+    ReadableDescriptorDelegate
+    & WritableDescriptorDelegate

@@ -11,19 +11,6 @@ import CoreBluetooth
 
 import Result
 
-/// Default implementation of `Characteristic` protocol.
-public class DefaultCharacteristic: DelegatedCharacteristic, DataSourcedCharacteristic {
-
-    public let shadow: ShadowCharacteristic
-
-    public weak var delegate: CharacteristicDelegate?
-    public weak var dataSource: CharacteristicDataSource?
-
-    public required init(shadow: ShadowCharacteristic) {
-        self.shadow = shadow
-    }
-}
-
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
 public protocol Characteristic:

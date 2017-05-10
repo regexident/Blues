@@ -30,18 +30,18 @@ class CharacteristicViewController: UITableViewController {
         }
     }
 
-    weak var previousCharacteristicDelegate: CharacteristicDelegate?
+    weak var previousCharacteristicDelegate: FullblownCharacteristicDelegate?
     weak var characteristic: Characteristic? {
         willSet {
             if self.characteristic !== newValue {
-                if let characteristic = self.characteristic as? DelegatedCharacteristic {
+                if let characteristic = self.characteristic as? DefaultCharacteristic {
                     characteristic.delegate = self.previousCharacteristicDelegate
                 }
             }
         }
         didSet {
             self.sortedDescriptors = []
-            if let characteristic = self.characteristic as? DelegatedCharacteristic {
+            if let characteristic = self.characteristic as? DefaultCharacteristic {
                 self.previousCharacteristicDelegate = characteristic.delegate
                 characteristic.delegate = self
             } else {
@@ -237,7 +237,7 @@ extension CharacteristicViewController {
     }
 }
 
-extension CharacteristicViewController: CharacteristicDelegate {
+extension CharacteristicViewController: ReadableCharacteristicDelegate {
 
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
@@ -249,6 +249,9 @@ extension CharacteristicViewController: CharacteristicDelegate {
             }
         }
     }
+}
+
+extension CharacteristicViewController: WritableCharacteristicDelegate {
 
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
@@ -260,9 +263,15 @@ extension CharacteristicViewController: CharacteristicDelegate {
             }
         }
     }
+}
+
+extension CharacteristicViewController: NotifyableCharacteristicDelegate {
 
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
     }
+}
+
+extension CharacteristicViewController: DescribableCharacteristicDelegate {
 
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
         guard case let .ok(descriptors) = descriptors else {

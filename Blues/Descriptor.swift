@@ -11,18 +11,6 @@ import CoreBluetooth
 
 import Result
 
-/// Default implementation of `Descriptor` protocol.
-public class DefaultDescriptor: DelegatedDescriptor {
-
-    public let shadow: ShadowDescriptor
-
-    public weak var delegate: DescriptorDelegate?
-
-    public required init(shadow: ShadowDescriptor) {
-        self.shadow = shadow
-    }
-}
-
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
 public protocol Descriptor: class, DescriptorDelegate, CustomStringConvertible {

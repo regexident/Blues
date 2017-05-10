@@ -13,6 +13,10 @@ import Result
 /// A `Characteristic`'s delegate.
 public protocol CharacteristicDelegate: class {
 
+}
+
+/// A readable `Characteristic`'s delegate.
+public protocol ReadableCharacteristicDelegate: CharacteristicDelegate {
     /// Invoked when you retrieve a specified characteristic’s value,
     /// or when the peripheral device notifies your app that
     /// the characteristic’s value has changed.
@@ -21,7 +25,10 @@ public protocol CharacteristicDelegate: class {
     ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic)
+}
 
+/// A writable `Characteristic`'s delegate.
+public protocol WritableCharacteristicDelegate: CharacteristicDelegate {
     /// Invoked when you write data to a characteristic’s value.
     ///
     /// - Note:
@@ -32,7 +39,10 @@ public protocol CharacteristicDelegate: class {
     ///   - data: `.ok(data)` with the written value iff successful, otherwise `.err(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic)
+}
 
+/// A notifyable `Characteristic`'s delegate.
+public protocol NotifyableCharacteristicDelegate: ReadableCharacteristicDelegate {
     /// Invoked when the peripheral receives a request to start or stop providing
     /// notifications for a specified characteristic’s value.
     ///
@@ -48,7 +58,10 @@ public protocol CharacteristicDelegate: class {
         notificationState isNotifying: Result<Bool, Error>,
         for characteristic: Characteristic
     )
+}
 
+/// A describable `Characteristic`'s delegate.
+public protocol DescribableCharacteristicDelegate: CharacteristicDelegate {
     /// Invoked when you discover the descriptors of a specified characteristic.
     ///
     /// - Note:
@@ -63,6 +76,12 @@ public protocol CharacteristicDelegate: class {
         for characteristic: Characteristic
     )
 }
+
+public typealias FullblownCharacteristicDelegate =
+    ReadableCharacteristicDelegate
+    & WritableCharacteristicDelegate
+    & NotifyableCharacteristicDelegate
+    & DescribableCharacteristicDelegate
 
 /// A `Characteristic`'s data source.
 public protocol CharacteristicDataSource: class {
@@ -80,70 +99,4 @@ public protocol CharacteristicDataSource: class {
         shadow: ShadowDescriptor,
         for characteristic: Characteristic
     ) -> Descriptor
-}
-
-/// A `Characteristic` that supports delegation.
-///
-/// Note: Conforming to `DelegatedCharacteristic` adds a default implementation for all
-/// functions found in `CharacteristicDelegate` which simply forwards all method calls
-/// to its delegate.
-public protocol DelegatedCharacteristic: Characteristic {
-
-    /// The characteristic's delegate.
-    weak var delegate: CharacteristicDelegate? { get set }
-}
-
-extension DelegatedCharacteristic {
-
-    public func didUpdate(
-        data: Result<Data, Error>,
-        for characteristic: Characteristic
-    ) {
-        self.delegate?.didUpdate(data: data, for: characteristic)
-    }
-
-    public func didWrite(
-        data: Result<Data, Error>,
-        for characteristic: Characteristic
-    ) {
-        self.delegate?.didWrite(data: data, for: characteristic)
-    }
-
-    public func didUpdate(
-        notificationState isNotifying: Result<Bool, Error>,
-        for characteristic: Characteristic
-    ) {
-        self.delegate?.didUpdate(notificationState: isNotifying, for: characteristic)
-    }
-
-    public func didDiscover(
-        descriptors: Result<[Descriptor], Error>,
-        for characteristic: Characteristic
-    ) {
-        self.delegate?.didDiscover(descriptors: descriptors, for: characteristic)
-    }
-}
-
-/// A `Characteristic` that supports data sourcing.
-///
-/// Note: Conforming to `DataSourcedCharacteristic` adds a default implementation for all
-/// functions found in `CharacteristicDataSource` which simply forwards all method calls
-/// to its data source.
-public protocol DataSourcedCharacteristic: Characteristic {
-
-    /// The characteristic's delegate.
-    weak var dataSource: CharacteristicDataSource? { get set }
-}
-
-extension DataSourcedCharacteristic {
-    public func descriptor(
-        shadow: ShadowDescriptor,
-        for characteristic: Characteristic
-    ) -> Descriptor {
-        if let dataSource = self.dataSource {
-            return dataSource.descriptor(shadow: shadow, for: characteristic)
-        } else {
-            return DefaultDescriptor(shadow: shadow)
-        }
-    }
 }

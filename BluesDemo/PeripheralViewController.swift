@@ -19,7 +19,7 @@ class PeripheralViewController: UITableViewController {
     weak var peripheral: Peripheral? {
         willSet {
             if self.peripheral !== newValue {
-                guard let peripheral = self.peripheral as? DelegatedPeripheral else {
+                guard let peripheral = self.peripheral as? DefaultPeripheral else {
                     return
                 }
                 peripheral.delegate = self.previousPeripheralDelegate
@@ -28,7 +28,7 @@ class PeripheralViewController: UITableViewController {
         }
         didSet {
             self.sortedServices = []
-            guard let peripheral = self.peripheral as? DelegatedPeripheral else {
+            guard let peripheral = self.peripheral as? DefaultPeripheral else {
                 self.previousPeripheralDelegate = nil
                 let _ = oldValue?.disconnect()
                 return
@@ -56,7 +56,7 @@ class PeripheralViewController: UITableViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        guard let peripheral = self.peripheral as? DelegatedPeripheral else {
+        guard let peripheral = self.peripheral as? DefaultPeripheral else {
             return
         }
 
@@ -187,7 +187,7 @@ extension PeripheralViewController: PeripheralDelegate {
             }
             for service in services {
                 let _ = service.discover(characteristics: nil)
-                if let service = service as? DelegatedService {
+                if let service = service as? DefaultService {
                     service.delegate = self
                 }
             }
@@ -211,7 +211,7 @@ extension PeripheralViewController: ServiceDelegate {
             self.sortedCharacteristicsByService[service.identifier] = characteristics
             for characteristic in characteristics {
                 let _ = characteristic.discoverDescriptors()
-                if let characteristic = characteristic as? DelegatedCharacteristic {
+                if let characteristic = characteristic as? DefaultCharacteristic {
                     let _ = characteristic.read()
                     let _ = characteristic.set(notifyValue: true)
                     characteristic.delegate = self
@@ -224,7 +224,7 @@ extension PeripheralViewController: ServiceDelegate {
     }
 }
 
-extension PeripheralViewController: CharacteristicDelegate {
+extension PeripheralViewController: ReadableCharacteristicDelegate {
 
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
@@ -240,6 +240,9 @@ extension PeripheralViewController: CharacteristicDelegate {
             }
         }
     }
+}
+
+extension PeripheralViewController: WritableCharacteristicDelegate {
 
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
@@ -255,10 +258,16 @@ extension PeripheralViewController: CharacteristicDelegate {
             }
         }
     }
+}
+
+extension PeripheralViewController: NotifyableCharacteristicDelegate {
 
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
     }
-    
+}
+
+extension PeripheralViewController: DescribableCharacteristicDelegate {
+
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
     }
 }

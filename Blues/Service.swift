@@ -11,19 +11,6 @@ import CoreBluetooth
 
 import Result
 
-/// Default implementation of `Service` protocol.
-public class DefaultService: DelegatedService, DataSourcedService {
-
-    public let shadow: ShadowService
-
-    public weak var delegate: ServiceDelegate?
-    public weak var dataSource: ServiceDataSource?
-
-    public required init(shadow: ShadowService) {
-        self.shadow = shadow
-    }
-}
-
 public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomStringConvertible {
 
     /// The service's name.

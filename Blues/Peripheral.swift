@@ -11,19 +11,6 @@ import CoreBluetooth
 
 import Result
 
-/// Default implementation of `Peripheral` protocol.
-public class DefaultPeripheral: DelegatedPeripheral, DataSourcedPeripheral {
-
-    public let shadow: ShadowPeripheral
-
-    public weak var delegate: PeripheralDelegate?
-    public weak var dataSource: PeripheralDataSource?
-
-    public required init(shadow: ShadowPeripheral) {
-        self.shadow = shadow
-    }
-}
-
 public protocol Peripheral:
     class, PeripheralDataSource, PeripheralDelegate, CustomStringConvertible {
 

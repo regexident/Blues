@@ -367,8 +367,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
+            guard let delegate = wrapper as? ReadableCharacteristicDelegate else {
+                return
+            }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.didUpdate(data: result, for: wrapper)
+            delegate.didUpdate(data: result, for: wrapper)
         }
     }
 
@@ -384,8 +387,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
+            guard let delegate = wrapper as? WritableCharacteristicDelegate else {
+                return
+            }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.didWrite(data: result, for: wrapper)
+            delegate.didWrite(data: result, for: wrapper)
         }
     }
 
@@ -401,8 +407,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
+            guard let delegate = wrapper as? NotifyableCharacteristicDelegate else {
+                return
+            }
             let result = Result(success: characteristic.isNotifying, failure: error)
-            wrapper.didUpdate(notificationState: result, for: wrapper)
+            delegate.didUpdate(notificationState: result, for: wrapper)
         }
     }
 
@@ -416,6 +425,9 @@ extension ShadowPeripheral: CBPeripheralDelegate {
         #endif
         self.queue.async {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
+                return
+            }
+            guard let delegate = wrapper as? DescribableCharacteristicDelegate else {
                 return
             }
             let coreDescriptors = Result(success: characteristic.descriptors, failure: error)
@@ -434,7 +446,7 @@ extension ShadowPeripheral: CBPeripheralDelegate {
                     return descriptor
                 }
             }
-            wrapper.didDiscover(descriptors: descriptors, for: wrapper)
+            delegate.didDiscover(descriptors: descriptors, for: wrapper)
         }
     }
 
@@ -450,8 +462,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
             }
+            guard let delegate = wrapper as? ReadableDescriptorDelegate else {
+                return
+            }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.didUpdate(any: result, for: wrapper)
+            delegate.didUpdate(any: result, for: wrapper)
         }
     }
 
@@ -467,8 +482,11 @@ extension ShadowPeripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
             }
+            guard let delegate = wrapper as? WritableDescriptorDelegate else {
+                return
+            }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.didWrite(any: result, for: wrapper)
+            delegate.didWrite(any: result, for: wrapper)
         }
     }
 }
