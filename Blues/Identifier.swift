@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 public protocol TypeIdentifiable {
-    static var identifier: Identifier { get }
+    static var typeIdentifier: Identifier { get }
 }
 
 /// Thin wrapper around `CBUUID`.
@@ -49,14 +49,12 @@ public struct Identifier {
 }
 
 extension Identifier: Equatable {
-
     public static func == (lhs: Identifier, rhs: Identifier) -> Bool {
         return lhs.core == rhs.core
     }
 }
 
 extension Identifier: Hashable {
-
     public var hashValue: Int {
         return self.core.hashValue
     }

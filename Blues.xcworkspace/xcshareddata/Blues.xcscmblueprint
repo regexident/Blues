@@ -4,12 +4,12 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "97EE086547967327B13499A3E121379266425884" : 9223372036854775807,
+    "748AEB0BC620341FC88A557D0E086D763DAF230C" : 9223372036854775807,
     "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB" : 9223372036854775807
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "430A74C5-909D-4644-827A-23602E6EA449",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "97EE086547967327B13499A3E121379266425884" : "Blues\/Carthage\/Checkouts\/Result\/",
+    "748AEB0BC620341FC88A557D0E086D763DAF230C" : "Blues\/Carthage\/Checkouts\/Result\/",
     "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB" : "Blues\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Blues",
@@ -24,7 +24,7 @@
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/regexident\/Result.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "97EE086547967327B13499A3E121379266425884"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "748AEB0BC620341FC88A557D0E086D763DAF230C"
     }
   ]
 }

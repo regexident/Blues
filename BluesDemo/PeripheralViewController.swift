@@ -35,12 +35,22 @@ class PeripheralViewController: UITableViewController {
             }
             self.previousPeripheralDelegate = peripheral.delegate
             peripheral.delegate = self
-            let _ = peripheral.connect()
+            switch peripheral.connect() {
+            case .ok(_): break
+            case let .err(error): print(error)
+            }
         }
     }
 
     let queue: DispatchQueue = .init(label: "serial")
-    var sortedServices: [Service] = []
+
+    lazy var sortedServices: [Service] = {
+        guard let services = self.peripheral?.services?.values else {
+            return []
+        }
+        return Array(services)
+    }()
+
     var sortedCharacteristicsByService: [Identifier: [Characteristic]] = [:]
 
     override func viewDidLoad() {
@@ -51,6 +61,12 @@ class PeripheralViewController: UITableViewController {
         }
         self.title = self.title(for: peripheral)
         self.clearsSelectionOnViewWillAppear = true
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        self.tableView.reloadData()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -82,7 +98,7 @@ class PeripheralViewController: UITableViewController {
     }
 
     func title(for characteristic: Characteristic) -> String {
-        return characteristic.name 
+        return characteristic.name ?? "UUID: \(characteristic.identifier.string)"
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -100,6 +116,28 @@ class PeripheralViewController: UITableViewController {
             controller.navigationItem.leftItemsSupplementBackButton = true
             self.characteristicViewController = controller
         }
+    }
+
+    func humanReadableValue<C>(for characteristic: C) -> String
+        where C: Characteristic
+    {
+        return characteristic.data.map { data in
+            if let hexString = data?.hexString {
+                return "Hex: \(hexString)"
+            } else {
+                return "No Value"
+            }
+        }.asOk.unwrapOr("No data")
+    }
+
+    func humanReadableValue<C>(for characteristic: C) -> String
+        where C: Characteristic,
+              C: TypedCharacteristic,
+              C.Transformer.Value: CustomStringConvertible
+    {
+        return characteristic.value.map { value in
+            value!.description
+        }.asOk.unwrapOr("No value")
     }
 }
 
@@ -128,6 +166,8 @@ extension PeripheralViewController {
         let characteristic = characteristics[indexPath.row]
 
         if case let .ok(data) = characteristic.data {
+            let value = self.humanReadableValue(for: characteristic)
+            print(value)
             if let hexString = data?.hexString {
                 cell.textLabel!.text = "Hex: \(hexString)"
             } else {
@@ -183,7 +223,7 @@ extension PeripheralViewController: PeripheralDelegate {
         }
         self.queue.async {
             self.sortedServices = services.sorted {
-                $0.name < $1.name
+                ($0.name ?? "") < ($1.name ?? "")
             }
             for service in services {
                 let _ = service.discover(characteristics: nil)
@@ -216,6 +256,7 @@ extension PeripheralViewController: ServiceDelegate {
                     let _ = characteristic.set(notifyValue: true)
                     characteristic.delegate = self
                 }
+                let _ = characteristic.set(notifyValue: true)
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

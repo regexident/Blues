@@ -12,7 +12,6 @@ import Result
 
 /// A `DelegatedService`'s delegate.
 public protocol ServiceDelegate: class {
-
     /// Invoked when you discover the peripheral’s available services.
     ///
     /// - Note:
@@ -42,15 +41,16 @@ public protocol ServiceDelegate: class {
 
 /// A `Service`'s data source.
 public protocol ServiceDataSource: class {
-    /// Creates and returns a descriptor for a given shadow descriptor.
+    /// Creates and returns a characteristic for a given identifier
     ///
     /// - Note:
-    ///   Override this property to provide a custom type for the given descriptor.
-    ///   The default implementation creates `DefaultDescriptor`.
+    ///   Override this property to provide a custom type for the given characteristic.
+    ///   The default implementation creates `DefaultCharacteristic`.
     ///
     /// - Parameters:
-    ///   - shadow: The descriptor's shadow descriptor.
+    ///   - identifier: The characteristic's identifier.
+    ///   - service: The characteristic's service.
     ///
-    /// - Returns: A new descriptor object.
-    func characteristic(shadow: ShadowCharacteristic, for service: Service) -> Characteristic
+    /// - Returns: A new characteristic object.
+    func characteristic(with identifier: Identifier, for service: Service) -> Characteristic
 }

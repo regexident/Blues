@@ -9,7 +9,7 @@
 import Foundation
 
 /// Errors related to a descriptor.
-public enum TypesafeDescriptorError: Swift.Error {
+public enum TypedDescriptorError: Swift.Error {
     /// The descriptor failed to encode its value.
     case encodingFailed(message: String)
     /// The descriptor failed to decode its value.
@@ -24,7 +24,7 @@ public enum TypesafeDescriptorError: Swift.Error {
 }
 
 /// Errors related to a characteristic.
-public enum TypesafeCharacteristicError: Swift.Error {
+public enum TypedCharacteristicError: Swift.Error {
     /// The characteristic failed to encode its value.
     case encodingFailed(message: String)
     /// The characteristic failed to decode its value.

@@ -30,7 +30,7 @@ class CharacteristicViewController: UITableViewController {
         }
     }
 
-    weak var previousCharacteristicDelegate: FullblownCharacteristicDelegate?
+    weak var previousCharacteristicDelegate: CharacteristicDelegate?
     weak var characteristic: Characteristic? {
         willSet {
             if self.characteristic !== newValue {
@@ -279,7 +279,7 @@ extension CharacteristicViewController: DescribableCharacteristicDelegate {
         }
         self.queue.async {
             self.sortedDescriptors = descriptors.sorted {
-                $0.name < $1.name
+                ($0.name ?? "") < ($1.name ?? "")
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

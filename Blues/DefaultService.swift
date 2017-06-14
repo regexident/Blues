@@ -11,20 +11,12 @@ import Foundation
 import Result
 
 /// Default implementation of `Service` protocol.
-public class DefaultService: Service {
-
-    public let shadow: ShadowService
-
+open class DefaultService: Service {
     public weak var delegate: ServiceDelegate?
     public weak var dataSource: ServiceDataSource?
-
-    public required init(shadow: ShadowService) {
-        self.shadow = shadow
-    }
 }
 
 extension DefaultService: ServiceDelegate {
-
     public func didDiscover(
         includedServices: Result<[Service], Error>,
         for service: Service
@@ -41,15 +33,14 @@ extension DefaultService: ServiceDelegate {
 }
 
 extension DefaultService: ServiceDataSource {
-    
     public func characteristic(
-        shadow: ShadowCharacteristic,
+        with identifier: Identifier,
         for service: Service
     ) -> Characteristic {
         if let dataSource = self.dataSource {
-            return dataSource.characteristic(shadow: shadow, for: service)
+            return dataSource.characteristic(with: identifier, for: service)
         } else {
-            return DefaultCharacteristic(shadow: shadow)
+            return DefaultCharacteristic(identifier: identifier, service: service)
         }
     }
 }

@@ -62,7 +62,7 @@ class CentralManagerViewController: UITableViewController {
     }
 }
 
-extension CentralManagerViewController {
+extension CentralManagerViewController /* : UITableViewDataSource */ {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -101,17 +101,17 @@ extension CentralManagerViewController {
 
 extension CentralManagerViewController: CentralManagerDelegate {
 
-    func willRestore(state: CentralManagerRestoreState, ofManager manager: CentralManager) {
+    func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {
     }
 
     @available(iOSApplicationExtension 10.0, *)
-    func didUpdate(state: CentralManagerState, ofManager manager: CentralManager) {
+    func didUpdate(state: CentralManagerState, of manager: CentralManager) {
         self.queue.async {
-            self.centralManager.startScanningForPeripherals(advertisingWithServices: nil, options: nil)
+            self.centralManager.startScanningForPeripherals()
         }
     }
 
-    func didDiscover(peripheral: Peripheral, advertisement: Advertisement, rssi: Int, withManager manager: CentralManager) {
+    func didDiscover(peripheral: Peripheral, rssi: Int, with manager: CentralManager) {
         self.queue.async {
             self.sortedPeripherals.append(peripheral)
             self.sortedPeripherals.sort {
@@ -123,25 +123,20 @@ extension CentralManagerViewController: CentralManagerDelegate {
         }
     }
 
-    func didRetrieve(peripherals: [Peripheral], fromManager manager: CentralManager) {}
+    func didRestore(peripheral: Peripheral, with manager: CentralManager) {}
 
-    func didRetrieve(connectedPeripherals: [Peripheral], fromManager manager: CentralManager) {}
+    func didRetrieve(peripherals: [Peripheral], from manager: CentralManager) {}
+
+    func didRetrieve(connectedPeripherals: [Peripheral], from manager: CentralManager) {}
 }
 
 extension CentralManagerViewController: CentralManagerDataSource {
 
-    func discoveredPeripheral(
-        shadow: ShadowPeripheral,
-        advertisement: Advertisement,
-        forCentralManager centralManager: CentralManager
+    func peripheral(
+        with identifier: Identifier,
+        advertisement: Advertisement?,
+        for centralManager: CentralManager
     ) -> Peripheral {
-        return DefaultPeripheral(shadow: shadow)
-    }
-
-    func restoredPeripheral(
-        shadow: ShadowPeripheral,
-        forCentralManager centralManager: CentralManager
-    ) -> Peripheral {
-        return DefaultPeripheral(shadow: shadow)
+        return DefaultPeripheral(identifier: identifier, centralManager: centralManager)
     }
 }

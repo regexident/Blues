@@ -9,7 +9,7 @@
 import Foundation
 import Blues
 
-public class ServiceNames {
+open class ServiceNames {
     static let namesByIdentifier = [
         "1811": "Alert Notification",
         "1815": "Automation IO",

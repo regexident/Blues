@@ -11,50 +11,48 @@ import CoreBluetooth
 
 import Result
 
-public protocol Peripheral:
-    class, PeripheralDataSource, PeripheralDelegate, CustomStringConvertible {
+open class Peripheral: NSObject {
+    /// The Bluetooth-specific identifier of the service.
+    public let identifier: Identifier
 
     /// The peripheral's name.
     ///
     /// - Note:
-    ///   Default implementation returns class name.
-    var name: String? { get }
-
-    /// The supporting "shadow" peripheral that does the heavy lifting.
-    var shadow: ShadowPeripheral { get }
+    ///   Default implementation returns the custom name or if none provided its class name.
+    ///
+    /// - Important:
+    ///   The value of this property is a string containing the device name of the peripheral.
+    ///   You can access this property to retrieve a human-readable name of the peripheral.
+    ///   There may be two types of names associated with a peripheral:
+    ///   one that the device advertises and another that the device publishes in its database
+    ///   as its Bluetooth low energy Generic Access Profile (GAP) device name.
+    ///   Although this property may contain either type of name,
+    ///   the GAP device name takes priority. This means that if a peripheral has both types
+    ///   of names associated with it, this property returns its GAP device name.
+    ///   Default implementation returns the identifier.
+    ///   Override this property to provide a name for your custom type.
+    open var name: String? {
+        if case let .ok(core) = self.core {
+            return core.name
+        } else {
+            return nil
+        }
+    }
 
     /// Which services the peripheral should discover automatically.
     /// Return `nil` to discover all available services.
     ///
     /// - Note:
     ///   Default implementation returns `true`
-    var automaticallyDiscoveredServices: [Identifier]? { get }
-
-    /// Initializes a `Peripheral` as a shim for a provided shadow service.
-    ///
-    /// - Parameters:
-    ///   - shadow: The peripheral's "shadow" peripheral
-    init(shadow: ShadowPeripheral)
-}
-
-extension Peripheral {
-
-    /// The Bluetooth-specific identifier of the peripheral.
-    public var identifier: Identifier {
-        return self.shadow.identifier
-    }
-
-    public var name: String? {
-        return self.core.name
-    }
-
-    public var automaticallyDiscoveredServices: [Identifier]? {
+    open var automaticallyDiscoveredServices: [Identifier]? {
         return nil
     }
 
     /// The state of the peripheral
-    public var state: PeripheralState {
-        return PeripheralState(state: self.core.state)
+    public var state: Result<PeripheralState, PeripheralError> {
+        return self.core.map { core in
+            return PeripheralState(state: core.state)
+        }
     }
 
     /// A list of services on the peripheral that have been discovered.
@@ -64,26 +62,37 @@ extension Peripheral {
     ///   peripheral’s services. If you have yet to call the `discover(services:)`
     ///   method to discover the services of the peripheral, or if there was
     ///   an error in doing so, the value of this property is nil.
-    public var services: [Identifier: Service]? {
-        return self.shadow.services
+    public var services: [Identifier: Service]?
+
+    /// Options customizing the behavior of the connection.
+    public var connectionOptions: ConnectionOptions?
+
+    public weak var centralManager: CentralManager?
+
+    internal var core: Result<CBPeripheral, PeripheralError>
+
+    internal var queue: DispatchQueue {
+        guard let centralManager = self.centralManager else {
+            fatalError("Invalid use of detached Peripheral")
+        }
+        return centralManager.queue
+    }
+
+    public init(identifier: Identifier, centralManager: CentralManager) {
+        self.identifier = identifier
+        self.core = .err(.unreachable)
+        self.centralManager = centralManager
     }
 
     /// The service associated with a given type if it has previously been discovered in this peripheral.
-    public func service<S>(ofType type: S.Type) -> S? where S: Service & TypeIdentifiable {
-        return self.services.flatMap { $0[type.identifier] } as? S
-    }
-
-    /// `.ok(connectionOptions) with options customizing the behavior of the
-    /// connection iff successful, `.err(error)` otherwise.
-    public var connectionOptions: Result<ConnectionOptions, PeripheralError> {
-        guard let connectionOptions = self.shadow.connectionOptions else {
-            return .err(.unreachable)
+    public func service<S>(ofType type: S.Type) -> S?
+        where S: Service,
+              S: TypeIdentifiable
+    {
+        guard let services = self.services else {
+            return nil
         }
-        return .ok(connectionOptions)
-    }
-
-    var core: CBPeripheral {
-        return self.shadow.core
+        return services[type.typeIdentifier] as? S
     }
 
     /// Establishes a local connection to a peripheral.
@@ -109,7 +118,7 @@ extension Peripheral {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func connect(options: ConnectionOptions? = nil) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(ConnectPeripheralMessage(
+        return self.tryToHandle(ConnectPeripheralMessage(
             peripheral: self,
             options: options
         )) ?? .err(.unhandled)
@@ -130,7 +139,7 @@ extension Peripheral {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func disconnect() -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(DisconnectPeripheralMessage(
+        return self.tryToHandle(DisconnectPeripheralMessage(
             peripheral: self
         )) ?? .err(.unhandled)
     }
@@ -156,7 +165,7 @@ extension Peripheral {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(DiscoverServicesMessage(
+        return self.tryToHandle(DiscoverServicesMessage(
             uuids: services
         )) ?? .err(.unhandled)
     }
@@ -170,15 +179,81 @@ extension Peripheral {
     ///   the peripheral calls the `didRead(rssi:of:)` method of its
     ///   delegate object, which includes the RSSI value as a parameter.
     public func readRSSI() -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(ReadRSSIMessage(
-            // no arguments
-        )) ?? .err(.unhandled)
+        return self.connectedCore().map { core in
+            core.readRSSI()
+        }
     }
 
-    public var description: String {
+    func isValid(core peripheral: CBPeripheral) -> Bool {
+        if case let .ok(core) = self.core {
+            return peripheral == core
+        } else {
+            fatalError("Attempting to access unknown Peripheral")
+        }
+    }
+
+    internal func wrapperOf(service: CBService) -> Service? {
+        return self.services?[Identifier(uuid: service.uuid)]
+    }
+
+    internal func wrapperOf(characteristic: CBCharacteristic) -> Characteristic? {
+        return self.wrapperOf(service: characteristic.service).flatMap {
+            $0.characteristics?[Identifier(uuid: characteristic.uuid)]
+        }
+    }
+
+    internal func wrapperOf(descriptor: CBDescriptor) -> Descriptor? {
+        return self.wrapperOf(characteristic: descriptor.characteristic).flatMap {
+            $0.descriptors?[Identifier(uuid: descriptor.uuid)]
+        }
+    }
+
+    internal func wrapper(for core: CBService) -> Service {
+        let identifier = Identifier(uuid: core.uuid)
+        let service: Service
+        if let dataSource = self as? PeripheralDataSource {
+            service = dataSource.service(with: identifier, for: self)
+        } else {
+            service = DefaultService(identifier: identifier, peripheral: self)
+        }
+        service.core = .ok(core)
+        return service
+    }
+
+    internal func attach(to core: CBPeripheral) {
+        core.delegate = self
+        self.core = .ok(core)
+        guard let coreServices = core.services else {
+            return
+        }
+        for coreService in coreServices {
+            let identifier = Identifier(uuid: coreService.uuid)
+            guard let service = self.services?[identifier] else {
+                continue
+            }
+            service.attach(core: coreService)
+        }
+    }
+
+    internal func detach() {
+        if case let .ok(core) = self.core {
+            core.delegate = nil
+        }
+        self.core = .err(.unreachable)
+        guard let services = self.services?.values else {
+            return
+        }
+        for service in services {
+            service.detach()
+        }
+    }
+}
+
+extension Peripheral /* : CustomStringConvertible */ {
+    override open var description: String {
         let className = String(describing: type(of: self))
         let attributes = [
-            "identifier = \(self.shadow.identifier)",
+            "identifier = \(self.identifier)",
             "name = \(self.name ?? "<nil>")",
             "state = \(self.state)",
         ].joined(separator: ", ")
@@ -186,9 +261,386 @@ extension Peripheral {
     }
 }
 
-extension Peripheral {
+extension Peripheral: Responder {
+    internal var nextResponder: Responder? {
+        return self.centralManager
+    }
+}
 
-    func service(shadow: ShadowService, for peripheral: Peripheral) -> Service {
-        return DefaultService(shadow: shadow)
+extension Peripheral: PeripheralHandling {
+    func connectedCore() -> Result<CBPeripheral, PeripheralError> {
+        return self.core.andThen { core in
+            if core.state == .connected {
+                return .ok(core)
+            } else {
+                return .err(.unreachable)
+            }
+        }
+    }
+
+    func discover(services: [CBUUID]?) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.discoverServices(services)
+        }
+    }
+
+    func discover(
+        includedServices: [CBUUID]?,
+        for service: CBService
+    ) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.discoverIncludedServices(includedServices, for: service)
+        }
+    }
+
+    func discover(
+        characteristics: [CBUUID]?,
+        for service: CBService
+    ) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.discoverCharacteristics(characteristics, for: service)
+        }
+    }
+
+    func discoverDescriptors(for characteristic: CBCharacteristic) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.discoverDescriptors(for: characteristic)
+        }
+    }
+
+    func readData(for characteristic: CBCharacteristic) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.readValue(for: characteristic)
+        }
+    }
+
+    func readData(for descriptor: CBDescriptor) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.readValue(for: descriptor)
+        }
+    }
+
+    func write(
+        data: Data,
+        for characteristic: CBCharacteristic,
+        type: WriteType
+    ) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.writeValue(data, for: characteristic, type: type.inner)
+        }
+    }
+
+    func write(data: Data, for descriptor: CBDescriptor) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.writeValue(data, for: descriptor)
+        }
+    }
+
+    func set(
+        notifyValue: Bool,
+        for characteristic: CBCharacteristic
+    ) -> Result<(), PeripheralError> {
+        return self.connectedCore().map { core in
+            core.setNotifyValue(notifyValue, for: characteristic)
+        }
+    }
+}
+
+extension Peripheral: CBPeripheralDelegate {
+
+    public func peripheralDidUpdateName(
+        _ peripheral: CBPeripheral
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            let delegate = self as? PeripheralDelegate
+            delegate?.didUpdate(name: peripheral.name, of: self)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didModifyServices invalidatedServices: [CBService]
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            let delegate = self as? PeripheralDelegate
+            let services = invalidatedServices.map { coreService -> Service in
+                let identifier = Identifier(uuid: coreService.uuid)
+                let service = self.wrapper(for: coreService)
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
+                }
+                self.services?[identifier] = service
+                return service
+            }
+            delegate?.didModify(services: services, of: self)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didReadRSSI rssi: NSNumber,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            let delegate = self as? PeripheralDelegate
+            let rssi = (rssi != 0) ? rssi as? Int : nil
+            let result = Result(success: rssi, failure: error)
+            delegate?.didRead(rssi: result, of: self)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverServices error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            let delegate = self as? PeripheralDelegate
+            let result = Result(success: peripheral.services, failure: error)
+            guard case let .ok(coreServices) = result else {
+                delegate?.didDiscover(services: .err(error!), for: self)
+                return
+            }
+            var discoveredServices: [Service] = []
+            var services: [Identifier: Service] = self.services ?? [:]
+            for coreService in coreServices {
+                let identifier = Identifier(uuid: coreService.uuid)
+                let service = self.wrapper(for: coreService)
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
+                }
+                discoveredServices.append(service)
+                services[identifier] = service
+            }
+            self.services = services
+            delegate?.didDiscover(services: .ok(discoveredServices), for: self)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverIncludedServicesFor service: CBService,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(service: service) else {
+                return
+            }
+            let delegate = wrapper as? ServiceDelegate
+            let result = Result(success: service.includedServices, failure: error)
+            guard case let .ok(coreServices) = result else {
+                delegate?.didDiscover(includedServices: .err(error!), for: wrapper)
+                return
+            }
+            var discoveredServices: [Service] = []
+            var services: [Identifier: Service] = wrapper.includedServices ?? [:]
+            for coreService in coreServices {
+                let identifier = Identifier(uuid: coreService.uuid)
+                let service = self.wrapper(for: coreService)
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                if case let .err(error) = service.discover(characteristics: characteristics) {
+                    print("Error: \(error)")
+                }
+                discoveredServices.append(service)
+                services[identifier] = service
+            }
+            wrapper.includedServices = services
+            delegate?.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverCharacteristicsFor service: CBService,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(service: service) else {
+                return
+            }
+            let delegate = wrapper as? ServiceDelegate
+            let result = Result(success: service.characteristics, failure: error)
+            guard case let .ok(coreCharacteristics) = result else {
+                delegate?.didDiscover(characteristics: .err(error!), for: wrapper)
+                return
+            }
+            var discoveredCharacteristics: [Characteristic] = []
+            var characteristics = wrapper.characteristics ?? [:]
+            for coreCharacteristic in coreCharacteristics {
+                let characteristic = wrapper.wrapper(for: coreCharacteristic)
+                if characteristic.shouldSubscribeToNotificationsAutomatically {
+                    if case let .err(error) = characteristic.set(notifyValue: true) {
+                        print("Error: \(error)")
+                    }
+                }
+                if characteristic.shouldDiscoverDescriptorsAutomatically {
+                    if case let .err(error) = characteristic.discoverDescriptors() {
+                        print("Error: \(error)")
+                    }
+                }
+                discoveredCharacteristics.append(characteristic)
+                characteristics[characteristic.identifier] = characteristic
+            }
+            wrapper.characteristics = characteristics
+            delegate?.didDiscover(
+                characteristics: .ok(discoveredCharacteristics),
+                for: wrapper
+            )
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
+                return
+            }
+            guard let delegate = wrapper as? ReadableCharacteristicDelegate else {
+                return
+            }
+            let result = Result(success: characteristic.value, failure: error)
+            delegate.didUpdate(data: result, for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
+                return
+            }
+            guard let delegate = wrapper as? WritableCharacteristicDelegate else {
+                return
+            }
+            let result = Result(success: characteristic.value, failure: error)
+            delegate.didWrite(data: result, for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateNotificationStateFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
+                return
+            }
+            guard let delegate = wrapper as? NotifyableCharacteristicDelegate else {
+                return
+            }
+            let result = Result(success: characteristic.isNotifying, failure: error)
+            delegate.didUpdate(notificationState: result, for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverDescriptorsFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
+                return
+            }
+            guard let delegate = wrapper as? DescribableCharacteristicDelegate else {
+                return
+            }
+            let coreDescriptors = Result(success: characteristic.descriptors, failure: error)
+            let descriptors = coreDescriptors.map { coreDescriptors -> [Descriptor] in
+                coreDescriptors.map { coreDescriptor in
+                    let identifier = Identifier(uuid: coreDescriptor.uuid)
+                    let descriptor: Descriptor
+                    if let dataSource = wrapper as? CharacteristicDataSource {
+                        descriptor = dataSource.descriptor(with: identifier, for: wrapper)
+                    } else {
+                        descriptor = DefaultDescriptor(
+                            identifier: identifier,
+                            characteristic: wrapper
+                        )
+                    }
+                    wrapper.descriptors?[identifier] = descriptor
+                    return descriptor
+                }
+            }
+            delegate.didDiscover(descriptors: descriptors, for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
+                return
+            }
+            guard let delegate = wrapper as? ReadableDescriptorDelegate else {
+                return
+            }
+            let result = Result(success: descriptor.value, failure: error)
+            delegate.didUpdate(any: result, for: wrapper)
+        }
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
+        self.queue.async {
+            guard self.isValid(core: peripheral) else {
+                fatalError("Method called on wrong peripheral")
+            }
+            guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
+                return
+            }
+            guard let delegate = wrapper as? WritableDescriptorDelegate else {
+                return
+            }
+            let result = Result(success: descriptor.value, failure: error)
+            delegate.didWrite(any: result, for: wrapper)
+        }
     }
 }

@@ -11,7 +11,6 @@ import Foundation
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
 public protocol CentralManagerDelegate: class {
-
     /// Invoked when the central manager is about to be restored by the system.
     ///
     /// - Note:
@@ -24,7 +23,7 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - state: The central manager's restore state.
     ///   - manager: The central manager providing this information.
-    func willRestore(state: CentralManagerRestoreState, ofManager manager: CentralManager)
+    func willRestore(state: CentralManagerRestoreState, of manager: CentralManager)
 
     /// Invoked when the central manager’s state is updated.
     ///
@@ -33,27 +32,30 @@ public protocol CentralManagerDelegate: class {
     ///   - manager: The central manager whose state has changed.
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
-    func didUpdate(state: CentralManagerState, ofManager manager: CentralManager)
+    func didUpdate(state: CentralManagerState, of manager: CentralManager)
 
     /// Invoked when the central manager discovers a peripheral while scanning.
     ///
     /// - Parameters:
     ///   - peripheral:    The discovered peripheral.
-    ///   - advertisement: The advertisement data.
+    ///   - rssi:          The rssi value.
     ///   - manager:       The central manager providing the update.
-    func didDiscover(
-        peripheral: Peripheral,
-        advertisement: Advertisement,
-        rssi: Int,
-        withManager manager: CentralManager
-    )
+    func didDiscover(peripheral: Peripheral, rssi: Int, with manager: CentralManager)
+    
+    /// Invoked when the central manager is about to restore a device.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral being restored.
+    ///   - manager: The central manager providing this information.
+    /// - Returns: The class that is to be instantiated for the given peripheral.
+    func didRestore(peripheral: Peripheral, with manager: CentralManager)
 
     /// Invoked when the central manager retrieves a list of known peripherals.
     ///
     /// - Parameters:
     ///   - peripherals: An array of peripherals currently known by the central manager.
     ///   - manager:     The central manager providing this information.
-    func didRetrieve(peripherals: [Peripheral], fromManager manager: CentralManager)
+    func didRetrieve(peripherals: [Peripheral], from manager: CentralManager)
 
     /// Invoked when the central manager retrieves a list
     /// of peripherals currently connected to the system.
@@ -61,10 +63,7 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - peripherals: The array of all peripherals currently connected to the system.
     ///   - manager:     The central manager providing this information.
-    func didRetrieve(
-        connectedPeripherals: [Peripheral],
-        fromManager manager: CentralManager
-    )
+    func didRetrieve(connectedPeripherals: [Peripheral], from manager: CentralManager)
 }
 
 /// The `CentralManagerDelegate` protocol defines the methods
@@ -73,23 +72,13 @@ public protocol CentralManagerDataSource: class {
     /// Invoked when the central manager has discovered a device.
     ///
     /// - Parameters:
+    ///   - identifier: The peripheral's identifier.
     ///   - advertisement: The advertisement received during discovery.
     ///   - manager: The central manager providing this information.
     /// - Returns: The class that is to be instantiated for the given peripheral.
-    func discoveredPeripheral(
-        shadow: ShadowPeripheral,
-        advertisement: Advertisement,
-        forCentralManager centralManager: CentralManager
-    ) -> Peripheral
-
-    /// Invoked when the central manager is about to restore a device.
-    ///
-    /// - Parameters:
-    ///   - advertisement: The advertisement received during discovery.
-    ///   - manager: The central manager providing this information.
-    /// - Returns: The class that is to be instantiated for the given peripheral.
-    func restoredPeripheral(
-        shadow: ShadowPeripheral,
-        forCentralManager centralManager: CentralManager
+    func peripheral(
+        with identifier: Identifier,
+        advertisement: Advertisement?,
+        for centralManager: CentralManager
     ) -> Peripheral
 }

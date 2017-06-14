@@ -13,34 +13,32 @@ import Result
 
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
-public protocol Descriptor: class, DescriptorDelegate, CustomStringConvertible {
+open class Descriptor {
+    /// The Bluetooth-specific identifier of the descriptor.
+    public let identifier: Identifier
 
     /// The descriptor's name.
     ///
     /// - Note:
-    ///   Default implementation returns class name.
-    var name: String { get }
-
-    /// The supporting "shadow" descriptor that does the heavy lifting.
-    var shadow: ShadowDescriptor { get }
-
-    /// Initializes a `Descriptor` as a shim for a provided shadow descriptor.
-    init(shadow: ShadowDescriptor)
-}
-
-extension Descriptor {
-
-    /// The Bluetooth-specific identifier of the descriptor.
-    public var identifier: Identifier {
-        return self.shadow.identifier
+    ///   Default implementation returns the identifier.
+    ///   Override this property to provide a name for your custom type.
+    open var name: String? {
+        return nil
     }
 
-    /// The descriptor's name.
-    ///
-    /// - Note:
-    ///   Override this property to provide a name for your custom descriptor type.
-    public var name: String {
-        return String(describing: type(of: self))
+    /// The peripheral that this descriptor belongs to.
+    public weak var peripheral: Peripheral?
+
+    /// The characteristic that this descriptor belongs to.
+    public weak var characteristic: Characteristic?
+
+    internal var core: Result<CBDescriptor, PeripheralError>
+
+    public init(identifier: Identifier, characteristic: Characteristic) {
+        self.identifier = identifier
+        self.core = .err(.unreachable)
+        self.characteristic = characteristic
+        self.peripheral = characteristic.peripheral
     }
 
     /// The value of the descriptor, or an error.
@@ -48,20 +46,6 @@ extension Descriptor {
         return self.core.map {
             $0.value
         }
-    }
-
-    /// The characteristic that this descriptor belongs to.
-    public var characteristic: Characteristic? {
-        return self.shadow.characteristic
-    }
-
-    /// The peripheral that this descriptor belongs to.
-    public var peripheral: Peripheral? {
-        return self.shadow.peripheral
-    }
-
-    var core: Result<CBDescriptor, PeripheralError> {
-        return self.shadow.core.okOr(.unreachable)
     }
 
     /// Retrieves the value of the characteristic descriptor, or an error.
@@ -73,7 +57,7 @@ extension Descriptor {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func read() -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(ReadValueForDescriptorMessage(
+        return self.tryToHandle(ReadValueForDescriptorMessage(
             descriptor: self
         )) ?? .err(.unhandled)
     }
@@ -101,44 +85,39 @@ extension Descriptor {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func write(data: Data) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(WriteValueForDescriptorMessage(
+        return self.tryToHandle(WriteValueForDescriptorMessage(
             data: data,
             descriptor: self
         )) ?? .err(.unhandled)
     }
 
-    public var description: String {
+    internal func attach(core: CBDescriptor) {
+        self.core = .ok(core)
+    }
+
+    internal func detach() {
+        self.core = .err(.unreachable)
+    }
+}
+
+extension Descriptor: CustomStringConvertible {
+    open var description: String {
         let className = type(of: self)
         let attributes = [
-            "identifier = \(self.shadow.identifier)",
-            "name = \(self.name)",
+            "identifier = \(self.identifier)",
+            "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }
 }
 
-/// A descriptor of a peripheral’s characteristic, providing further information about its value.
-public protocol DescriptorValueTransformer {
-
-    /// The descriptor's value type.
-    associatedtype Value
-
-    /// The transformation logic for decoding the descriptor's
-    /// data value into type-safe value representation
-    func transform(any: Any) -> Result<Value, TypesafeDescriptorError>
-
-    /// The transformation logic for encoding the descriptor's
-    /// type-safe value into a data representation
-    func transform(value: Value) -> Result<Data, TypesafeDescriptorError>
+extension Descriptor: Responder {
+    internal var nextResponder: Responder? {
+        return self.characteristic
+    }
 }
 
-public protocol TypesafeDescriptor: Descriptor {
-    associatedtype Transformer: DescriptorValueTransformer
-
-    var transformer: Transformer { get }
-}
-
-extension TypesafeDescriptor {
+extension TypedDescriptor where Self: Descriptor {
     /// A type-safe value representation of the descriptor.
     ///
     /// - Note:
@@ -146,8 +125,8 @@ extension TypesafeDescriptor {
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Transformer.Value?, TypesafeDescriptorError> {
-        return self.any.mapErr(TypesafeDescriptorError.peripheral).andThen { any in
+    public var value: Result<Transformer.Value?, TypedDescriptorError> {
+        return self.any.mapErr(TypedDescriptorError.peripheral).andThen { any in
             guard let any = any else {
                 return .ok(nil)
             }
@@ -170,9 +149,9 @@ extension TypesafeDescriptor {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypesafeDescriptorError> {
+    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedDescriptorError> {
         return self.transformer.transform(value: value).andThen { data in
-            let answer = self.shadow.tryToHandle(WriteValueForDescriptorMessage(
+            let answer = self.tryToHandle(WriteValueForDescriptorMessage(
                 data: data,
                 descriptor: self
             ))
@@ -184,41 +163,7 @@ extension TypesafeDescriptor {
         }
     }
 
-    public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypesafeDescriptorError> {
+    public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypedDescriptorError> {
         return any.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(any: $0) }
-    }
-}
-
-/// The supporting "shadow" descriptor that does the actual heavy lifting
-/// behind any `Descriptor` implementation.
-public class ShadowDescriptor {
-
-    /// The Bluetooth-specific identifier of the descriptor.
-    public let identifier: Identifier
-
-    weak var core: CBDescriptor?
-    weak var peripheral: Peripheral?
-    weak var characteristic: Characteristic?
-
-    init(core: CBDescriptor, characteristic: Characteristic) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self.characteristic = characteristic
-        self.peripheral = characteristic.peripheral
-    }
-
-    func attach(core: CBDescriptor) {
-        self.core = core
-    }
-
-    func detach() {
-        self.core = nil
-    }
-}
-
-extension ShadowDescriptor: Responder {
-
-    var nextResponder: Responder? {
-        return self.characteristic?.shadow
     }
 }

@@ -11,20 +11,25 @@ import Foundation
 import Result
 
 /// Default implementation of `Characteristic` protocol.
-public class DefaultCharacteristic : Characteristic {
-
-    public let shadow: ShadowCharacteristic
-
-    public weak var delegate: FullblownCharacteristicDelegate?
+open class DefaultCharacteristic: Characteristic {
+    public weak var delegate: CharacteristicDelegate?
     public weak var dataSource: CharacteristicDataSource?
 
-    public required init(shadow: ShadowCharacteristic) {
-        self.shadow = shadow
+    /* extension DefaultCharacteristic : CharacteristicDataSource */
+
+    public func descriptor(
+        with identifier: Identifier,
+        for characteristic: Characteristic
+    ) -> Descriptor {
+        if let dataSource = self.dataSource {
+            return dataSource.descriptor(with: identifier, for: characteristic)
+        } else {
+            return DefaultDescriptor(identifier: identifier, characteristic: characteristic)
+        }
     }
 }
 
 extension DefaultCharacteristic: ReadableCharacteristicDelegate {
-
     public func didUpdate(
         data: Result<Data, Error>,
         for characteristic: Characteristic
@@ -34,7 +39,6 @@ extension DefaultCharacteristic: ReadableCharacteristicDelegate {
 }
 
 extension DefaultCharacteristic: WritableCharacteristicDelegate {
-
     public func didWrite(
         data: Result<Data, Error>,
         for characteristic: Characteristic
@@ -44,7 +48,6 @@ extension DefaultCharacteristic: WritableCharacteristicDelegate {
 }
 
 extension DefaultCharacteristic: NotifyableCharacteristicDelegate {
-
     public func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
         for characteristic: Characteristic
@@ -59,19 +62,5 @@ extension DefaultCharacteristic: DescribableCharacteristicDelegate {
         for characteristic: Characteristic
     ) {
         self.delegate?.didDiscover(descriptors: descriptors, for: characteristic)
-    }
-}
-
-extension DefaultCharacteristic: CharacteristicDataSource {
-
-    public func descriptor(
-        shadow: ShadowDescriptor,
-        for characteristic: Characteristic
-    ) -> Descriptor {
-        if let dataSource = self.dataSource {
-            return dataSource.descriptor(shadow: shadow, for: characteristic)
-        } else {
-            return DefaultDescriptor(shadow: shadow)
-        }
     }
 }

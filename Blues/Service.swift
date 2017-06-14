@@ -11,53 +11,20 @@ import CoreBluetooth
 
 import Result
 
-public protocol Service: class, ServiceDataSource, ServiceDelegate, CustomStringConvertible {
+open class Service {
+    /// The Bluetooth-specific identifier of the service.
+    public let identifier: Identifier
 
     /// The service's name.
     ///
     /// - Note:
-    ///   Default implementation returns class name.
-    var name: String { get }
-
-    /// The supporting "shadow" service that does the heavy lifting.
-    var shadow: ShadowService { get }
-
-    /// Which characteristics the service should discover automatically.
-    /// Return `nil` to discover all available characteristics.
-    ///
-    /// - Note:
-    ///   Default implementation returns `true`
-    var automaticallyDiscoveredCharacteristics: [Identifier]? { get }
-
-    /// Initializes a `Service` as a shim for a provided shadow service.
-    ///
-    /// - Parameters:
-    ///   - shadow: The service's "shadow" service
-    init(shadow: ShadowService)
-}
-
-extension Service {
-
-    /// The Bluetooth-specific identifier of the service.
-    public var identifier: Identifier {
-        return self.shadow.identifier
-    }
-
-    public var name: String {
-        return String(describing: type(of: self))
-    }
-
-    public var automaticallyDiscoveredCharacteristics: [Identifier]? {
+    ///   Default implementation returns the identifier.
+    open var name: String? {
         return nil
     }
 
-    /// `.ok(isPrimary)` with a boolean value indicating whether the type
-    /// of service is primary or secondary if successful, otherwise `.err(error)`.
-    var isPrimary: Result<Bool, PeripheralError> {
-        return self.core.map {
-            $0.isPrimary
-        }
-    }
+    /// The peripheral to which this service belongs.
+    public weak var peripheral: Peripheral?
 
     /// A list of characteristics that have been discovered in this service.
     ///
@@ -68,22 +35,50 @@ extension Service {
     ///   contain one characteristic that describes the intended body location
     ///   of the device’s heart rate sensor and another characteristic that
     ///   transmits heart rate measurement data.
-    public var characteristics: [Identifier: Characteristic]? {
-        return self.shadow.characteristics
+    public var characteristics: [Identifier: Characteristic]?
+
+    /// A list of included services.
+    ///
+    /// - Note:
+    ///   A service of a peripheral may contain a reference to other services
+    ///   that are available on the peripheral.
+    ///   These other services are the included services of the service.
+    public var includedServices: [Identifier: Service]?
+
+    internal var core: Result<CBService, PeripheralError>
+
+    /// Which characteristics the service should discover automatically.
+    /// Return `nil` to discover all available characteristics.
+    ///
+    /// - Note:
+    ///   Default implementation returns `true`
+    open var automaticallyDiscoveredCharacteristics: [Identifier]? {
+        return nil
+    }
+
+    /// `.ok(isPrimary)` with a boolean value indicating whether the type
+    /// of service is primary or secondary if successful, otherwise `.err(error)`.
+    public var isPrimary: Result<Bool, PeripheralError> {
+        return self.core.map {
+            $0.isPrimary
+        }
+    }
+
+    public init(identifier: Identifier, peripheral: Peripheral) {
+        self.identifier = identifier
+        self.core = .err(.unreachable)
+        self.peripheral = peripheral
     }
 
     /// The characteristic associated with a given type if it has previously been discovered in this service.
-    public func characteristic<C>(ofType type: C.Type) -> C? where C: Characteristic & TypeIdentifiable {
-        return self.characteristics.flatMap { $0[type.identifier] } as? C
-    }
-
-    /// The peripheral to which this service belongs.
-    public var peripheral: Peripheral? {
-        return self.shadow.peripheral
-    }
-
-    var core: Result<CBService, PeripheralError> {
-        return self.shadow.core.okOr(.unreachable)
+    public func characteristic<C>(ofType type: C.Type) -> C?
+        where C: Characteristic,
+              C: TypeIdentifiable
+    {
+        guard let characteristics = self.characteristics else {
+            return nil
+        }
+        return characteristics[type.typeIdentifier] as? C
     }
 
     /// Discovers the specified included services of a service.
@@ -110,7 +105,7 @@ extension Service {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(includedServices: [Identifier]? = nil) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(DiscoverIncludedServicesMessage(
+        return self.tryToHandle(DiscoverIncludedServicesMessage(
             uuids: includedServices,
             service: self
         )) ?? .err(.unhandled)
@@ -138,79 +133,63 @@ extension Service {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(characteristics: [Identifier]?) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(DiscoverCharacteristicsMessage(
+        return self.tryToHandle(DiscoverCharacteristicsMessage(
             uuids: characteristics,
             service: self
         )) ?? .err(.unhandled)
     }
 
-    public var description: String {
+    internal func wrapper(for core: CBCharacteristic) -> Characteristic {
+        let identifier = Identifier(uuid: core.uuid)
+        let characteristic: Characteristic
+        if let dataSource = self as? ServiceDataSource {
+            characteristic = dataSource.characteristic(with: identifier, for: self)
+        } else {
+            characteristic = DefaultCharacteristic(identifier: identifier, service: self)
+        }
+        characteristic.core = .ok(core)
+        return characteristic
+    }
+
+    internal func attach(core: CBService) {
+        self.core = .ok(core)
+        guard let cores = core.characteristics else {
+            return
+        }
+        for core in cores {
+            let identifier = Identifier(uuid: core.uuid)
+            guard let characteristic = self.characteristics?[identifier] else {
+                continue
+            }
+            characteristic.attach(core: core)
+        }
+    }
+
+    internal func detach() {
+        self.core = .err(.unreachable)
+        guard let characteristics = self.characteristics?.values else {
+            return
+        }
+        for characteristic in characteristics {
+            characteristic.detach()
+        }
+    }
+}
+
+extension Service: CustomStringConvertible {
+    open var description: String {
         let className = type(of: self)
         let attributes = [
-            "identifier = \(self.shadow.identifier)",
-            "name = \(self.name)",
+            "identifier = \(self.identifier)",
+            "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }
 }
 
-extension Service {
+extension Service: Responder {
 
-    func characteristic(
-        shadow: ShadowCharacteristic,
-        for service: Service
-    ) -> Characteristic {
-        return DefaultCharacteristic(shadow: shadow)
-    }
-}
-
-/// The supporting "shadow" service that does the actual heavy lifting
-/// behind any `Service` implementation.
-public class ShadowService {
-
-    /// The Bluetooth-specific identifier of the service.
-    public let identifier: Identifier
-
-    weak var core: CBService?
-    weak var peripheral: Peripheral?
-
-    var characteristics: [Identifier: Characteristic]?
-    var includedServices: [Identifier: Service]?
-
-    init(core: CBService, peripheral: Peripheral) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self.peripheral = peripheral
-    }
-
-    func attach(core: CBService) {
-        self.core = core
-        guard let cores = core.characteristics else {
-            return
-        }
-        for core in cores {
-            let uuid = Identifier(uuid: core.uuid)
-            guard let characteristic = self.characteristics?[uuid] else {
-                continue
-            }
-            characteristic.shadow.attach(core: core)
-        }
-    }
-
-    func detach() {
-        self.core = nil
-        guard let characteristics = self.characteristics?.values else {
-            return
-        }
-        for characteristic in characteristics {
-            characteristic.shadow.detach()
-        }
-    }
-}
-
-extension ShadowService: Responder {
-
-    var nextResponder: Responder? {
-        return self.peripheral?.shadow
+    internal var nextResponder: Responder? {
+        return self.peripheral
     }
 }

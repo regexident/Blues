@@ -33,6 +33,7 @@ extension Message {
 }
 
 protocol Responder {
+    
     var nextResponder: Responder? { get }
 }
 

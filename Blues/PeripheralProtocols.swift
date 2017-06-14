@@ -12,7 +12,6 @@ import Result
 
 /// A `DelegatedPeripheral`'s delegate.
 public protocol PeripheralDelegate: class {
-
     /// Invoked when a connection is about to be created with a peripheral.
     ///
     /// - Parameters:
@@ -71,15 +70,16 @@ public protocol PeripheralDelegate: class {
 
 /// A `Peripheral`'s data source.
 public protocol PeripheralDataSource: class {
-    /// Creates and returns a descriptor for a given shadow descriptor.
+    /// Creates and returns a service for a given identifier.
     ///
     /// - Note:
-    ///   Override this property to provide a custom type for the given descriptor.
-    ///   The default implementation creates `DefaultDescriptor`.
+    ///   Override this property to provide a custom type for the given service.
+    ///   The default implementation creates `DefaultService`.
     ///
     /// - Parameters:
-    ///   - shadow: The descriptor's shadow descriptor.
+    ///   - identifier: The descriptor's identifier.
+    ///   - peripheral: The descriptor's peripheral.
     ///
-    /// - Returns: A new descriptor object.
-    func service(shadow: ShadowService, for peripheral: Peripheral) -> Service
+    /// - Returns: A new service object.
+    func service(with identifier: Identifier, for peripheral: Peripheral) -> Service
 }

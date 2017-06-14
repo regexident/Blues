@@ -13,81 +13,24 @@ import Result
 
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
-public protocol Characteristic:
-    class, CharacteristicDataSource, CharacteristicDelegate, CustomStringConvertible {
+open class Characteristic {
+    /// The Bluetooth-specific identifier of the characteristic.
+    public let identifier: Identifier
 
     /// The characteristic's name.
     ///
     /// - Note:
-    ///   Default implementation returns class name.
-    var name: String { get }
-
-    /// The supporting "shadow" characteristic that does the heavy lifting.
-    var shadow: ShadowCharacteristic { get }
-
-    /// Whether the characteristic should discover descriptors automatically
-    ///
-    /// - Note:
-    ///   Default implementation returns `true`
-    var shouldDiscoverDescriptorsAutomatically: Bool { get }
-
-    /// Whether the characteristic should subscribe to notifications automatically
-    ///
-    /// - Note:
-    ///   Default implementation returns `true`
-    var shouldSubscribeToNotificationsAutomatically: Bool { get }
-
-    /// Initializes a `Characteristic` as a shim for a provided shadow characteristic.
-    /// - Parameters:
-    ///   - shadow: The characteristic's "shadow" characteristic
-    init(shadow: ShadowCharacteristic)
-}
-
-/// A characteristic of a peripheral’s service,
-/// providing further information about one of its value.
-public protocol CharacteristicValueTransformer {
-
-    /// The characteristic's value type.
-    associatedtype Value
-
-    /// The transformation logic for decoding the characteristic's
-    /// data value into type-safe value representation
-    func transform(data: Data) -> Result<Value, TypesafeCharacteristicError>
-
-    /// The transformation logic for encoding the characteristic's
-    /// type-safe value into a data representation
-    func transform(value: Value) -> Result<Data, TypesafeCharacteristicError>
-}
-
-public protocol TypesafeCharacteristic: Characteristic {
-    associatedtype Transformer: CharacteristicValueTransformer
-
-    var transformer: Transformer { get }
-}
-
-extension Characteristic {
-
-    /// The Bluetooth-specific identifier of the characteristic.
-    public var identifier: Identifier {
-        return self.shadow.identifier
+    ///   Default implementation returns the identifier.
+    ///   Override this property to provide a name for your custom type.
+    open var name: String? {
+        return nil
     }
+    
+    /// The peripheral that this characteristic belongs to.
+    public weak var peripheral: Peripheral?
 
-    public var name: String {
-        return String(describing: type(of: self))
-    }
-
-    public var shouldDiscoverDescriptorsAutomatically: Bool {
-        return true
-    }
-
-    public var shouldSubscribeToNotificationsAutomatically: Bool {
-        return false
-    }
-
-    /// The value data of the characteristic.
-    public var data: Result<Data?, PeripheralError> {
-        return self.core.map { $0.value }
-    }
+    /// The service that this characteristic belongs to.
+    public weak var service: Service?
 
     /// A list of the descriptors that have been discovered in this characteristic.
     ///
@@ -98,13 +41,47 @@ extension Characteristic {
     ///   For example, they may describe the value in human-readable form
     ///   and describe how the value should be formatted for presentation purposes.
     ///   For more information about characteristic descriptors, see `Descriptor`.
-    public var descriptors: [Identifier: Descriptor]? {
-        return self.shadow.descriptors
+    public var descriptors: [Identifier: Descriptor]? = nil
+
+    internal var core: Result<CBCharacteristic, PeripheralError>
+
+    public init(identifier: Identifier, service: Service) {
+        self.identifier = identifier
+        self.core = .err(.unreachable)
+        self.service = service
+        self.peripheral = service.peripheral
+    }
+
+    /// Whether the characteristic should discover descriptors automatically
+    ///
+    /// - Note:
+    ///   Default implementation returns `true`
+    open var shouldDiscoverDescriptorsAutomatically: Bool {
+        return false
+    }
+
+    /// Whether the characteristic should subscribe to notifications automatically
+    ///
+    /// - Note:
+    ///   Default implementation returns `true`
+    open var shouldSubscribeToNotificationsAutomatically: Bool {
+        return false
+    }
+
+    /// The value data of the characteristic.
+    public var data: Result<Data?, PeripheralError> {
+        return self.core.map { $0.value }
     }
 
     /// The descriptor associated with a given type if it has previously been discovered in this characteristic.
-    public func descriptor<D>(ofType type: D.Type) -> D? where D: Descriptor & TypeIdentifiable {
-        return self.descriptors.flatMap { $0[type.identifier] } as? D
+    public func descriptor<D>(ofType type: D.Type) -> D?
+        where D: Descriptor,
+              D: TypeIdentifiable
+    {
+        guard let descriptors = self.descriptors else {
+            return nil
+        }
+        return descriptors[type.typeIdentifier] as? D
     }
 
     /// The properties of the characteristic.
@@ -122,20 +99,6 @@ extension Characteristic {
         }
     }
 
-    /// The service that this characteristic belongs to.
-    public var service: Service? {
-        return self.shadow.service
-    }
-
-    /// The peripheral that this characteristic belongs to.
-    public var peripheral: Peripheral? {
-        return self.shadow.peripheral
-    }
-
-    var core: Result<CBCharacteristic, PeripheralError> {
-        return self.shadow.core.okOr(.unreachable)
-    }
-
     /// Discovers the descriptors of a characteristic.
     ///
     /// - Note:
@@ -144,7 +107,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discoverDescriptors() -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(DiscoverDescriptorsMessage(
+        return self.tryToHandle(DiscoverDescriptorsMessage(
             characteristic: self
         )) ?? .err(.unhandled)
     }
@@ -164,7 +127,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func read() -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(ReadValueForCharacteristicMessage(
+        return self.tryToHandle(ReadValueForCharacteristicMessage(
             characteristic: self
         )) ?? .err(.unhandled)
     }
@@ -196,7 +159,7 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(data: Data, type: WriteType) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
+        return self.tryToHandle(WriteValueForCharacteristicMessage(
             data: data,
             characteristic: self,
             type: type
@@ -227,23 +190,70 @@ extension Characteristic {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func set(notifyValue: Bool) -> Result<(), PeripheralError> {
-        return self.shadow.tryToHandle(SetNotifyValueForCharacteristicMessage(
+        return self.tryToHandle(SetNotifyValueForCharacteristicMessage(
             notifyValue: notifyValue,
             characteristic: self
         )) ?? .err(.unhandled)
     }
 
-    public var description: String {
+    func wrapper(for core: CBDescriptor) -> Descriptor {
+        let identifier = Identifier(uuid: core.uuid)
+        let descriptor: Descriptor
+        if let dataSource = self as? CharacteristicDataSource {
+            descriptor = dataSource.descriptor(with: identifier, for: self)
+        } else {
+            descriptor = DefaultDescriptor(identifier: identifier, characteristic: self)
+        }
+        descriptor.core = .ok(core)
+        return descriptor
+    }
+
+    internal func attach(core: CBCharacteristic) {
+        self.core = .ok(core)
+        guard let cores = core.descriptors else {
+            return
+        }
+        guard let descriptors = self.descriptors else {
+            return
+        }
+        for core in cores {
+            let identifier = Identifier(uuid: core.uuid)
+            guard let descriptor = descriptors[identifier] else {
+                continue
+            }
+            descriptor.attach(core: core)
+        }
+    }
+
+    internal func detach() {
+        self.core = .err(.unreachable)
+        guard let descriptors = self.descriptors else {
+            return
+        }
+        for descriptor in descriptors.values {
+            descriptor.detach()
+        }
+    }
+}
+
+extension Characteristic: Responder {
+    internal var nextResponder: Responder? {
+        return self.service
+    }
+}
+
+extension Characteristic: CustomStringConvertible {
+    open var description: String {
         let className = type(of: self)
         let attributes = [
-            "identifier = \(self.shadow.identifier)",
-            "name = \(self.name)",
+            "identifier = \(self.identifier)",
+            "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
     }
 }
 
-extension TypesafeCharacteristic {
+extension TypedCharacteristic where Self: Characteristic {
     /// A type-safe value representation of the characteristic.
     ///
     /// - Note:
@@ -251,8 +261,8 @@ extension TypesafeCharacteristic {
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Transformer.Value?, TypesafeCharacteristicError> {
-        return self.data.mapErr(TypesafeCharacteristicError.peripheral).andThen { data in
+    public var value: Result<Transformer.Value?, TypedCharacteristicError> {
+        return self.data.mapErr(TypedCharacteristicError.peripheral).andThen { data in
             guard let data = data else {
                 return .ok(nil)
             }
@@ -275,9 +285,9 @@ extension TypesafeCharacteristic {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypesafeCharacteristicError> {
+    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedCharacteristicError> {
         return self.transformer.transform(value: value).andThen { data in
-            let answer = self.shadow.tryToHandle(WriteValueForCharacteristicMessage(
+            let answer = self.tryToHandle(WriteValueForCharacteristicMessage(
                 data: data,
                 characteristic: self,
                 type: type
@@ -290,65 +300,7 @@ extension TypesafeCharacteristic {
         }
     }
 
-    public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypesafeCharacteristicError> {
+    public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError> {
         return data.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(data: $0) }
-    }
-}
-
-extension Characteristic {
-    
-    func descriptor(
-        shadow: ShadowDescriptor,
-        for characteristic: Characteristic
-    ) -> Descriptor {
-        return DefaultDescriptor(shadow: shadow)
-    }
-}
-
-/// The supporting "shadow" characteristic that does the actual heavy lifting
-/// behind any `Characteristic` implementation.
-public class ShadowCharacteristic {
-
-    /// The Bluetooth-specific identifier of the characteristic.
-    public let identifier: Identifier
-
-    weak var core: CBCharacteristic?
-    weak var peripheral: Peripheral?
-    weak var service: Service?
-    var descriptors: [Identifier: Descriptor] = [:]
-
-    init(core: CBCharacteristic, service: Service) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self.service = service
-        self.peripheral = service.peripheral
-    }
-
-    func attach(core: CBCharacteristic) {
-        self.core = core
-        guard let cores = core.descriptors else {
-            return
-        }
-        for core in cores {
-            let uuid = Identifier(uuid: core.uuid)
-            guard let descriptor = self.descriptors[uuid] else {
-                continue
-            }
-            descriptor.shadow.attach(core: core)
-        }
-    }
-
-    func detach() {
-        self.core = nil
-        for descriptor in self.descriptors.values {
-            descriptor.shadow.detach()
-        }
-    }
-}
-
-extension ShadowCharacteristic: Responder {
-
-    var nextResponder: Responder? {
-        return self.service?.shadow
     }
 }

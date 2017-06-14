@@ -10,13 +10,8 @@ import Foundation
 
 import Result
 
-/// A `Characteristic`'s delegate.
-public protocol CharacteristicDelegate: class {
-
-}
-
 /// A readable `Characteristic`'s delegate.
-public protocol ReadableCharacteristicDelegate: CharacteristicDelegate {
+public protocol ReadableCharacteristicDelegate: class {
     /// Invoked when you retrieve a specified characteristic’s value,
     /// or when the peripheral device notifies your app that
     /// the characteristic’s value has changed.
@@ -28,7 +23,7 @@ public protocol ReadableCharacteristicDelegate: CharacteristicDelegate {
 }
 
 /// A writable `Characteristic`'s delegate.
-public protocol WritableCharacteristicDelegate: CharacteristicDelegate {
+public protocol WritableCharacteristicDelegate: class {
     /// Invoked when you write data to a characteristic’s value.
     ///
     /// - Note:
@@ -61,7 +56,7 @@ public protocol NotifyableCharacteristicDelegate: ReadableCharacteristicDelegate
 }
 
 /// A describable `Characteristic`'s delegate.
-public protocol DescribableCharacteristicDelegate: CharacteristicDelegate {
+public protocol DescribableCharacteristicDelegate: class {
     /// Invoked when you discover the descriptors of a specified characteristic.
     ///
     /// - Note:
@@ -77,7 +72,7 @@ public protocol DescribableCharacteristicDelegate: CharacteristicDelegate {
     )
 }
 
-public typealias FullblownCharacteristicDelegate =
+public typealias CharacteristicDelegate =
     ReadableCharacteristicDelegate
     & WritableCharacteristicDelegate
     & NotifyableCharacteristicDelegate
@@ -85,18 +80,37 @@ public typealias FullblownCharacteristicDelegate =
 
 /// A `Characteristic`'s data source.
 public protocol CharacteristicDataSource: class {
-    /// Creates and returns a descriptor for a given shadow descriptor.
+    /// Creates and returns a descriptor for a given identifier.
     ///
     /// - Note:
     ///   Override this property to provide a custom type for the given descriptor.
     ///   The default implementation creates `DefaultDescriptor`.
     ///
     /// - Parameters:
-    ///   - shadow: The descriptor's shadow descriptor.
+    ///   - identifier: The descriptor's identifier.
+    ///   - characteristic: The descriptor's characteristic.
     ///
     /// - Returns: A new descriptor object.
-    func descriptor(
-        shadow: ShadowDescriptor,
-        for characteristic: Characteristic
-    ) -> Descriptor
+    func descriptor(with identifier: Identifier, for characteristic: Characteristic) -> Descriptor
+}
+
+/// A characteristic of a peripheral’s service,
+/// providing further information about one of its value.
+public protocol CharacteristicValueTransformer {
+    /// The characteristic's value type.
+    associatedtype Value
+
+    /// The transformation logic for decoding the characteristic's
+    /// data value into type-safe value representation
+    func transform(data: Data) -> Result<Value, TypedCharacteristicError>
+
+    /// The transformation logic for encoding the characteristic's
+    /// type-safe value into a data representation
+    func transform(value: Value) -> Result<Data, TypedCharacteristicError>
+}
+
+public protocol TypedCharacteristic {
+    associatedtype Transformer: CharacteristicValueTransformer
+
+    var transformer: Transformer { get }
 }

@@ -10,12 +10,7 @@ import Foundation
 
 import Result
 
-/// A `DelegatedDescriptor`'s delegate.
-public protocol DescriptorDelegate: class {
-}
-
-public protocol ReadableDescriptorDelegate: DescriptorDelegate {
-
+public protocol ReadableDescriptorDelegate: class {
     /// Invoked when you retrieve a specified characteristic descriptor’s value.
     ///
     /// - Parameters:
@@ -24,7 +19,7 @@ public protocol ReadableDescriptorDelegate: DescriptorDelegate {
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor)
 }
 
-public protocol WritableDescriptorDelegate: DescriptorDelegate {
+public protocol WritableDescriptorDelegate: class {
     /// Invoked when you write data to a characteristic descriptor’s value.
     ///
     /// - Parameters:
@@ -33,6 +28,27 @@ public protocol WritableDescriptorDelegate: DescriptorDelegate {
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
 }
 
-public typealias FullblownDescriptorDelegate =
+/// A `DelegatedDescriptor`'s delegate.
+public typealias DescriptorDelegate =
     ReadableDescriptorDelegate
     & WritableDescriptorDelegate
+
+/// A descriptor of a peripheral’s characteristic, providing further information about its value.
+public protocol DescriptorValueTransformer {
+    /// The descriptor's value type.
+    associatedtype Value
+
+    /// The transformation logic for decoding the descriptor's
+    /// data value into type-safe value representation
+    func transform(any: Any) -> Result<Value, TypedDescriptorError>
+
+    /// The transformation logic for encoding the descriptor's
+    /// type-safe value into a data representation
+    func transform(value: Value) -> Result<Data, TypedDescriptorError>
+}
+
+public protocol TypedDescriptor {
+    associatedtype Transformer: DescriptorValueTransformer
+
+    var transformer: Transformer { get }
+}

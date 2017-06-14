@@ -11,20 +11,12 @@ import Foundation
 import Result
 
 /// Default implementation of `Peripheral` protocol.
-public class DefaultPeripheral: Peripheral {
-
-    public let shadow: ShadowPeripheral
-
+open class DefaultPeripheral: Peripheral {
     public weak var delegate: PeripheralDelegate?
     public weak var dataSource: PeripheralDataSource?
-
-    public required init(shadow: ShadowPeripheral) {
-        self.shadow = shadow
-    }
 }
 
 extension DefaultPeripheral: PeripheralDelegate {
-
     public func willConnect(to peripheral: Peripheral) {
         self.delegate?.willConnect(to: peripheral)
     }
@@ -66,11 +58,11 @@ extension DefaultPeripheral: PeripheralDelegate {
 }
 
 extension DefaultPeripheral: PeripheralDataSource {
-    public func service(shadow: ShadowService, for peripheral: Peripheral) -> Service {
+    public func service(with identifier: Identifier, for peripheral: Peripheral) -> Service {
         if let dataSource = self.dataSource {
-            return dataSource.service(shadow: shadow, for: peripheral)
+            return dataSource.service(with: identifier, for: peripheral)
         } else {
-            return DefaultService(shadow: shadow)
+            return DefaultService(identifier: identifier, peripheral: peripheral)
         }
     }
 }

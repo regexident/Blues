@@ -30,8 +30,13 @@ public struct CentralManagerScanningOptions {
     /// peripherals soliciting any of the services contained in the array.
     public let solicitedServiceIdentifiers: [Identifier]?
 
-    init(dictionary: [String: Any]) {
-        let allowDuplicatesKey = CBCentralManagerRestoredStateScanOptionsKey
+    private enum Keys {
+        static let allowDuplicates = CBCentralManagerScanOptionAllowDuplicatesKey
+        static let solicitedServiceIdentifiers = CBCentralManagerScanOptionSolicitedServiceUUIDsKey
+    }
+
+    internal init(dictionary: [String: Any]) {
+        let allowDuplicatesKey = Keys.allowDuplicates
         if let value = dictionary[allowDuplicatesKey] {
             guard let allowDuplicates = value as? Bool else {
                 fatalError("Unexpected value: \"\(value)\" for key \(allowDuplicatesKey)")
@@ -41,7 +46,7 @@ public struct CentralManagerScanningOptions {
             self.allowDuplicates = nil
         }
 
-        let solicitedServicesKey = CBCentralManagerRestoredStateScanOptionsKey
+        let solicitedServicesKey = Keys.solicitedServiceIdentifiers
         if let value = dictionary[solicitedServicesKey] {
             guard let solicitedServiceIdentifiers = value as? [CBUUID] else {
                 fatalError("Unexpected value: \"\(value)\" for key \(solicitedServicesKey)")
@@ -54,14 +59,14 @@ public struct CentralManagerScanningOptions {
         }
     }
 
-    var dictionary: [String: Any] {
+    internal var dictionary: [String: Any] {
         var dictionary: [String: Any] = [:]
         if let allowDuplicates = self.allowDuplicates {
-            dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = allowDuplicates
+            dictionary[Keys.allowDuplicates] = allowDuplicates
         }
         if let solicitedServiceIdentifiers = self.solicitedServiceIdentifiers {
             let identifiers = solicitedServiceIdentifiers.map { $0.core }
-            dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = identifiers
+            dictionary[Keys.solicitedServiceIdentifiers] = identifiers
         }
         return dictionary
     }
@@ -87,14 +92,14 @@ public struct CentralManagerRestoreState {
     /// the central manager was scanning for at the time the app was terminated by the system.
     public let scanServices: [Identifier]?
 
-    enum Keys {
+    private enum Keys {
         static let scanOptions = CBCentralManagerRestoredStateScanOptionsKey
         static let peripherals = CBCentralManagerRestoredStatePeripheralsKey
         static let scanServices = CBCentralManagerRestoredStateScanServicesKey
     }
 
     /// A dictionary-representation according to Core Bluetooth's `CBConnectPeripheralOption`s.
-    var dictionary: [String: Any] {
+    internal var dictionary: [String: Any] {
         var dictionary: [String: Any] = [:]
 
         if let scanOptions = self.scanOptions {
@@ -103,7 +108,7 @@ public struct CentralManagerRestoreState {
         }
 
         if let peripherals = self.peripherals {
-            let peripherals: [CBPeripheral] = peripherals.map { $0.core }
+            let peripherals: [CBPeripheral] = peripherals.flatMap { $0.core.asOk }
             dictionary[Keys.peripherals] = peripherals
         }
 
@@ -119,7 +124,7 @@ public struct CentralManagerRestoreState {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary to take values from.
-    init(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
+    internal init(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
         guard let scanOptions = dictionary[Keys.scanOptions] as? [String: Any]? else {
             fatalError()
         }
