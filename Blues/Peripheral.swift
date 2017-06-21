@@ -32,11 +32,7 @@ open class Peripheral: NSObject {
     ///   Default implementation returns the identifier.
     ///   Override this property to provide a name for your custom type.
     open var name: String? {
-        if case let .ok(core) = self.core {
-            return core.name
-        } else {
-            return nil
-        }
+        return self.core.name
     }
 
     /// Which services the peripheral should discover automatically.
@@ -49,10 +45,8 @@ open class Peripheral: NSObject {
     }
 
     /// The state of the peripheral
-    public var state: Result<PeripheralState, PeripheralError> {
-        return self.core.map { core in
-            return PeripheralState(state: core.state)
-        }
+    public var state: PeripheralState {
+        return PeripheralState(state: self.core.state)
     }
 
     /// A list of services on the peripheral that have been discovered.
@@ -69,7 +63,7 @@ open class Peripheral: NSObject {
 
     public weak var centralManager: CentralManager?
 
-    internal var core: Result<CBPeripheral, PeripheralError>
+    internal var core: CBPeripheral!
 
     internal var queue: DispatchQueue {
         guard let centralManager = self.centralManager else {
@@ -80,7 +74,7 @@ open class Peripheral: NSObject {
 
     public init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
-        self.core = .err(.unreachable)
+        self.core = nil
         self.centralManager = centralManager
     }
 
@@ -117,11 +111,13 @@ open class Peripheral: NSObject {
     ///   - options: Options customizing the behavior of the connection
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func connect(options: ConnectionOptions? = nil) -> Result<(), PeripheralError> {
+    public func connect(options: ConnectionOptions? = nil) {
         return self.tryToHandle(ConnectPeripheralMessage(
             peripheral: self,
             options: options
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: ConnectPeripheralMessage.self)) not handled.")
+        }
     }
 
     /// Cancels an active or pending local connection to a peripheral.
@@ -138,10 +134,12 @@ open class Peripheral: NSObject {
     ///   `didDisconnect(peripheral:error:)` method of its delegate object.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func disconnect() -> Result<(), PeripheralError> {
+    public func disconnect() {
         return self.tryToHandle(DisconnectPeripheralMessage(
             peripheral: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: DisconnectPeripheralMessage.self)) not handled.")
+        }
     }
 
     /// Discovers the specified services of the peripheral.
@@ -164,10 +162,12 @@ open class Peripheral: NSObject {
     ///     Here, each `Identifier` identifies the type of service you want to discover.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discover(services: [Identifier]?) -> Result<(), PeripheralError> {
+    public func discover(services: [Identifier]?) {
         return self.tryToHandle(DiscoverServicesMessage(
             uuids: services
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: DiscoverServicesMessage.self)) not handled.")
+        }
     }
 
     /// Retrieves the current RSSI value for the peripheral
@@ -178,18 +178,12 @@ open class Peripheral: NSObject {
     ///   peripheral while it is currently connected to the central manager,
     ///   the peripheral calls the `didRead(rssi:of:)` method of its
     ///   delegate object, which includes the RSSI value as a parameter.
-    public func readRSSI() -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.readRSSI()
-        }
+    public func readRSSI() {
+        return self.core.readRSSI()
     }
 
     func isValid(core peripheral: CBPeripheral) -> Bool {
-        if case let .ok(core) = self.core {
-            return peripheral == core
-        } else {
-            fatalError("Attempting to access unknown Peripheral")
-        }
+        return peripheral == self.core
     }
 
     internal func wrapperOf(service: CBService) -> Service? {
@@ -216,13 +210,13 @@ open class Peripheral: NSObject {
         } else {
             service = DefaultService(identifier: identifier, peripheral: self)
         }
-        service.core = .ok(core)
+        service.core = core
         return service
     }
 
     internal func attach(to core: CBPeripheral) {
         core.delegate = self
-        self.core = .ok(core)
+        self.core = core
         guard let coreServices = core.services else {
             return
         }
@@ -232,19 +226,6 @@ open class Peripheral: NSObject {
                 continue
             }
             service.attach(core: coreService)
-        }
-    }
-
-    internal func detach() {
-        if case let .ok(core) = self.core {
-            core.delegate = nil
-        }
-        self.core = .err(.unreachable)
-        guard let services = self.services?.values else {
-            return
-        }
-        for service in services {
-            service.detach()
         }
     }
 }
@@ -264,85 +245,6 @@ extension Peripheral /* : CustomStringConvertible */ {
 extension Peripheral: Responder {
     internal var nextResponder: Responder? {
         return self.centralManager
-    }
-}
-
-extension Peripheral: PeripheralHandling {
-    func connectedCore() -> Result<CBPeripheral, PeripheralError> {
-        return self.core.andThen { core in
-            if core.state == .connected {
-                return .ok(core)
-            } else {
-                return .err(.unreachable)
-            }
-        }
-    }
-
-    func discover(services: [CBUUID]?) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.discoverServices(services)
-        }
-    }
-
-    func discover(
-        includedServices: [CBUUID]?,
-        for service: CBService
-    ) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.discoverIncludedServices(includedServices, for: service)
-        }
-    }
-
-    func discover(
-        characteristics: [CBUUID]?,
-        for service: CBService
-    ) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.discoverCharacteristics(characteristics, for: service)
-        }
-    }
-
-    func discoverDescriptors(for characteristic: CBCharacteristic) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.discoverDescriptors(for: characteristic)
-        }
-    }
-
-    func readData(for characteristic: CBCharacteristic) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.readValue(for: characteristic)
-        }
-    }
-
-    func readData(for descriptor: CBDescriptor) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.readValue(for: descriptor)
-        }
-    }
-
-    func write(
-        data: Data,
-        for characteristic: CBCharacteristic,
-        type: WriteType
-    ) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.writeValue(data, for: characteristic, type: type.inner)
-        }
-    }
-
-    func write(data: Data, for descriptor: CBDescriptor) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.writeValue(data, for: descriptor)
-        }
-    }
-
-    func set(
-        notifyValue: Bool,
-        for characteristic: CBCharacteristic
-    ) -> Result<(), PeripheralError> {
-        return self.connectedCore().map { core in
-            core.setNotifyValue(notifyValue, for: characteristic)
-        }
     }
 }
 
@@ -373,9 +275,7 @@ extension Peripheral: CBPeripheralDelegate {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
-                if case let .err(error) = service.discover(characteristics: characteristics) {
-                    print("Error: \(error)")
-                }
+                service.discover(characteristics: characteristics)
                 self.services?[identifier] = service
                 return service
             }
@@ -419,9 +319,7 @@ extension Peripheral: CBPeripheralDelegate {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
-                if case let .err(error) = service.discover(characteristics: characteristics) {
-                    print("Error: \(error)")
-                }
+                service.discover(characteristics: characteristics)
                 discoveredServices.append(service)
                 services[identifier] = service
             }
@@ -454,9 +352,7 @@ extension Peripheral: CBPeripheralDelegate {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
-                if case let .err(error) = service.discover(characteristics: characteristics) {
-                    print("Error: \(error)")
-                }
+                service.discover(characteristics: characteristics)
                 discoveredServices.append(service)
                 services[identifier] = service
             }
@@ -488,14 +384,10 @@ extension Peripheral: CBPeripheralDelegate {
             for coreCharacteristic in coreCharacteristics {
                 let characteristic = wrapper.wrapper(for: coreCharacteristic)
                 if characteristic.shouldSubscribeToNotificationsAutomatically {
-                    if case let .err(error) = characteristic.set(notifyValue: true) {
-                        print("Error: \(error)")
-                    }
+                    characteristic.set(notifyValue: true)
                 }
                 if characteristic.shouldDiscoverDescriptorsAutomatically {
-                    if case let .err(error) = characteristic.discoverDescriptors() {
-                        print("Error: \(error)")
-                    }
+                    characteristic.discoverDescriptors()
                 }
                 discoveredCharacteristics.append(characteristic)
                 characteristics[characteristic.identifier] = characteristic

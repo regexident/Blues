@@ -95,7 +95,7 @@ open class CentralManager: NSObject {
     public func disconnectAll() {
         self.queue.async {
             for peripheral in self.peripherals.values {
-                if case .ok(.connected) = peripheral.state {
+                if peripheral.state == .connected {
                     let _ = self.disconnect(peripheral: peripheral)
                 }
             }
@@ -124,40 +124,30 @@ extension CentralManager: CentralManagerHandling {
     func connect(
         peripheral: Peripheral,
         options: ConnectionOptions? = nil
-    ) -> Result<(), PeripheralError> {
-        guard case let .ok(state) = peripheral.state else {
-            return .err(.unreachable)
-        }
-        if (state == .connected) || (state == .connecting) {
-            return .ok(())
+    ) {
+        if (peripheral.state == .connected) || (peripheral.state == .connecting) {
+            return
         }
         self.queue.async {
             let delegate = peripheral as? PeripheralDelegate
             delegate?.willConnect(to: peripheral)
             peripheral.connectionOptions = options
-            let _ = peripheral.core.map { corePeripheral in
-                self.core.connect(corePeripheral, options: options?.dictionary)
-            }
+            self.core.connect(peripheral.core, options: options?.dictionary)
         }
-        return .ok(())
+        return
     }
 
-    func disconnect(peripheral: Peripheral) -> Result<(), PeripheralError> {
-        guard case let .ok(state) = peripheral.state else {
-            return .err(.unreachable)
-        }
-        if (state == .disconnected) || (state == .disconnecting) {
-            return .ok(())
+    func disconnect(peripheral: Peripheral) {
+        if (peripheral.state == .disconnected) || (peripheral.state == .disconnecting) {
+            return
         }
         self.queue.async {
             let delegate = peripheral as? PeripheralDelegate
             delegate?.willDisconnect(from: peripheral)
             peripheral.connectionOptions = nil
-            let _ = peripheral.core.map { corePeripheral in
-                self.core.cancelPeripheralConnection(corePeripheral)
-            }
+            self.core.cancelPeripheralConnection(peripheral.core)
         }
-        return .ok(())
+        return
     }
 }
 
@@ -183,10 +173,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 // nothing for now
             } else if central.state == .poweredOff {
                 for peripheral in self.peripherals.values {
-                    guard case let .ok(state) = peripheral.state else {
-                        continue
-                    }
-                    if state == .connected {
+                    if peripheral.state == .connected {
                         let delegate = peripheral as? PeripheralDelegate
                         delegate?.didDisconnect(from: peripheral, error: nil)
                     }
@@ -233,9 +220,7 @@ extension CentralManager: CBCentralManagerDelegate {
             }
 //            wrapper.attach(to: peripheral)
             let services = wrapper.automaticallyDiscoveredServices
-            if case let .err(error) = wrapper.discover(services: services) {
-                print("Error: \(error)")
-            }
+            wrapper.discover(services: services)
             let delegate = wrapper as? PeripheralDelegate
             delegate?.didConnect(to: wrapper)
         }

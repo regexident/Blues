@@ -32,20 +32,18 @@ open class Descriptor {
     /// The characteristic that this descriptor belongs to.
     public weak var characteristic: Characteristic?
 
-    internal var core: Result<CBDescriptor, PeripheralError>
+    internal var core: CBDescriptor!
 
     public init(identifier: Identifier, characteristic: Characteristic) {
         self.identifier = identifier
-        self.core = .err(.unreachable)
+        self.core = nil
         self.characteristic = characteristic
         self.peripheral = characteristic.peripheral
     }
 
     /// The value of the descriptor, or an error.
-    public var any: Result<Any?, PeripheralError> {
-        return self.core.map {
-            $0.value
-        }
+    public var any: Any? {
+        return self.core.value
     }
 
     /// Retrieves the value of the characteristic descriptor, or an error.
@@ -56,10 +54,12 @@ open class Descriptor {
     ///   method of its delegate object with the retrieved value, or an error.
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
-    public func read() -> Result<(), PeripheralError> {
+    public func read() -> () {
         return self.tryToHandle(ReadValueForDescriptorMessage(
             descriptor: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: ReadValueForDescriptorMessage.self)) not handled.")
+        }
     }
 
     /// Writes the value of a characteristic descriptor.
@@ -84,19 +84,17 @@ open class Descriptor {
     /// - data: The value to be written.
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
-    public func write(data: Data) -> Result<(), PeripheralError> {
+    public func write(data: Data) {
         return self.tryToHandle(WriteValueForDescriptorMessage(
             data: data,
             descriptor: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: WriteValueForDescriptorMessage.self)) not handled.")
+        }
     }
 
     internal func attach(core: CBDescriptor) {
-        self.core = .ok(core)
-    }
-
-    internal func detach() {
-        self.core = .err(.unreachable)
+        self.core = core
     }
 }
 
@@ -126,12 +124,10 @@ extension TypedDescriptor where Self: Descriptor {
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Transformer.Value?, TypedDescriptorError> {
-        return self.any.mapErr(TypedDescriptorError.peripheral).andThen { any in
-            guard let any = any else {
-                return .ok(nil)
-            }
-            return self.transformer.transform(any: any).map { .some($0) }
+        guard let any = self.any else {
+            return .ok(nil)
         }
+        return self.transformer.transform(any: any).map { .some($0) }
     }
 
     /// Writes the value of a descriptor.
@@ -151,19 +147,11 @@ extension TypedDescriptor where Self: Descriptor {
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedDescriptorError> {
         return self.transformer.transform(value: value).andThen { data in
-            let answer = self.tryToHandle(WriteValueForDescriptorMessage(
-                data: data,
-                descriptor: self
-            ))
-            if answer != nil {
-                return .ok(())
-            } else {
-                return .err(.peripheral(.unhandled))
-            }
+            return .ok(self.write(data: data))
         }
     }
 
     public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypedDescriptorError> {
-        return any.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(any: $0) }
+        return any.mapErr { .other($0) }.andThen { self.transformer.transform(any: $0) }
     }
 }

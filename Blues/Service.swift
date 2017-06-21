@@ -45,7 +45,7 @@ open class Service {
     ///   These other services are the included services of the service.
     public var includedServices: [Identifier: Service]?
 
-    internal var core: Result<CBService, PeripheralError>
+    internal var core: CBService!
 
     /// Which characteristics the service should discover automatically.
     /// Return `nil` to discover all available characteristics.
@@ -58,15 +58,13 @@ open class Service {
 
     /// `.ok(isPrimary)` with a boolean value indicating whether the type
     /// of service is primary or secondary if successful, otherwise `.err(error)`.
-    public var isPrimary: Result<Bool, PeripheralError> {
-        return self.core.map {
-            $0.isPrimary
-        }
+    public var isPrimary: Bool {
+        return self.core.isPrimary
     }
 
     public init(identifier: Identifier, peripheral: Peripheral) {
         self.identifier = identifier
-        self.core = .err(.unreachable)
+        self.core = nil
         self.peripheral = peripheral
     }
 
@@ -104,11 +102,13 @@ open class Service {
     ///     `Identifier` identifies the type of included service you want to discover.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discover(includedServices: [Identifier]? = nil) -> Result<(), PeripheralError> {
+    public func discover(includedServices: [Identifier]? = nil) -> () {
         return self.tryToHandle(DiscoverIncludedServicesMessage(
             uuids: includedServices,
             service: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: DiscoverIncludedServicesMessage.self)) not handled.")
+        }
     }
 
     /// Discovers the specified characteristics of a service.
@@ -132,11 +132,13 @@ open class Service {
     ///     type of a characteristic you want to discover.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discover(characteristics: [Identifier]?) -> Result<(), PeripheralError> {
+    public func discover(characteristics: [Identifier]?) -> () {
         return self.tryToHandle(DiscoverCharacteristicsMessage(
             uuids: characteristics,
             service: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: DiscoverCharacteristicsMessage.self)) not handled.")
+        }
     }
 
     internal func wrapper(for core: CBCharacteristic) -> Characteristic {
@@ -147,12 +149,12 @@ open class Service {
         } else {
             characteristic = DefaultCharacteristic(identifier: identifier, service: self)
         }
-        characteristic.core = .ok(core)
+        characteristic.core = core
         return characteristic
     }
 
     internal func attach(core: CBService) {
-        self.core = .ok(core)
+        self.core = core
         guard let cores = core.characteristics else {
             return
         }
@@ -162,16 +164,6 @@ open class Service {
                 continue
             }
             characteristic.attach(core: core)
-        }
-    }
-
-    internal func detach() {
-        self.core = .err(.unreachable)
-        guard let characteristics = self.characteristics?.values else {
-            return
-        }
-        for characteristic in characteristics {
-            characteristic.detach()
         }
     }
 }

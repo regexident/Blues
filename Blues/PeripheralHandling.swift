@@ -13,7 +13,7 @@ import Result
 
 struct DiscoverServicesMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let uuids: [Identifier]?
 
@@ -25,119 +25,103 @@ struct DiscoverServicesMessage: Message {
 
 struct DiscoverIncludedServicesMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let uuids: [Identifier]?
     let service: Service
 
     func sendToHandler(_ handler: Handler) -> Output {
         let uuids = self.uuids?.map { $0.core }
-        return self.service.core.andThen {
-            handler.discover(includedServices: uuids, for: $0)
-        }
+        return handler.discover(includedServices: uuids, for: self.service.core)
     }
 }
 
 struct DiscoverCharacteristicsMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let uuids: [Identifier]?
     let service: Service
 
     func sendToHandler(_ handler: Handler) -> Output {
         let uuids = self.uuids?.map { $0.core }
-        return self.service.core.andThen {
-            handler.discover(characteristics: uuids, for: $0)
-        }
+        return handler.discover(characteristics: uuids, for: self.service.core)
     }
 }
 
 struct DiscoverDescriptorsMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let characteristic: Characteristic
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.characteristic.core.andThen {
-            handler.discoverDescriptors(for: $0)
-        }
+        return handler.discoverDescriptors(for: self.characteristic.core)
     }
 }
 
 struct ReadValueForCharacteristicMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let characteristic: Characteristic
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.characteristic.core.andThen {
-            handler.readData(for: $0)
-        }
+        return handler.readData(for: self.characteristic.core)
     }
 }
 
 struct ReadValueForDescriptorMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let descriptor: Descriptor
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.descriptor.core.andThen {
-            handler.readData(for: $0)
-        }
+        return handler.readData(for: self.descriptor.core)
     }
 }
 
 struct WriteValueForCharacteristicMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let data: Data
     let characteristic: Characteristic
     let type: WriteType
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.characteristic.core.andThen {
-            handler.write(data: self.data, for: $0, type: self.type)
-        }
+        return handler.write(data: self.data, for: self.characteristic.core, type: self.type)
     }
 }
 
 struct WriteValueForDescriptorMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let data: Data
     let descriptor: Descriptor
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.descriptor.core.andThen {
-            handler.write(data: self.data, for: $0)
-        }
+        return handler.write(data: self.data, for: self.descriptor.core)
     }
 }
 
 struct SetNotifyValueForCharacteristicMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let notifyValue: Bool
     let characteristic: Characteristic
 
     func sendToHandler(_ handler: Handler) -> Output {
-        return self.characteristic.core.andThen {
-            handler.set(notifyValue: self.notifyValue, for: $0)
-        }
+        return handler.set(notifyValue: self.notifyValue, for: self.characteristic.core)
     }
 }
 
 struct ReadRSSIMessage: Message {
     typealias Handler = PeripheralHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     func sendToHandler(_ handler: Handler) -> Output {
         return handler.readRSSI()
@@ -145,20 +129,18 @@ struct ReadRSSIMessage: Message {
 }
 
 protocol PeripheralHandling {
-    func discover(services: [CBUUID]?) -> Result<(), PeripheralError>
+    func discover(services: [CBUUID]?)
     func discover(includedServices: [CBUUID]?, for service: CBService)
-        -> Result<(), PeripheralError>
-    func discover(characteristics: [CBUUID]?, for service: CBService) -> Result<(), PeripheralError>
-    func discoverDescriptors(for characteristic: CBCharacteristic) -> Result<(), PeripheralError>
+    func discover(characteristics: [CBUUID]?, for service: CBService)
+    func discoverDescriptors(for characteristic: CBCharacteristic)
 
-    func readData(for characteristic: CBCharacteristic) -> Result<(), PeripheralError>
-    func readData(for descriptor: CBDescriptor) -> Result<(), PeripheralError>
+    func readData(for characteristic: CBCharacteristic)
+    func readData(for descriptor: CBDescriptor)
 
     func write(data: Data, for characteristic: CBCharacteristic, type: WriteType)
-        -> Result<(), PeripheralError>
-    func write(data: Data, for descriptor: CBDescriptor) -> Result<(), PeripheralError>
+    func write(data: Data, for descriptor: CBDescriptor)
 
-    func set(notifyValue: Bool, for characteristic: CBCharacteristic) -> Result<(), PeripheralError>
+    func set(notifyValue: Bool, for characteristic: CBCharacteristic)
 
-    func readRSSI() -> Result<(), PeripheralError>
+    func readRSSI()
 }

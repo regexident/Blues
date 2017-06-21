@@ -43,11 +43,11 @@ open class Characteristic {
     ///   For more information about characteristic descriptors, see `Descriptor`.
     public var descriptors: [Identifier: Descriptor]? = nil
 
-    internal var core: Result<CBCharacteristic, PeripheralError>
+    internal var core: CBCharacteristic!
 
     public init(identifier: Identifier, service: Service) {
         self.identifier = identifier
-        self.core = .err(.unreachable)
+        self.core = nil
         self.service = service
         self.peripheral = service.peripheral
     }
@@ -69,8 +69,8 @@ open class Characteristic {
     }
 
     /// The value data of the characteristic.
-    public var data: Result<Data?, PeripheralError> {
-        return self.core.map { $0.value }
+    public var data: Data? {
+        return self.core.value
     }
 
     /// The descriptor associated with a given type if it has previously been discovered in this characteristic.
@@ -85,18 +85,14 @@ open class Characteristic {
     }
 
     /// The properties of the characteristic.
-    public var properties: Result<CharacteristicProperties, PeripheralError> {
-        return self.core.map {
-            CharacteristicProperties(core: $0.properties)
-        }
+    public var properties: CharacteristicProperties {
+        return CharacteristicProperties(core: self.core.properties)
     }
 
     /// A Boolean value indicating whether the characteristic is
     /// currently notifying a subscribed central of its value.
-    public var isNotifying: Result<Bool, PeripheralError> {
-        return self.core.map {
-            $0.isNotifying
-        }
+    public var isNotifying: Bool {
+        return self.core.isNotifying
     }
 
     /// Discovers the descriptors of a characteristic.
@@ -106,10 +102,10 @@ open class Characteristic {
     ///   `didDiscover(descriptors:for:)` method of its delegate object.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discoverDescriptors() -> Result<(), PeripheralError> {
-        return self.tryToHandle(DiscoverDescriptorsMessage(
-            characteristic: self
-        )) ?? .err(.unhandled)
+    public func discoverDescriptors() {
+        return self.tryToHandle(DiscoverDescriptorsMessage(characteristic: self)) {
+            NSLog("\(type(of: DiscoverDescriptorsMessage.self)) not handled.")
+        }
     }
 
     /// Retrieves the value of a specified characteristic.
@@ -126,10 +122,10 @@ open class Characteristic {
     ///   enumeration, which are detailed in `Characteristic`.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func read() -> Result<(), PeripheralError> {
-        return self.tryToHandle(ReadValueForCharacteristicMessage(
-            characteristic: self
-        )) ?? .err(.unhandled)
+    public func read() {
+        return self.tryToHandle(ReadValueForCharacteristicMessage(characteristic: self)) {
+            NSLog("\(type(of: ReadValueForCharacteristicMessage.self)) not handled.")
+        }
     }
 
     /// Writes the value of a characteristic.
@@ -158,12 +154,14 @@ open class Characteristic {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(data: Data, type: WriteType) -> Result<(), PeripheralError> {
+    public func write(data: Data, type: WriteType) {
         return self.tryToHandle(WriteValueForCharacteristicMessage(
             data: data,
             characteristic: self,
             type: type
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: WriteValueForCharacteristicMessage.self)) not handled.")
+        }
     }
 
     /// Sets notifications or indications for the value of a specified characteristic.
@@ -189,11 +187,13 @@ open class Characteristic {
     ///     notifications or indications whenever the characteristic’s value changes.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func set(notifyValue: Bool) -> Result<(), PeripheralError> {
+    public func set(notifyValue: Bool) {
         return self.tryToHandle(SetNotifyValueForCharacteristicMessage(
             notifyValue: notifyValue,
             characteristic: self
-        )) ?? .err(.unhandled)
+        )) {
+            NSLog("\(type(of: SetNotifyValueForCharacteristicMessage.self)) not handled.")
+        }
     }
 
     func wrapper(for core: CBDescriptor) -> Descriptor {
@@ -204,12 +204,12 @@ open class Characteristic {
         } else {
             descriptor = DefaultDescriptor(identifier: identifier, characteristic: self)
         }
-        descriptor.core = .ok(core)
+        descriptor.core = core
         return descriptor
     }
 
     internal func attach(core: CBCharacteristic) {
-        self.core = .ok(core)
+        self.core = core
         guard let cores = core.descriptors else {
             return
         }
@@ -222,16 +222,6 @@ open class Characteristic {
                 continue
             }
             descriptor.attach(core: core)
-        }
-    }
-
-    internal func detach() {
-        self.core = .err(.unreachable)
-        guard let descriptors = self.descriptors else {
-            return
-        }
-        for descriptor in descriptors.values {
-            descriptor.detach()
         }
     }
 }
@@ -262,12 +252,10 @@ extension TypedCharacteristic where Self: Characteristic {
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Transformer.Value?, TypedCharacteristicError> {
-        return self.data.mapErr(TypedCharacteristicError.peripheral).andThen { data in
-            guard let data = data else {
-                return .ok(nil)
-            }
-            return self.transformer.transform(data: data).map { .some($0) }
+        guard let data = self.data else {
+            return .ok(nil)
         }
+        return self.transformer.transform(data: data).map { .some($0) }
     }
 
     /// Writes the value of a characteristic.
@@ -287,20 +275,17 @@ extension TypedCharacteristic where Self: Characteristic {
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedCharacteristicError> {
         return self.transformer.transform(value: value).andThen { data in
-            let answer = self.tryToHandle(WriteValueForCharacteristicMessage(
+            return .ok(self.tryToHandle(WriteValueForCharacteristicMessage(
                 data: data,
                 characteristic: self,
                 type: type
-            ))
-            if answer != nil {
-                return .ok(())
-            } else {
-                return .err(.peripheral(.unhandled))
-            }
+            )) {
+                NSLog("\(type(of: WriteValueForCharacteristicMessage.self)) not handled.")
+            })
         }
     }
 
     public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError> {
-        return data.mapErr { .peripheral(.other($0)) }.andThen { self.transformer.transform(data: $0) }
+        return data.mapErr { .other($0) }.andThen { self.transformer.transform(data: $0) }
     }
 }

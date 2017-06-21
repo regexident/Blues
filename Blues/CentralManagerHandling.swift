@@ -12,7 +12,7 @@ import Result
 
 struct ConnectPeripheralMessage: Message {
     typealias Handler = CentralManagerHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let peripheral: Peripheral
     let options: ConnectionOptions?
@@ -24,7 +24,7 @@ struct ConnectPeripheralMessage: Message {
 
 struct DisconnectPeripheralMessage: Message {
     typealias Handler = CentralManagerHandling
-    typealias Output = Result<(), PeripheralError>
+    typealias Output = ()
 
     let peripheral: Peripheral
 
@@ -34,6 +34,6 @@ struct DisconnectPeripheralMessage: Message {
 }
 
 protocol CentralManagerHandling {
-    func connect(peripheral: Peripheral, options: ConnectionOptions?) -> Result<(), PeripheralError>
-    func disconnect(peripheral: Peripheral) -> Result<(), PeripheralError>
+    func connect(peripheral: Peripheral, options: ConnectionOptions?)
+    func disconnect(peripheral: Peripheral)
 }

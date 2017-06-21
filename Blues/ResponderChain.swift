@@ -39,6 +39,10 @@ protocol Responder {
 
 extension Responder {
 
+    func tryToHandle<MessageType: Message>(_ message: MessageType, orElse closure: () -> (MessageType.Output)) -> MessageType.Output {
+        return self.tryToHandle(message) ?? closure()
+    }
+
     func tryToHandle<MessageType: Message>(_ message: MessageType) -> MessageType.Output? {
         return message.tryToSendTo(self)
     }

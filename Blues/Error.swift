@@ -19,8 +19,8 @@ public enum TypedDescriptorError: Swift.Error {
     /// For example a read-only characteristic might choose to not implement the
     /// encoding transform or a write-only the decoding transform respectively.
     case transformNotImplemented
-    /// The peripheral encountered an error.
-    case peripheral(PeripheralError)
+    /// Another error has occured
+    case other(Swift.Error)
 }
 
 /// Errors related to a characteristic.
@@ -34,16 +34,6 @@ public enum TypedCharacteristicError: Swift.Error {
     /// For example a read-only characteristic might choose to not implement the
     /// encoding transform or a write-only the decoding transform respectively.
     case transformNotImplemented
-    /// The peripheral encountered an error.
-    case peripheral(PeripheralError)
-}
-
-/// Errors related to a peripheral.
-public enum PeripheralError: Swift.Error {
-    /// The peripheral is unreachable (e.g. disconnected).
-    case unreachable
-    /// The action was not handled by the internal responder chain.
-    case unhandled
     /// Another error has occured
     case other(Swift.Error)
 }
