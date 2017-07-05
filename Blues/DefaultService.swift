@@ -16,6 +16,19 @@ open class DefaultService: Service {
     public weak var dataSource: ServiceDataSource?
 }
 
+extension DefaultService: ServiceDataSource {
+    public func characteristic(
+        with identifier: Identifier,
+        for service: Service
+    ) -> Characteristic {
+        if let dataSource = self.dataSource {
+            return dataSource.characteristic(with: identifier, for: service)
+        } else {
+            return DefaultCharacteristic(identifier: identifier, service: service)
+        }
+    }
+}
+
 extension DefaultService: ServiceDelegate {
     public func didDiscover(
         includedServices: Result<[Service], Error>,
@@ -29,18 +42,5 @@ extension DefaultService: ServiceDelegate {
         for service: Service
     ) {
         self.delegate?.didDiscover(characteristics: characteristics, for: service)
-    }
-}
-
-extension DefaultService: ServiceDataSource {
-    public func characteristic(
-        with identifier: Identifier,
-        for service: Service
-    ) -> Characteristic {
-        if let dataSource = self.dataSource {
-            return dataSource.characteristic(with: identifier, for: service)
-        } else {
-            return DefaultCharacteristic(identifier: identifier, service: service)
-        }
     }
 }

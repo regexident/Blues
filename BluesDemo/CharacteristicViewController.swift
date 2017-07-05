@@ -104,9 +104,6 @@ class CharacteristicViewController: UITableViewController {
     }
 
     func humanReadableProperties(of characteristic: Characteristic) -> [String] {
-        guard case let .ok(properties) = characteristic.properties else {
-            return []
-        }
         let propertyTitles: [(CharacteristicProperties, String)] = [
             (.broadcast, "Broadcast"),
             (.notify, "Notify"),
@@ -120,7 +117,7 @@ class CharacteristicViewController: UITableViewController {
             (.extendedProperties, "Extended Properties"),
         ]
         return propertyTitles.flatMap {
-            properties.contains($0.0) ? $0.1 : nil
+            characteristic.properties.contains($0.0) ? $0.1 : nil
         }
     }
 
@@ -158,11 +155,11 @@ class CharacteristicViewController: UITableViewController {
         guard let characteristic = self.characteristic else {
             return cell
         }
-        guard case let .ok(data) = characteristic.data else {
-            return cell
+
+        if let data = characteristic.data {
+            cell.textLabel!.text = data.hexString ?? "No Value"
         }
 
-        cell.textLabel!.text = data?.hexString ?? "No Value"
         cell.detailTextLabel!.text = "Hexadecimal"
 
         return cell
@@ -173,18 +170,21 @@ class CharacteristicViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DescriptorCell", for: indexPath)
 
         let descriptor = self.sortedDescriptors[index]
-        guard case let .ok(any) = descriptor.any else {
-            return cell
+        if let any = descriptor.any {
+            switch any {
+            case let data as Data:
+                cell.textLabel!.text = data.hexString
+            case let string as String:
+                cell.textLabel!.text = string
+            case let stringConvertible as CustomStringConvertible:
+                cell.textLabel!.text = stringConvertible.description
+            case let debugStringConvertible as CustomDebugStringConvertible:
+                cell.textLabel!.text = debugStringConvertible.debugDescription
+            default:
+                cell.textLabel!.text = "Not representable"
+            }
         }
 
-        switch any {
-        case let data as Data:
-            cell.textLabel!.text = data.hexString
-        case let string as String:
-            cell.textLabel!.text = string
-        default:
-            cell.textLabel!.text = any.debugDescription
-        }
         cell.detailTextLabel!.text = descriptor.name 
 
         return cell

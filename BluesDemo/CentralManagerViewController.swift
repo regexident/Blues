@@ -32,7 +32,7 @@ class CentralManagerViewController: UITableViewController {
 
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.isCollapsed
 
-        self.centralManager = CentralManager(delegate: self, dataSource: self)
+        self.centralManager = DefaultCentralManager(delegate: self, dataSource: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -100,12 +100,9 @@ extension CentralManagerViewController /* : UITableViewDataSource */ {
 }
 
 extension CentralManagerViewController: CentralManagerDelegate {
+    func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {}
 
-    func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {
-    }
-
-    @available(iOSApplicationExtension 10.0, *)
-    func didUpdate(state: CentralManagerState, of manager: CentralManager) {
+    func didUpdateState(of manager: CentralManager) {
         self.queue.async {
             self.centralManager.startScanningForPeripherals()
         }
@@ -131,7 +128,6 @@ extension CentralManagerViewController: CentralManagerDelegate {
 }
 
 extension CentralManagerViewController: CentralManagerDataSource {
-
     func peripheral(
         with identifier: Identifier,
         advertisement: Advertisement?,

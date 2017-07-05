@@ -24,7 +24,7 @@ open class Service {
     }
 
     /// The peripheral to which this service belongs.
-    public weak var peripheral: Peripheral?
+    public var peripheral: Peripheral
 
     /// A list of characteristics that have been discovered in this service.
     ///
@@ -102,13 +102,8 @@ open class Service {
     ///     `Identifier` identifies the type of included service you want to discover.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discover(includedServices: [Identifier]? = nil) -> () {
-        return self.tryToHandle(DiscoverIncludedServicesMessage(
-            uuids: includedServices,
-            service: self
-        )) {
-            NSLog("\(type(of: DiscoverIncludedServicesMessage.self)) not handled.")
-        }
+    public func discover(includedServices: [Identifier]? = nil) {
+        self.peripheral.discover(includedServices: includedServices, for: self)
     }
 
     /// Discovers the specified characteristics of a service.
@@ -132,13 +127,8 @@ open class Service {
     ///     type of a characteristic you want to discover.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func discover(characteristics: [Identifier]?) -> () {
-        return self.tryToHandle(DiscoverCharacteristicsMessage(
-            uuids: characteristics,
-            service: self
-        )) {
-            NSLog("\(type(of: DiscoverCharacteristicsMessage.self)) not handled.")
-        }
+    public func discover(characteristics: [Identifier]?) {
+        return self.peripheral.discover(characteristics: characteristics, for: self)
     }
 
     internal func wrapper(for core: CBCharacteristic) -> Characteristic {
@@ -152,20 +142,6 @@ open class Service {
         characteristic.core = core
         return characteristic
     }
-
-    internal func attach(core: CBService) {
-        self.core = core
-        guard let cores = core.characteristics else {
-            return
-        }
-        for core in cores {
-            let identifier = Identifier(uuid: core.uuid)
-            guard let characteristic = self.characteristics?[identifier] else {
-                continue
-            }
-            characteristic.attach(core: core)
-        }
-    }
 }
 
 extension Service: CustomStringConvertible {
@@ -176,12 +152,5 @@ extension Service: CustomStringConvertible {
             "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
-    }
-}
-
-extension Service: Responder {
-
-    internal var nextResponder: Responder? {
-        return self.peripheral
     }
 }

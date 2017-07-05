@@ -15,8 +15,9 @@ open class DefaultCharacteristic: Characteristic {
     public weak var delegate: CharacteristicDelegate?
     public weak var dataSource: CharacteristicDataSource?
 
-    /* extension DefaultCharacteristic : CharacteristicDataSource */
+}
 
+extension DefaultCharacteristic: CharacteristicDataSource {
     public func descriptor(
         with identifier: Identifier,
         for characteristic: Characteristic

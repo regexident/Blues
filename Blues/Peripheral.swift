@@ -61,21 +61,14 @@ open class Peripheral: NSObject {
     /// Options customizing the behavior of the connection.
     public var connectionOptions: ConnectionOptions?
 
-    public weak var centralManager: CentralManager?
-
     internal var core: CBPeripheral!
 
-    internal var queue: DispatchQueue {
-        guard let centralManager = self.centralManager else {
-            fatalError("Invalid use of detached Peripheral")
-        }
-        return centralManager.queue
-    }
+    internal var queue: DispatchQueue
 
     public init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
         self.core = nil
-        self.centralManager = centralManager
+        self.queue = centralManager.queue
     }
 
     /// The service associated with a given type if it has previously been discovered in this peripheral.
@@ -87,59 +80,6 @@ open class Peripheral: NSObject {
             return nil
         }
         return services[type.typeIdentifier] as? S
-    }
-
-    /// Establishes a local connection to a peripheral.
-    ///
-    /// - Note:
-    ///   If a local connection to a peripheral is about to establish it
-    ///   calls the `didConnect(peripheral:)` method of its delegate object.
-    ///
-    ///   If a local connection to a peripheral has been successfully established,
-    ///   it calls the `didConnect(peripheral:)` method of its delegate object.
-    ///
-    ///   If the connection attempt fails, it calls the `didFailToConnect(peripheral:error:)`
-    ///   method of its delegate object instead.
-    ///
-    /// - Important:
-    ///   Attempts to connect to a peripheral do not time out.
-    ///   To explicitly cancel a pending connection to a peripheral, call the
-    ///   `disconnect()` method. The disconnect() method is implicitly called
-    ///   when a peripheral is deallocated.
-    ///
-    /// - Parameters:
-    ///   - options: Options customizing the behavior of the connection
-    ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func connect(options: ConnectionOptions? = nil) {
-        return self.tryToHandle(ConnectPeripheralMessage(
-            peripheral: self,
-            options: options
-        )) {
-            NSLog("\(type(of: ConnectPeripheralMessage.self)) not handled.")
-        }
-    }
-
-    /// Cancels an active or pending local connection to a peripheral.
-    ///
-    /// - Note:
-    ///   This method is nonblocking, and any Peripheral class commands that are
-    ///   still pending to peripheral may or may not complete.
-    ///
-    /// - Important:
-    ///   Because other apps may still have a connection to the peripheral,
-    ///   canceling a local connection does not guarantee that the underlying
-    ///   physical link is immediately disconnected. From the app’s perspective,
-    ///   however, the peripheral is considered disconnected, and it calls the
-    ///   `didDisconnect(peripheral:error:)` method of its delegate object.
-    ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func disconnect() {
-        return self.tryToHandle(DisconnectPeripheralMessage(
-            peripheral: self
-        )) {
-            NSLog("\(type(of: DisconnectPeripheralMessage.self)) not handled.")
-        }
     }
 
     /// Discovers the specified services of the peripheral.
@@ -163,11 +103,7 @@ open class Peripheral: NSObject {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) {
-        return self.tryToHandle(DiscoverServicesMessage(
-            uuids: services
-        )) {
-            NSLog("\(type(of: DiscoverServicesMessage.self)) not handled.")
-        }
+        self.core.discoverServices(services?.map { $0.core })
     }
 
     /// Retrieves the current RSSI value for the peripheral
@@ -214,19 +150,36 @@ open class Peripheral: NSObject {
         return service
     }
 
-    internal func attach(to core: CBPeripheral) {
-        core.delegate = self
-        self.core = core
-        guard let coreServices = core.services else {
-            return
-        }
-        for coreService in coreServices {
-            let identifier = Identifier(uuid: coreService.uuid)
-            guard let service = self.services?[identifier] else {
-                continue
-            }
-            service.attach(core: coreService)
-        }
+    internal func discover(includedServices: [Identifier]?, for service: Service) {
+        self.core.discoverIncludedServices(includedServices?.map { $0.core }, for: service.core)
+    }
+
+    internal func discover(characteristics: [Identifier]?, for service: Service) {
+        self.core.discoverCharacteristics(characteristics?.map { $0.core }, for: service.core)
+    }
+
+    internal func discoverDescriptors(for characteristic: Characteristic) {
+        self.core.discoverDescriptors(for: characteristic.core)
+    }
+
+    internal func readData(for characteristic: Characteristic) {
+        self.core.readValue(for: characteristic.core)
+    }
+
+    internal func readData(for descriptor: Descriptor) {
+        self.core.readValue(for: descriptor.core)
+    }
+
+    internal func write(data: Data, for characteristic: Characteristic, type: WriteType) {
+        self.core.writeValue(data, for: characteristic.core, type: type.inner)
+    }
+
+    internal func write(data: Data, for descriptor: Descriptor) {
+        self.core.writeValue(data, for: descriptor.core)
+    }
+
+    internal func set(notifyValue: Bool, for characteristic: Characteristic) {
+        self.core.setNotifyValue(notifyValue, for: characteristic.core)
     }
 }
 
@@ -239,12 +192,6 @@ extension Peripheral /* : CustomStringConvertible */ {
             "state = \(self.state)",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
-    }
-}
-
-extension Peripheral: Responder {
-    internal var nextResponder: Responder? {
-        return self.centralManager
     }
 }
 
@@ -275,7 +222,9 @@ extension Peripheral: CBPeripheralDelegate {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
-                service.discover(characteristics: characteristics)
+                if let characteristics = characteristics, !characteristics.isEmpty {
+                    service.discover(characteristics: characteristics)
+                }
                 self.services?[identifier] = service
                 return service
             }
@@ -479,15 +428,7 @@ extension Peripheral: CBPeripheralDelegate {
             let descriptors = coreDescriptors.map { coreDescriptors -> [Descriptor] in
                 coreDescriptors.map { coreDescriptor in
                     let identifier = Identifier(uuid: coreDescriptor.uuid)
-                    let descriptor: Descriptor
-                    if let dataSource = wrapper as? CharacteristicDataSource {
-                        descriptor = dataSource.descriptor(with: identifier, for: wrapper)
-                    } else {
-                        descriptor = DefaultDescriptor(
-                            identifier: identifier,
-                            characteristic: wrapper
-                        )
-                    }
+                    let descriptor = wrapper.wrapper(for: coreDescriptor)
                     wrapper.descriptors?[identifier] = descriptor
                     return descriptor
                 }

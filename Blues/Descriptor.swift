@@ -26,11 +26,18 @@ open class Descriptor {
         return nil
     }
 
-    /// The peripheral that this descriptor belongs to.
-    public weak var peripheral: Peripheral?
-
     /// The characteristic that this descriptor belongs to.
-    public weak var characteristic: Characteristic?
+    public unowned var characteristic: Characteristic
+
+    /// The service that this characteristic belongs to.
+    public var service: Service {
+        return self.characteristic.service
+    }
+
+    /// The peripheral that this descriptor belongs to.
+    public var peripheral: Peripheral {
+        return self.service.peripheral
+    }
 
     internal var core: CBDescriptor!
 
@@ -38,7 +45,6 @@ open class Descriptor {
         self.identifier = identifier
         self.core = nil
         self.characteristic = characteristic
-        self.peripheral = characteristic.peripheral
     }
 
     /// The value of the descriptor, or an error.
@@ -54,12 +60,8 @@ open class Descriptor {
     ///   method of its delegate object with the retrieved value, or an error.
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
-    public func read() -> () {
-        return self.tryToHandle(ReadValueForDescriptorMessage(
-            descriptor: self
-        )) {
-            NSLog("\(type(of: ReadValueForDescriptorMessage.self)) not handled.")
-        }
+    public func read() {
+        self.peripheral.readData(for: self)
     }
 
     /// Writes the value of a characteristic descriptor.
@@ -85,16 +87,7 @@ open class Descriptor {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func write(data: Data) {
-        return self.tryToHandle(WriteValueForDescriptorMessage(
-            data: data,
-            descriptor: self
-        )) {
-            NSLog("\(type(of: WriteValueForDescriptorMessage.self)) not handled.")
-        }
-    }
-
-    internal func attach(core: CBDescriptor) {
-        self.core = core
+        self.peripheral.write(data: data, for: self)
     }
 }
 
@@ -106,12 +99,6 @@ extension Descriptor: CustomStringConvertible {
             "name = \(self.name ?? "<nil>")",
         ].joined(separator: ", ")
         return "<\(className) \(attributes)>"
-    }
-}
-
-extension Descriptor: Responder {
-    internal var nextResponder: Responder? {
-        return self.characteristic
     }
 }
 

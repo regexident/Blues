@@ -30,9 +30,7 @@ public protocol CentralManagerDelegate: class {
     /// - Parameters:
     ///   - state:   The state of the central manager object.
     ///   - manager: The central manager whose state has changed.
-    @available(iOS 10.0, *)
-    @available(iOSApplicationExtension 10.0, *)
-    func didUpdate(state: CentralManagerState, of manager: CentralManager)
+    func didUpdateState(of manager: CentralManager)
 
     /// Invoked when the central manager discovers a peripheral while scanning.
     ///
@@ -79,6 +77,6 @@ public protocol CentralManagerDataSource: class {
     func peripheral(
         with identifier: Identifier,
         advertisement: Advertisement?,
-        for centralManager: CentralManager
+        for manager: CentralManager
     ) -> Peripheral
 }

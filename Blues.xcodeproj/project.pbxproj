@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
 		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
 		BF180BEA1EC35123008F7982 /* DefaultPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */; };
 		BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE661DC2D99200870202 /* Characteristic.swift */; };
@@ -35,9 +36,6 @@
 		BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
 		BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */; };
 		BFCB8E131DC1104400D5430D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
-		BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA11DC5372700F94D20 /* ResponderChain.swift */; };
-		BFE23EA41DC550F500F94D20 /* PeripheralHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */; };
-		BFE23EA61DC551A700F94D20 /* CentralManagerHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */; };
 		BFE23EA81DC55D6F00F94D20 /* CharacteristicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EA71DC55D6F00F94D20 /* CharacteristicViewController.swift */; };
 		BFE23EAE1DC567A700F94D20 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAD1DC567A700F94D20 /* Extensions.swift */; };
 		BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */; };
@@ -85,6 +83,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultPeripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF3FFE661DC2D99200870202 /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Characteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -93,7 +92,7 @@
 		BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralState.swift; sourceTree = "<group>"; };
 		BF3FFE711DC3B4FB00870202 /* WriteType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WriteType.swift; sourceTree = "<group>"; };
 		BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerState.swift; sourceTree = "<group>"; };
-		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerOptions.swift; sourceTree = "<group>"; };
+		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerOptions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD911EC3470300FAD246 /* DefaultService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultDescriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -113,9 +112,6 @@
 		BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFCB8E121DC1104400D5430D /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Service.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFE23EA11DC5372700F94D20 /* ResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderChain.swift; sourceTree = "<group>"; };
-		BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralHandling.swift; sourceTree = "<group>"; };
-		BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerHandling.swift; sourceTree = "<group>"; };
 		BFE23EA71DC55D6F00F94D20 /* CharacteristicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicViewController.swift; sourceTree = "<group>"; };
 		BFE23EAD1DC567A700F94D20 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProperties.swift; sourceTree = "<group>"; };
@@ -161,6 +157,56 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF102D551F0D27680099D8AB /* Descriptor */ = {
+			isa = PBXGroup;
+			children = (
+				BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */,
+				BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */,
+				BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */,
+			);
+			name = Descriptor;
+			sourceTree = "<group>";
+		};
+		BF102D561F0D27710099D8AB /* Characteristic */ = {
+			isa = PBXGroup;
+			children = (
+				BF3FFE661DC2D99200870202 /* Characteristic.swift */,
+				BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */,
+				BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */,
+			);
+			name = Characteristic;
+			sourceTree = "<group>";
+		};
+		BF102D571F0D27780099D8AB /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				BFCB8E121DC1104400D5430D /* Service.swift */,
+				BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */,
+				BF84AD911EC3470300FAD246 /* DefaultService.swift */,
+			);
+			name = Service;
+			sourceTree = "<group>";
+		};
+		BF102D581F0D27810099D8AB /* Peripheral */ = {
+			isa = PBXGroup;
+			children = (
+				BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */,
+				BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */,
+				BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */,
+			);
+			name = Peripheral;
+			sourceTree = "<group>";
+		};
+		BF102D591F0D27890099D8AB /* CentralManager */ = {
+			isa = PBXGroup;
+			children = (
+				BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */,
+				BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */,
+				BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */,
+			);
+			name = CentralManager;
+			sourceTree = "<group>";
+		};
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,8 +241,6 @@
 			children = (
 				BFCB8DF31DC0E22200D5430D /* Blues.h */,
 				BFE23EAB1DC5642D00F94D20 /* Generic Attributes */,
-				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
-				BFE23EA91DC563E100F94D20 /* Responder Chain */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
 			);
 			path = Blues;
@@ -211,24 +255,18 @@
 			path = BluesTests;
 			sourceTree = "<group>";
 		};
-		BFE23EA91DC563E100F94D20 /* Responder Chain */ = {
-			isa = PBXGroup;
-			children = (
-				BFE23EA11DC5372700F94D20 /* ResponderChain.swift */,
-				BFE23EA31DC550F500F94D20 /* PeripheralHandling.swift */,
-				BFE23EA51DC551A700F94D20 /* CentralManagerHandling.swift */,
-			);
-			name = "Responder Chain";
-			sourceTree = "<group>";
-		};
 		BFE23EAA1DC563F500F94D20 /* Auxiliaries */ = {
 			isa = PBXGroup;
 			children = (
+				BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */,
 				BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */,
+				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
+				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
+				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
+				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
 				BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */,
-				BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */,
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
 			);
 			name = Auxiliaries;
@@ -237,24 +275,12 @@
 		BFE23EAB1DC5642D00F94D20 /* Generic Attributes */ = {
 			isa = PBXGroup;
 			children = (
-				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
-				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
-				BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */,
-				BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */,
-				BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */,
-				BF3FFE661DC2D99200870202 /* Characteristic.swift */,
-				BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */,
-				BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */,
-				BFCB8E121DC1104400D5430D /* Service.swift */,
-				BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */,
-				BF84AD911EC3470300FAD246 /* DefaultService.swift */,
-				BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */,
-				BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */,
-				BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */,
-				BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */,
-				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
-				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
-				BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */,
+				BF102D551F0D27680099D8AB /* Descriptor */,
+				BF102D561F0D27710099D8AB /* Characteristic */,
+				BF102D571F0D27780099D8AB /* Service */,
+				BF102D581F0D27810099D8AB /* Peripheral */,
+				BF102D591F0D27890099D8AB /* CentralManager */,
+				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
 			);
 			name = "Generic Attributes";
 			sourceTree = "<group>";
@@ -425,13 +451,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFB360541DE2FEAC00B7931F /* CharacteristicProtocols.swift in Sources */,
-				BFE23EA61DC551A700F94D20 /* CentralManagerHandling.swift in Sources */,
 				BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */,
 				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
 				BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */,
-				BFE23EA21DC5372700F94D20 /* ResponderChain.swift in Sources */,
 				BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */,
 				BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */,
 				BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */,
@@ -445,8 +469,8 @@
 				BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */,
 				BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */,
 				BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */,
-				BFE23EA41DC550F500F94D20 /* PeripheralHandling.swift in Sources */,
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
+				BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */,
 				BFCB8E131DC1104400D5430D /* Service.swift in Sources */,
 				BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */,
 				BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */,
@@ -641,7 +665,7 @@
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nwtnberlin.Blues;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -667,7 +691,7 @@
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nwtnberlin.Blues;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;

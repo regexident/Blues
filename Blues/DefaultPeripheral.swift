@@ -16,6 +16,16 @@ open class DefaultPeripheral: Peripheral {
     public weak var dataSource: PeripheralDataSource?
 }
 
+extension DefaultPeripheral: PeripheralDataSource {
+    public func service(with identifier: Identifier, for peripheral: Peripheral) -> Service {
+        if let dataSource = self.dataSource {
+            return dataSource.service(with: identifier, for: peripheral)
+        } else {
+            return DefaultService(identifier: identifier, peripheral: peripheral)
+        }
+    }
+}
+
 extension DefaultPeripheral: PeripheralDelegate {
     public func willConnect(to peripheral: Peripheral) {
         self.delegate?.willConnect(to: peripheral)
@@ -49,20 +59,7 @@ extension DefaultPeripheral: PeripheralDelegate {
         self.delegate?.didRead(rssi: rssi, of: peripheral)
     }
 
-    public func didDiscover(
-        services: Result<[Service], Error>,
-        for peripheral: Peripheral
-    ) {
+    public func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral) {
         self.delegate?.didDiscover(services: services, for: peripheral)
-    }
-}
-
-extension DefaultPeripheral: PeripheralDataSource {
-    public func service(with identifier: Identifier, for peripheral: Peripheral) -> Service {
-        if let dataSource = self.dataSource {
-            return dataSource.service(with: identifier, for: peripheral)
-        } else {
-            return DefaultService(identifier: identifier, peripheral: peripheral)
-        }
     }
 }

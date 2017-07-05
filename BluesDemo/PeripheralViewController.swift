@@ -35,10 +35,7 @@ class PeripheralViewController: UITableViewController {
             }
             self.previousPeripheralDelegate = peripheral.delegate
             peripheral.delegate = self
-            switch peripheral.connect() {
-            case .ok(_): break
-            case let .err(error): print(error)
-            }
+            peripheral.connect()
         }
     }
 
@@ -66,6 +63,8 @@ class PeripheralViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        self.peripheral?.connect()
+        
         self.tableView.reloadData()
     }
 
@@ -75,6 +74,8 @@ class PeripheralViewController: UITableViewController {
         guard let peripheral = self.peripheral as? DefaultPeripheral else {
             return
         }
+
+        self.peripheral?.disconnect()
 
         if peripheral.delegate === self {
             peripheral.delegate = self.previousPeripheralDelegate
@@ -91,14 +92,6 @@ class PeripheralViewController: UITableViewController {
         if parent == nil {
             self.peripheral = nil
         }
-    }
-
-    func title(for peripheral: Peripheral) -> String {
-        return peripheral.name ?? "UUID: \(peripheral.identifier.string)"
-    }
-
-    func title(for characteristic: Characteristic) -> String {
-        return characteristic.name ?? "UUID: \(characteristic.identifier.string)"
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -118,19 +111,28 @@ class PeripheralViewController: UITableViewController {
         }
     }
 
-    func humanReadableValue<C>(for characteristic: C) -> String
-        where C: Characteristic
-    {
-        return characteristic.data.map { data in
-            if let hexString = data?.hexString {
-                return "Hex: \(hexString)"
-            } else {
-                return "No Value"
-            }
-        }.asOk.unwrapOr("No data")
+    fileprivate func title(for peripheral: Peripheral) -> String {
+        return peripheral.name ?? "UUID: \(peripheral.identifier.string)"
     }
 
-    func humanReadableValue<C>(for characteristic: C) -> String
+    fileprivate func title(for characteristic: Characteristic) -> String {
+        return characteristic.name ?? "UUID: \(characteristic.identifier.string)"
+    }
+
+    fileprivate func humanReadableValue<C>(for characteristic: C) -> String
+        where C: Characteristic
+    {
+        guard let data = characteristic.data else {
+            return "No data"
+        }
+        if let hexString = data.hexString {
+            return "Hex: \(hexString)"
+        } else {
+            return "No Value"
+        }
+    }
+
+    fileprivate func humanReadableValue<C>(for characteristic: C) -> String
         where C: Characteristic,
               C: TypedCharacteristic,
               C.Transformer.Value: CustomStringConvertible
@@ -141,8 +143,8 @@ class PeripheralViewController: UITableViewController {
     }
 }
 
+// MARK: - UITableViewDataSource
 extension PeripheralViewController {
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return self.sortedServices.count
     }
@@ -165,15 +167,7 @@ extension PeripheralViewController {
         let characteristics = self.sortedCharacteristicsByService[service.identifier]!
         let characteristic = characteristics[indexPath.row]
 
-        if case let .ok(data) = characteristic.data {
-            let value = self.humanReadableValue(for: characteristic)
-            print(value)
-            if let hexString = data?.hexString {
-                cell.textLabel!.text = "Hex: \(hexString)"
-            } else {
-                cell.textLabel!.text = "No Value"
-            }
-        }
+        cell.textLabel!.text = self.humanReadableValue(for: characteristic)
         cell.detailTextLabel!.text = self.title(for: characteristic)
 
         return cell
@@ -181,7 +175,6 @@ extension PeripheralViewController {
 }
 
 extension PeripheralViewController: PeripheralDelegate {
-
     public func willRestore(peripheral: Peripheral) {
     }
 
@@ -192,9 +185,7 @@ extension PeripheralViewController: PeripheralDelegate {
     }
 
     public func didConnect(to peripheral: Peripheral) {
-        if case let .err(error) = peripheral.discover(services: nil) {
-            print("Error: \(error)")
-        }
+        peripheral.discover(services: nil)
     }
 
     public func willDisconnect(from peripheral: Peripheral) {
@@ -239,8 +230,8 @@ extension PeripheralViewController: PeripheralDelegate {
 }
 
 extension PeripheralViewController: ServiceDelegate {
-
     func didDiscover(includedServices: Result<[Service], Error>, for service: Service) {
+
     }
 
     func didDiscover(characteristics: Result<[Characteristic], Error>, for service: Service) {
@@ -266,10 +257,9 @@ extension PeripheralViewController: ServiceDelegate {
 }
 
 extension PeripheralViewController: ReadableCharacteristicDelegate {
-
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
+        let service = characteristic.service
         self.queue.async {
-            let service = characteristic.service!
             let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
             let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
             let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
@@ -284,10 +274,9 @@ extension PeripheralViewController: ReadableCharacteristicDelegate {
 }
 
 extension PeripheralViewController: WritableCharacteristicDelegate {
-
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
+        let service = characteristic.service
         self.queue.async {
-            let service = characteristic.service!
             let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
             let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
             let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
@@ -302,13 +291,13 @@ extension PeripheralViewController: WritableCharacteristicDelegate {
 }
 
 extension PeripheralViewController: NotifyableCharacteristicDelegate {
-
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
+
     }
 }
 
 extension PeripheralViewController: DescribableCharacteristicDelegate {
-
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
+
     }
 }
