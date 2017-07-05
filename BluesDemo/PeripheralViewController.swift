@@ -23,14 +23,14 @@ class PeripheralViewController: UITableViewController {
                     return
                 }
                 peripheral.delegate = self.previousPeripheralDelegate
-                let _ = peripheral.disconnect()
+                peripheral.disconnect()
             }
         }
         didSet {
             self.sortedServices = []
             guard let peripheral = self.peripheral as? DefaultPeripheral else {
                 self.previousPeripheralDelegate = nil
-                let _ = oldValue?.disconnect()
+                oldValue?.disconnect()
                 return
             }
             self.previousPeripheralDelegate = peripheral.delegate
@@ -226,7 +226,7 @@ extension PeripheralViewController: PeripheralDelegate {
                 ($0.name ?? "") < ($1.name ?? "")
             }
             for service in services {
-                let _ = service.discover(characteristics: nil)
+                service.discover(characteristics: nil)
                 if let service = service as? DefaultService {
                     service.delegate = self
                 }
@@ -250,13 +250,13 @@ extension PeripheralViewController: ServiceDelegate {
         self.queue.async {
             self.sortedCharacteristicsByService[service.identifier] = characteristics
             for characteristic in characteristics {
-                let _ = characteristic.discoverDescriptors()
+                characteristic.discoverDescriptors()
                 if let characteristic = characteristic as? DefaultCharacteristic {
-                    let _ = characteristic.read()
-                    let _ = characteristic.set(notifyValue: true)
+                    characteristic.read()
+                    characteristic.set(notifyValue: true)
                     characteristic.delegate = self
                 }
-                let _ = characteristic.set(notifyValue: true)
+                characteristic.set(notifyValue: true)
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

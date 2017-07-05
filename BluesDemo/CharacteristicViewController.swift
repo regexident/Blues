@@ -69,7 +69,7 @@ class CharacteristicViewController: UITableViewController {
         guard let characteristic = self.characteristic else {
             return
         }
-        let _ = characteristic.set(notifyValue: true)
+        characteristic.set(notifyValue: true)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,7 +78,7 @@ class CharacteristicViewController: UITableViewController {
         guard let characteristic = self.characteristic else {
             return
         }
-        let _ = characteristic.set(notifyValue: true)
+        characteristic.set(notifyValue: true)
     }
 
     override func willMove(toParentViewController parent: UIViewController?) {

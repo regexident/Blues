@@ -96,7 +96,7 @@ open class CentralManager: NSObject {
         self.queue.async {
             for peripheral in self.peripherals.values {
                 if peripheral.state == .connected {
-                    let _ = self.disconnect(peripheral: peripheral)
+                    self.disconnect(peripheral: peripheral)
                 }
             }
         }
