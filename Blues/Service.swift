@@ -24,7 +24,20 @@ open class Service {
     }
 
     /// The peripheral to which this service belongs.
-    public var peripheral: Peripheral
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized peripheral:
+    ///   ```
+    ///   open var peripheral: CustomPeripheral {
+    ///       return super.peripheral as! CustomPeripheral
+    ///   }
+    ///   ```
+    open var peripheral: Peripheral {
+        return self._peripheral
+    }
+
+    private var _peripheral: Peripheral
 
     /// A list of characteristics that have been discovered in this service.
     ///
@@ -65,7 +78,7 @@ open class Service {
     public init(identifier: Identifier, peripheral: Peripheral) {
         self.identifier = identifier
         self.core = nil
-        self.peripheral = peripheral
+        self._peripheral = peripheral
     }
 
     /// The characteristic associated with a given type if it has previously been discovered in this service.

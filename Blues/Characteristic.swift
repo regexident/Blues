@@ -27,9 +27,31 @@ open class Characteristic {
     }
 
     /// The service that this characteristic belongs to.
-    public unowned var service: Service
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized service:
+    ///   ```
+    ///   open var service: CustomService {
+    ///       return super.service as! CustomService
+    ///   }
+    ///   ```
+    public var service: Service {
+        return self._service
+    }
+
+    private unowned var _service: Service
     
     /// The peripheral that this characteristic belongs to.
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized peripheral:
+    ///   ```
+    ///   open var peripheral: CustomPeripheral {
+    ///       return super.peripheral as! CustomPeripheral
+    ///   }
+    ///   ```
     public var peripheral: Peripheral {
         return self.service.peripheral
     }
@@ -50,7 +72,7 @@ open class Characteristic {
     public init(identifier: Identifier, service: Service) {
         self.identifier = identifier
         self.core = nil
-        self.service = service
+        self._service = service
     }
 
     /// Whether the characteristic should discover descriptors automatically

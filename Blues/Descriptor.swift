@@ -27,15 +27,46 @@ open class Descriptor {
     }
 
     /// The characteristic that this descriptor belongs to.
-    public unowned var characteristic: Characteristic
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized characteristic:
+    ///   ```
+    ///   open var characteristic: CustomCharacteristic {
+    ///       return super.characteristic as! CustomCharacteristic
+    ///   }
+    ///   ```
+    open var characteristic: Characteristic {
+        return self._characteristic
+    }
+
+    private unowned var _characteristic: Characteristic
 
     /// The service that this characteristic belongs to.
-    public var service: Service {
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized service:
+    ///   ```
+    ///   open var service: CustomService {
+    ///       return super.service as! CustomService
+    ///   }
+    ///   ```
+    open var service: Service {
         return self.characteristic.service
     }
 
     /// The peripheral that this descriptor belongs to.
-    public var peripheral: Peripheral {
+    ///
+    /// - Note:
+    ///   This property is made `open` to allow for subclasses
+    ///   to override getters to return a specialized peripheral:
+    ///   ```
+    ///   open var peripheral: CustomPeripheral {
+    ///       return super.peripheral as! CustomPeripheral
+    ///   }
+    ///   ```
+    open var peripheral: Peripheral {
         return self.service.peripheral
     }
 
@@ -44,7 +75,7 @@ open class Descriptor {
     public init(identifier: Identifier, characteristic: Characteristic) {
         self.identifier = identifier
         self.core = nil
-        self.characteristic = characteristic
+        self._characteristic = characteristic
     }
 
     /// The value of the descriptor, or an error.
