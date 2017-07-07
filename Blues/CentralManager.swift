@@ -48,7 +48,7 @@ open class CentralManager: NSObject {
     }
 
     public func startScanningForPeripherals(
-        advertisingWithServices services: [String]? = nil,
+        advertisingWithServices services: [Identifier]? = nil,
         options: CentralManagerScanningOptions? = nil
     ) {
         guard !self.core.isScanning else {
@@ -56,7 +56,7 @@ open class CentralManager: NSObject {
         }
 
         self.queue.async {
-            let uuids = services?.map { CBUUID(string: $0) }
+            let uuids = services?.map { $0.uuid }
             self.core.scanForPeripherals(withServices: uuids, options: options?.dictionary)
         }
     }
