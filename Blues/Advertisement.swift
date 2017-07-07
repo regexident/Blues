@@ -89,9 +89,18 @@ public struct Advertisement {
         let mapUUIDs: (Any?) -> [String]? = {
             ($0 as? [CBUUID]).map { $0.map { $0.uuidString } }
         }
+        let mapServiceData: (Any?) -> [String : Data]? = {
+            ($0 as? [CBUUID : Data]).map {
+                var dict: [String : Data] = [:]
+                for (uuid, data) in $0 {
+                    dict[uuid.uuidString] = data
+                }
+                return dict
+            }
+        }
         plist[Keys.localName] = dictionary[Keys.localName]
         plist[Keys.manufacturerData] = dictionary[Keys.manufacturerData]
-        plist[Keys.serviceData] = dictionary[Keys.serviceData]
+        plist[Keys.serviceData] = mapServiceData(dictionary[Keys.serviceData])
         plist[Keys.serviceUUIDs] = mapUUIDs(dictionary[Keys.serviceUUIDs])
         plist[Keys.overflowServiceUUIDs] = mapUUIDs(dictionary[Keys.overflowServiceUUIDs])
         plist[Keys.solicitedServiceUUIDs] = mapUUIDs(dictionary[Keys.solicitedServiceUUIDs])
@@ -129,9 +138,18 @@ public struct Advertisement {
         let mapUUIDs: (Any?) -> [CBUUID]? = {
             ($0 as? [String]).map { $0.flatMap { CBUUID(string: $0) } }
         }
+        let mapServiceData: (Any?) -> [CBUUID : Data]? = {
+            ($0 as? [String : Data]).map {
+                var dict: [CBUUID : Data] = [:]
+                for (string, data) in $0 {
+                    dict[CBUUID(string: string)] = data
+                }
+                return dict
+            }
+        }
         dictionary[Keys.localName] = plist[Keys.localName]
         dictionary[Keys.manufacturerData] = plist[Keys.manufacturerData]
-        dictionary[Keys.serviceData] = plist[Keys.serviceData]
+        dictionary[Keys.serviceData] = mapServiceData(plist[Keys.serviceData])
         dictionary[Keys.serviceUUIDs] = mapUUIDs(plist[Keys.serviceUUIDs])
         dictionary[Keys.overflowServiceUUIDs] = mapUUIDs(plist[Keys.overflowServiceUUIDs])
         dictionary[Keys.solicitedServiceUUIDs] = mapUUIDs(plist[Keys.solicitedServiceUUIDs])
