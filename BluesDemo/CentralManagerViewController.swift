@@ -131,7 +131,7 @@ extension CentralManagerViewController: CentralManagerDataSource {
     func peripheral(
         with identifier: Identifier,
         advertisement: Advertisement?,
-        for centralManager: CentralManager
+        for manager: CentralManager
     ) -> Peripheral {
         return DefaultPeripheral(identifier: identifier, centralManager: centralManager)
     }

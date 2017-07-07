@@ -31,6 +31,7 @@
 		BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
 		BFB360581DE2FF0400B7931F /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */; };
 		BFB3605A1DE2FF8400B7931F /* PeripheralProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */; };
+		BFC429011F0F923F006C1F8C /* AdvertisementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */; };
 		BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; };
 		BFCB8DFF1DC0E22200D5430D /* BluesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */; };
 		BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
@@ -101,6 +102,7 @@
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
 		BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PeripheralProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisementPersistence.swift; sourceTree = "<group>"; };
 		BFCB8DF01DC0E22200D5430D /* Blues.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Blues.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
 		BFCB8DF41DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */,
+				BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */,
 				BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */,
 				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
 				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
@@ -471,6 +474,7 @@
 				BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */,
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
 				BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */,
+				BFC429011F0F923F006C1F8C /* AdvertisementPersistence.swift in Sources */,
 				BFCB8E131DC1104400D5430D /* Service.swift in Sources */,
 				BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */,
 				BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */,
