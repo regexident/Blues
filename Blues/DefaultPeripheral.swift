@@ -11,11 +11,13 @@ import Foundation
 import Result
 
 /// Default implementation of `Peripheral` protocol.
-open class DefaultPeripheral: Peripheral {
+open class DefaultPeripheral:
+    Peripheral, DelegatedPeripheralProtocol, DataSourcedPeripheralProtocol {
     public weak var delegate: PeripheralDelegate?
     public weak var dataSource: PeripheralDataSource?
 }
 
+// MARK: - PeripheralDataSource
 extension DefaultPeripheral: PeripheralDataSource {
     public func service(with identifier: Identifier, for peripheral: Peripheral) -> Service {
         if let dataSource = self.dataSource {
@@ -26,27 +28,8 @@ extension DefaultPeripheral: PeripheralDataSource {
     }
 }
 
+// MARK: - PeripheralDelegate
 extension DefaultPeripheral: PeripheralDelegate {
-    public func willConnect(to peripheral: Peripheral) {
-        self.delegate?.willConnect(to: peripheral)
-    }
-
-    public func didConnect(to peripheral: Peripheral) {
-        self.delegate?.didConnect(to: peripheral)
-    }
-
-    public func willDisconnect(from peripheral: Peripheral) {
-        self.delegate?.willDisconnect(from: peripheral)
-    }
-
-    public func didDisconnect(from peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didDisconnect(from: peripheral, error: error)
-    }
-
-    public func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
-        self.delegate?.didFailToConnect(to: peripheral, error: error)
-    }
-
     public func didUpdate(name: String?, of peripheral: Peripheral) {
         self.delegate?.didUpdate(name: name, of: peripheral)
     }

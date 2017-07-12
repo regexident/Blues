@@ -11,12 +11,13 @@ import Foundation
 import Result
 
 /// Default implementation of `Characteristic` protocol.
-open class DefaultCharacteristic: Characteristic {
+open class DefaultCharacteristic:
+    Characteristic, DelegatedCharacteristicProtocol, DataSourcedCharacteristicProtocol {
     public weak var delegate: CharacteristicDelegate?
     public weak var dataSource: CharacteristicDataSource?
-
 }
 
+// MARK: - CharacteristicDataSource
 extension DefaultCharacteristic: CharacteristicDataSource {
     public func descriptor(
         with identifier: Identifier,
@@ -30,6 +31,7 @@ extension DefaultCharacteristic: CharacteristicDataSource {
     }
 }
 
+// MARK: - ReadableCharacteristicDelegate
 extension DefaultCharacteristic: ReadableCharacteristicDelegate {
     public func didUpdate(
         data: Result<Data, Error>,
@@ -39,6 +41,7 @@ extension DefaultCharacteristic: ReadableCharacteristicDelegate {
     }
 }
 
+// MARK: - WritableCharacteristicDelegate
 extension DefaultCharacteristic: WritableCharacteristicDelegate {
     public func didWrite(
         data: Result<Data, Error>,
@@ -48,7 +51,8 @@ extension DefaultCharacteristic: WritableCharacteristicDelegate {
     }
 }
 
-extension DefaultCharacteristic: NotifyableCharacteristicDelegate {
+// MARK: - NotifiableCharacteristicDelegate
+extension DefaultCharacteristic: NotifiableCharacteristicDelegate {
     public func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
         for characteristic: Characteristic
@@ -57,6 +61,7 @@ extension DefaultCharacteristic: NotifyableCharacteristicDelegate {
     }
 }
 
+// MARK: - DescribableCharacteristicDelegate
 extension DefaultCharacteristic: DescribableCharacteristicDelegate {
     public func didDiscover(
         descriptors: Result<[Descriptor], Error>,

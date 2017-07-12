@@ -38,7 +38,7 @@ public struct CharacteristicProperties: OptionSet {
 
     public let rawValue: UInt
 
-    var core: CBCharacteristicProperties {
+    internal var core: CBCharacteristicProperties {
         return CBCharacteristicProperties(rawValue: rawValue)
     }
 
@@ -55,13 +55,14 @@ public struct CharacteristicProperties: OptionSet {
     }
 }
 
+// MARK: - Equatable
 extension CharacteristicProperties: Equatable {
-
     public static func == (lhs: CharacteristicProperties, rhs: CharacteristicProperties) -> Bool {
         return lhs.rawValue == rhs.rawValue
     }
 }
 
+// MARK: - Hashable
 extension CharacteristicProperties: Hashable {
     public var hashValue: Int {
         return self.rawValue.hashValue

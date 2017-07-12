@@ -77,6 +77,7 @@ public struct ConnectionOptions {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension ConnectionOptions: CustomStringConvertible {
     public var description: String {
         let properties = [

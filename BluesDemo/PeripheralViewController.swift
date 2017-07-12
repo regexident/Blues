@@ -174,6 +174,7 @@ extension PeripheralViewController {
     }
 }
 
+// MARK: - PeripheralDelegate
 extension PeripheralViewController: PeripheralDelegate {
     public func willRestore(peripheral: Peripheral) {
     }
@@ -229,6 +230,7 @@ extension PeripheralViewController: PeripheralDelegate {
     }
 }
 
+// MARK: - ServiceDelegate
 extension PeripheralViewController: ServiceDelegate {
     func didDiscover(includedServices: Result<[Service], Error>, for service: Service) {
 
@@ -256,6 +258,7 @@ extension PeripheralViewController: ServiceDelegate {
     }
 }
 
+// MARK: - ReadableCharacteristicDelegate
 extension PeripheralViewController: ReadableCharacteristicDelegate {
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         let service = characteristic.service
@@ -273,6 +276,7 @@ extension PeripheralViewController: ReadableCharacteristicDelegate {
     }
 }
 
+// MARK: - WritableCharacteristicDelegate
 extension PeripheralViewController: WritableCharacteristicDelegate {
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         let service = characteristic.service
@@ -290,12 +294,14 @@ extension PeripheralViewController: WritableCharacteristicDelegate {
     }
 }
 
-extension PeripheralViewController: NotifyableCharacteristicDelegate {
+// MARK: - NotifiableCharacteristicDelegate
+extension PeripheralViewController: NotifiableCharacteristicDelegate {
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
 
     }
 }
 
+// MARK: - DescribableCharacteristicDelegate
 extension PeripheralViewController: DescribableCharacteristicDelegate {
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
 

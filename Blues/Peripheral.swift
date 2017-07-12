@@ -11,7 +11,7 @@ import CoreBluetooth
 
 import Result
 
-open class Peripheral: NSObject {
+open class Peripheral: NSObject, PeripheralProtocol {
     /// The Bluetooth-specific identifier of the service.
     public let identifier: Identifier
 
@@ -65,7 +65,7 @@ open class Peripheral: NSObject {
 
     internal var queue: DispatchQueue
 
-    public init(identifier: Identifier, centralManager: CentralManager) {
+    public required init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
         self.core = nil
         self.queue = centralManager.queue
@@ -118,7 +118,7 @@ open class Peripheral: NSObject {
         return self.core.readRSSI()
     }
 
-    func isValid(core peripheral: CBPeripheral) -> Bool {
+    internal func isValid(core peripheral: CBPeripheral) -> Bool {
         return peripheral == self.core
     }
 
@@ -183,7 +183,8 @@ open class Peripheral: NSObject {
     }
 }
 
-extension Peripheral /* : CustomStringConvertible */ {
+// MARK: - CustomStringConvertible
+extension Peripheral {
     override open var description: String {
         let className = String(describing: type(of: self))
         let attributes = [
@@ -195,6 +196,7 @@ extension Peripheral /* : CustomStringConvertible */ {
     }
 }
 
+// MARK: - CBPeripheralDelegate
 extension Peripheral: CBPeripheralDelegate {
 
     public func peripheralDidUpdateName(
@@ -401,7 +403,7 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
-            guard let delegate = wrapper as? NotifyableCharacteristicDelegate else {
+            guard let delegate = wrapper as? NotifiableCharacteristicDelegate else {
                 return
             }
             let result = Result(success: characteristic.isNotifying, failure: error)

@@ -13,8 +13,8 @@ public protocol AdvertisementPersistence {
     func getAdvertisement(for identifier: Identifier) -> Advertisement?
 }
 
+// MARK: - AdvertisementPersistence
 extension UserDefaults: AdvertisementPersistence {
-
     private enum AdvertisementPersistenceKey {
         static let advertisementsKey = "advertisements"
     }

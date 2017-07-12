@@ -159,6 +159,7 @@ public struct Advertisement {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension Advertisement: CustomStringConvertible {
     public var description: String {
         let className = String(describing: type(of: self))

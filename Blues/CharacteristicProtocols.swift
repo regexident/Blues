@@ -10,6 +10,46 @@ import Foundation
 
 import Result
 
+public protocol CharacteristicProtocol {
+    var identifier: Identifier { get }
+
+    var name: String? { get }
+
+    var service: Service { get }
+    var peripheral: Peripheral { get }
+
+    var descriptors: [Identifier: Descriptor]? { get }
+
+    init(identifier: Identifier, service: Service)
+
+    var shouldDiscoverDescriptorsAutomatically: Bool { get }
+
+    var shouldSubscribeToNotificationsAutomatically: Bool { get }
+
+    var data: Data? { get }
+
+    func descriptor<D>(ofType type: D.Type) -> D?
+    where D: Descriptor, D: TypeIdentifiable
+
+    var properties: CharacteristicProperties { get }
+
+    var isNotifying: Bool { get }
+
+    func discoverDescriptors()
+
+    func read()
+    func write(data: Data, type: WriteType)
+    func set(notifyValue: Bool)
+}
+
+public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
+    var delegate: CharacteristicDelegate? { get }
+}
+
+public protocol DataSourcedCharacteristicProtocol: CharacteristicProtocol {
+    var dataSource: CharacteristicDataSource? { get }
+}
+
 /// A readable `Characteristic`'s delegate.
 public protocol ReadableCharacteristicDelegate: class {
     /// Invoked when you retrieve a specified characteristic’s value,
@@ -36,8 +76,8 @@ public protocol WritableCharacteristicDelegate: class {
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic)
 }
 
-/// A notifyable `Characteristic`'s delegate.
-public protocol NotifyableCharacteristicDelegate: ReadableCharacteristicDelegate {
+/// A notifiable `Characteristic`'s delegate.
+public protocol NotifiableCharacteristicDelegate: ReadableCharacteristicDelegate {
     /// Invoked when the peripheral receives a request to start or stop providing
     /// notifications for a specified characteristic’s value.
     ///
@@ -75,7 +115,7 @@ public protocol DescribableCharacteristicDelegate: class {
 public typealias CharacteristicDelegate =
     ReadableCharacteristicDelegate
     & WritableCharacteristicDelegate
-    & NotifyableCharacteristicDelegate
+    & NotifiableCharacteristicDelegate
     & DescribableCharacteristicDelegate
 
 /// A `Characteristic`'s data source.

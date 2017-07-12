@@ -10,40 +10,39 @@ import Foundation
 
 import Result
 
+public protocol PeripheralProtocol {
+    var identifier: Identifier { get }
+
+    var name: String? { get }
+
+    var automaticallyDiscoveredServices: [Identifier]? { get }
+
+    var state: PeripheralState { get }
+
+    var services: [Identifier: Service]? { get }
+
+    var connectionOptions: ConnectionOptions? { get }
+
+    init(identifier: Identifier, centralManager: CentralManager)
+
+    func service<S>(ofType type: S.Type) -> S?
+    where S: Service, S: TypeIdentifiable
+
+    func discover(services: [Identifier]?)
+    
+    func readRSSI()
+}
+
+public protocol DelegatedPeripheralProtocol: PeripheralProtocol {
+    var delegate: PeripheralDelegate? { get }
+}
+
+public protocol DataSourcedPeripheralProtocol: PeripheralProtocol {
+    var dataSource: PeripheralDataSource? { get }
+}
+
 /// A `DelegatedPeripheral`'s delegate.
 public protocol PeripheralDelegate: class {
-    /// Invoked when a connection is about to be created with a peripheral.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that will be connected to the system.
-    func willConnect(to peripheral: Peripheral)
-
-    /// Invoked when a connection is successfully created with a peripheral.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that has been connected to the system.
-    func didConnect(to peripheral: Peripheral)
-
-    /// Invoked when a connection is about to be created with a peripheral.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that will be connected to the system.
-    func willDisconnect(from peripheral: Peripheral)
-
-    /// Invoked when an existing connection with a peripheral is torn down.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that has been disconnected.
-    ///   - error:      The cause of the failure.
-    func didDisconnect(from peripheral: Peripheral, error: Swift.Error?)
-
-    /// Invoked when the central manager fails to create a connection with a peripheral.
-    ///
-    /// - Parameters:
-    ///   - peripheral: The peripheral that failed to connect.
-    ///   - error:      The cause of the failure.
-    func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?)
-
     /// Invoked when a peripheral’s name changes.
     ///
     /// - Parameters:
@@ -62,9 +61,15 @@ public protocol PeripheralDelegate: class {
     /// current RSSI while it is connected to the central manager.
     ///
     /// - Parameters:
-    ///   - rssi: The RSSI, in decibels, of the peripheral.
+    ///   - rssi: The RSSI, in decibels, of the peripheral, or an error.
     ///   - peripheral: The peripheral providing this information.
     func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral)
+
+    /// Invoked when you discover the peripheral’s available services.
+    ///
+    /// - Parameters:
+    ///   - services: A list of services that have been discovered, or an error.
+    ///   - peripheral: The peripheral that the services belong to.
     func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral)
 }
 

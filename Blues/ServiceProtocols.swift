@@ -10,6 +10,37 @@ import Foundation
 
 import Result
 
+public protocol ServiceProtocol {
+    var identifier: Identifier { get }
+
+    var name: String? { get }
+
+    var peripheral: Peripheral { get }
+
+    var characteristics: [Identifier: Characteristic]? { get }
+    var includedServices: [Identifier: Service]? { get }
+
+    var automaticallyDiscoveredCharacteristics: [Identifier]? { get }
+
+    var isPrimary: Bool { get }
+
+    init(identifier: Identifier, peripheral: Peripheral)
+
+    func characteristic<C>(ofType type: C.Type) -> C?
+    where C: Characteristic, C: TypeIdentifiable
+
+    func discover(includedServices: [Identifier]?)
+    func discover(characteristics: [Identifier]?)
+}
+
+public protocol DelegatedServiceProtocol: ServiceProtocol {
+    var delegate: ServiceDelegate? { get }
+}
+
+public protocol DataSourcedServiceProtocol: ServiceProtocol {
+    var dataSource: ServiceDataSource? { get }
+}
+
 /// A `DelegatedService`'s delegate.
 public protocol ServiceDelegate: class {
     /// Invoked when you discover the peripheral’s available services.

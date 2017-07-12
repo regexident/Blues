@@ -48,18 +48,21 @@ public struct Identifier {
     }
 }
 
+// MARK: - Equatable
 extension Identifier: Equatable {
     public static func == (lhs: Identifier, rhs: Identifier) -> Bool {
         return lhs.core == rhs.core
     }
 }
 
+// MARK: - Hashable
 extension Identifier: Hashable {
     public var hashValue: Int {
         return self.core.hashValue
     }
 }
 
+// MARK: - CustomStringConvertible
 extension Identifier: CustomStringConvertible {
     public var description: String {
         return self.string

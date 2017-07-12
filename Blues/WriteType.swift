@@ -33,6 +33,7 @@ public enum WriteType {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension WriteType: CustomStringConvertible {
     public var description: String {
         switch self {

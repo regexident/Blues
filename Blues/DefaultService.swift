@@ -11,11 +11,13 @@ import Foundation
 import Result
 
 /// Default implementation of `Service` protocol.
-open class DefaultService: Service {
+open class DefaultService:
+    Service, DelegatedServiceProtocol, DataSourcedServiceProtocol {
     public weak var delegate: ServiceDelegate?
     public weak var dataSource: ServiceDataSource?
 }
 
+// MARK: - ServiceDataSource
 extension DefaultService: ServiceDataSource {
     public func characteristic(
         with identifier: Identifier,
@@ -29,6 +31,7 @@ extension DefaultService: ServiceDataSource {
     }
 }
 
+// MARK: - ServiceDelegate
 extension DefaultService: ServiceDelegate {
     public func didDiscover(
         includedServices: Result<[Service], Error>,

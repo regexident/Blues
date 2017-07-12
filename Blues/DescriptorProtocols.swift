@@ -10,6 +10,28 @@ import Foundation
 
 import Result
 
+public protocol DescriptorProtocol {
+    var identifier: Identifier { get }
+
+    var name: String? { get }
+
+    var characteristic: Characteristic { get }
+    var service: Service { get }
+    var peripheral: Peripheral { get }
+
+    var any: Any? { get }
+
+    init(identifier: Identifier, characteristic: Characteristic)
+
+    func read()
+
+    func write(data: Data)
+}
+
+public protocol DelegatedDescriptorProtocol: DescriptorProtocol {
+    var delegate: DescriptorDelegate? { get }
+}
+
 public protocol ReadableDescriptorDelegate: class {
     /// Invoked when you retrieve a specified characteristic descriptor’s value.
     ///

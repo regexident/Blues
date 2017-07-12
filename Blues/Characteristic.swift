@@ -11,9 +11,17 @@ import CoreBluetooth
 
 import Result
 
+public protocol TypedCharacteristicProtocol: CharacteristicProtocol, TypedCharacteristic {
+    var value: Result<Transformer.Value?, TypedCharacteristicError> { get }
+
+    func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedCharacteristicError>
+
+    func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError>
+}
+
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
-open class Characteristic {
+open class Characteristic: CharacteristicProtocol {
     /// The Bluetooth-specific identifier of the characteristic.
     public let identifier: Identifier
 
@@ -69,7 +77,7 @@ open class Characteristic {
 
     internal var core: CBCharacteristic!
 
-    public init(identifier: Identifier, service: Service) {
+    public required init(identifier: Identifier, service: Service) {
         self.identifier = identifier
         self.core = nil
         self._service = service
@@ -217,6 +225,7 @@ open class Characteristic {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension Characteristic: CustomStringConvertible {
     open var description: String {
         let className = type(of: self)
@@ -228,7 +237,8 @@ extension Characteristic: CustomStringConvertible {
     }
 }
 
-extension TypedCharacteristic where Self: Characteristic {
+// MARK: - TypedCharacteristic
+extension TypedCharacteristic where Self: CharacteristicProtocol {
     /// A type-safe value representation of the characteristic.
     ///
     /// - Note:

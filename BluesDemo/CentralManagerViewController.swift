@@ -62,7 +62,8 @@ class CentralManagerViewController: UITableViewController {
     }
 }
 
-extension CentralManagerViewController /* : UITableViewDataSource */ {
+// MARK: - UITableViewDataSource
+extension CentralManagerViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -99,6 +100,7 @@ extension CentralManagerViewController /* : UITableViewDataSource */ {
     }
 }
 
+// MARK: - CentralManagerDelegate
 extension CentralManagerViewController: CentralManagerDelegate {
     func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {}
 
@@ -127,6 +129,7 @@ extension CentralManagerViewController: CentralManagerDelegate {
     func didRetrieve(connectedPeripherals: [Peripheral], from manager: CentralManager) {}
 }
 
+// MARK: - CentralManagerDataSource
 extension CentralManagerViewController: CentralManagerDataSource {
     func peripheral(
         with identifier: Identifier,

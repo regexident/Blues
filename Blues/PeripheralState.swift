@@ -47,6 +47,7 @@ public enum PeripheralState {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension PeripheralState: CustomStringConvertible {
     public var description: String {
         switch self {

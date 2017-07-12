@@ -13,7 +13,7 @@ import Result
 
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
-open class Descriptor {
+open class Descriptor: DescriptorProtocol {
     /// The Bluetooth-specific identifier of the descriptor.
     public let identifier: Identifier
 
@@ -70,17 +70,17 @@ open class Descriptor {
         return self.service.peripheral
     }
 
-    internal var core: CBDescriptor!
-
-    public init(identifier: Identifier, characteristic: Characteristic) {
-        self.identifier = identifier
-        self.core = nil
-        self._characteristic = characteristic
-    }
-
     /// The value of the descriptor, or an error.
     public var any: Any? {
         return self.core.value
+    }
+
+    internal var core: CBDescriptor!
+
+    public required init(identifier: Identifier, characteristic: Characteristic) {
+        self.identifier = identifier
+        self.core = nil
+        self._characteristic = characteristic
     }
 
     /// Retrieves the value of the characteristic descriptor, or an error.
@@ -122,6 +122,7 @@ open class Descriptor {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension Descriptor: CustomStringConvertible {
     open var description: String {
         let className = type(of: self)
@@ -133,7 +134,8 @@ extension Descriptor: CustomStringConvertible {
     }
 }
 
-extension TypedDescriptor where Self: Descriptor {
+// MARK: - TypedDescriptor
+extension TypedDescriptor where Self: DescriptorProtocol {
     /// A type-safe value representation of the descriptor.
     ///
     /// - Note:

@@ -11,7 +11,7 @@ import CoreBluetooth
 
 import Result
 
-open class Service {
+open class Service: ServiceProtocol {
     /// The Bluetooth-specific identifier of the service.
     public let identifier: Identifier
 
@@ -75,7 +75,7 @@ open class Service {
         return self.core.isPrimary
     }
 
-    public init(identifier: Identifier, peripheral: Peripheral) {
+    public required init(identifier: Identifier, peripheral: Peripheral) {
         self.identifier = identifier
         self.core = nil
         self._peripheral = peripheral
@@ -157,6 +157,7 @@ open class Service {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension Service: CustomStringConvertible {
     open var description: String {
         let className = type(of: self)

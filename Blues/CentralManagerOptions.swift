@@ -83,6 +83,7 @@ public struct CentralManagerOptions {
     }
 }
 
+// MARK: - CustomStringConvertible
 extension CentralManagerOptions: CustomStringConvertible {
     public var description: String {
         let properties = [

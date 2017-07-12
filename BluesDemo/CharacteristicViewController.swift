@@ -208,7 +208,6 @@ class CharacteristicViewController: UITableViewController {
 }
 
 extension CharacteristicViewController {
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
@@ -237,8 +236,8 @@ extension CharacteristicViewController {
     }
 }
 
+// MARK: - ReadableCharacteristicDelegate
 extension CharacteristicViewController: ReadableCharacteristicDelegate {
-
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
@@ -251,8 +250,8 @@ extension CharacteristicViewController: ReadableCharacteristicDelegate {
     }
 }
 
+// MARK: - WritableCharacteristicDelegate
 extension CharacteristicViewController: WritableCharacteristicDelegate {
-
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
@@ -265,14 +264,15 @@ extension CharacteristicViewController: WritableCharacteristicDelegate {
     }
 }
 
-extension CharacteristicViewController: NotifyableCharacteristicDelegate {
-
+// MARK: - NotifiableCharacteristicDelegate
+extension CharacteristicViewController: NotifiableCharacteristicDelegate {
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
+
     }
 }
 
+// MARK: - DescribableCharacteristicDelegate
 extension CharacteristicViewController: DescribableCharacteristicDelegate {
-
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
         guard case let .ok(descriptors) = descriptors else {
             return
@@ -288,8 +288,8 @@ extension CharacteristicViewController: DescribableCharacteristicDelegate {
     }
 }
 
+// MARK: - DescriptorDelegate
 extension CharacteristicViewController: DescriptorDelegate {
-
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue

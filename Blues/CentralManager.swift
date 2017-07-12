@@ -11,8 +11,33 @@ import CoreBluetooth
 
 import Result
 
+public protocol CentralManagerProtocol {
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
+    var state: CentralManagerState { get }
+
+    var isScanning: Bool { get }
+
+    var peripherals: [Identifier: Peripheral] { get }
+
+    init(options: CentralManagerOptions?, queue: DispatchQueue)
+
+    func startScanningForPeripherals(
+        advertisingWithServices services: [Identifier]?,
+        options: CentralManagerScanningOptions?
+    )
+    func stopScanningForPeripherals()
+
+    func retrievePeripherals(withIdentifiers identifiers: [Identifier]) -> [Peripheral]
+    func retrieveConnectedPeripherals(withServices serviceUUIDs: [Identifier]) -> [Peripheral]
+
+    func connect(peripheral: Peripheral, options: ConnectionOptions?)
+    func disconnect(peripheral: Peripheral)
+    func disconnectAll()
+}
+
 /// Abstraction layer around `CBCentralManager`.
-open class CentralManager: NSObject {
+open class CentralManager: NSObject, CentralManagerProtocol {
     private struct Constants {
         static let queueLabel = "com.nwtnberlin.blues.queue"
     }
@@ -33,7 +58,7 @@ open class CentralManager: NSObject {
 
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
 
-    public init(
+    public required init(
         options: CentralManagerOptions? = nil,
         queue: DispatchQueue = .global()
     ) {
@@ -88,16 +113,14 @@ open class CentralManager: NSObject {
         }
     }
 
-    public func connect(
-        peripheral: Peripheral,
-        options: ConnectionOptions? = nil
-        ) {
+    public func connect(peripheral: Peripheral, options: ConnectionOptions? = nil) {
         if (peripheral.state == .connected) || (peripheral.state == .connecting) {
             return
         }
         self.queue.async {
-            let delegate = peripheral as? PeripheralDelegate
-            delegate?.willConnect(to: peripheral)
+            if let delegate = self as? CentralManagerConnectionDelegate {
+                delegate.willConnect(to: peripheral, on: self)
+            }
             peripheral.connectionOptions = options
             self.core.connect(peripheral.core, options: options?.dictionary)
         }
@@ -109,8 +132,9 @@ open class CentralManager: NSObject {
             return
         }
         self.queue.async {
-            let delegate = peripheral as? PeripheralDelegate
-            delegate?.willDisconnect(from: peripheral)
+            if let delegate = self as? CentralManagerConnectionDelegate {
+                delegate.willDisconnect(from: peripheral, on: self)
+            }
             peripheral.connectionOptions = nil
             self.core.cancelPeripheralConnection(peripheral.core)
         }
@@ -161,7 +185,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 }
                 return peripheral
             }
-            if let delegate = self as? CentralManagerDelegate {
+            if let delegate = self as? CentralManagerRestorationDelegate {
                 delegate.willRestore(state: restoreState, of: self)
             }
         }
@@ -174,8 +198,9 @@ extension CentralManager: CBCentralManagerDelegate {
             } else if central.state == .poweredOff {
                 for peripheral in self.peripherals.values {
                     if peripheral.state == .connected {
-                        let delegate = peripheral as? PeripheralDelegate
-                        delegate?.didDisconnect(from: peripheral, error: nil)
+                        if let delegate = self as? CentralManagerDelegate {
+                            delegate.didDisconnect(from: peripheral, error: nil, on: self)
+                        }
                     }
                 }
             }
@@ -222,8 +247,9 @@ extension CentralManager: CBCentralManagerDelegate {
             if let services = services, !services.isEmpty {
                 wrapper.discover(services: services)
             }
-            let delegate = wrapper as? PeripheralDelegate
-            delegate?.didConnect(to: wrapper)
+            if let delegate = self as? CentralManagerConnectionDelegate {
+                delegate.didConnect(to: wrapper, on: self)
+            }
         }
     }
 
@@ -237,8 +263,9 @@ extension CentralManager: CBCentralManagerDelegate {
             guard let wrapper = self.peripherals[identifier] else {
                 return
             }
-            let delegate = wrapper as? PeripheralDelegate
-            delegate?.didFailToConnect(to: wrapper, error: error)
+            if let delegate = self as? CentralManagerConnectionDelegate {
+                delegate.didFailToConnect(to: wrapper, error: error, on: self)
+            }
         }
     }
 
@@ -252,8 +279,9 @@ extension CentralManager: CBCentralManagerDelegate {
             guard let wrapper = self.peripherals[identifier] else {
                 return
             }
-            let delegate = wrapper as? PeripheralDelegate
-            delegate?.didDisconnect(from: wrapper, error: error)
+            if let delegate = self as? CentralManagerConnectionDelegate {
+                delegate.didDisconnect(from: wrapper, error: error, on: self)
+            }
         }
     }
 
