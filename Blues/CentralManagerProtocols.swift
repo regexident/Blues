@@ -21,7 +21,8 @@ public protocol CentralManagerProtocol: class {
 
     func startScanningForPeripherals(
         advertisingWithServices services: [Identifier]?,
-        options: CentralManagerScanningOptions?
+        options: CentralManagerScanningOptions?,
+        timeout: TimeInterval?
     )
     func stopScanningForPeripherals()
 

@@ -32,7 +32,7 @@ extension DefaultService: ServiceDataSource {
 }
 
 // MARK: - ServiceDelegate
-extension DefaultService: ServiceDelegate {
+extension DefaultService: ServiceDiscoveryDelegate {
     public func didDiscover(
         includedServices: Result<[Service], Error>,
         for service: Service

@@ -32,6 +32,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     internal var core: CBCentralManager!
 
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
+    internal var timer: Timer?
 
     public required init(
         options: CentralManagerOptions? = nil,
@@ -49,7 +50,8 @@ open class CentralManager: NSObject, CentralManagerProtocol {
 
     public func startScanningForPeripherals(
         advertisingWithServices services: [Identifier]? = nil,
-        options: CentralManagerScanningOptions? = nil
+        options: CentralManagerScanningOptions? = nil,
+        timeout: TimeInterval? = nil
     ) {
         guard !self.core.isScanning else {
             return
@@ -58,6 +60,21 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         self.queue.async {
             let uuids = services?.map { $0.uuid }
             self.core.scanForPeripherals(withServices: uuids, options: options?.dictionary)
+            if let timer = self.timer {
+                timer.invalidate()
+                self.timer = nil
+            }
+            if let timeout = timeout {
+                let timer = Timer(
+                    timeInterval: timeout,
+                    target: self,
+                    selector: #selector(CentralManager.didReachScanningTimeout(_:)),
+                    userInfo: nil,
+                    repeats: false
+                )
+                self.timer = timer
+                RunLoop.main.add(timer, forMode: .commonModes)
+            }
             if let delegate = self as? CentralManagerDiscoveryDelegate {
                 delegate.didStartScanningForPeripherals(with: self)
             }
@@ -67,6 +84,10 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     public func stopScanningForPeripherals() {
         self.queue.async {
             self.core.stopScan()
+            if let timer = self.timer {
+                timer.invalidate()
+            }
+            self.timer = nil
             if let delegate = self as? CentralManagerDiscoveryDelegate {
                 delegate.didStopScanningForPeripherals(with: self)
             }
@@ -147,6 +168,12 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         peripheral.core = core
         core.delegate = peripheral
         return peripheral
+    }
+
+    @objc private func didReachScanningTimeout(_ timer: Timer) {
+        self.stopScanningForPeripherals()
+        timer.invalidate()
+        self.timer = nil
     }
 }
 
