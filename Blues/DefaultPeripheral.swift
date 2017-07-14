@@ -28,21 +28,36 @@ extension DefaultPeripheral: PeripheralDataSource {
     }
 }
 
-// MARK: - PeripheralDelegate
-extension DefaultPeripheral: PeripheralDelegate {
+// MARK: - PeripheralStateDelegate
+extension DefaultPeripheral: PeripheralStateDelegate {
     public func didUpdate(name: String?, of peripheral: Peripheral) {
-        self.delegate?.didUpdate(name: name, of: peripheral)
+        guard let delegate = self.delegate as? PeripheralStateDelegate else {
+            return
+        }
+        delegate.didUpdate(name: name, of: peripheral)
     }
 
     public func didModify(services: [Service], of peripheral: Peripheral) {
-        self.delegate?.didModify(services: services, of: peripheral)
+        guard let delegate = self.delegate as? PeripheralStateDelegate else {
+            return
+        }
+        delegate.didModify(services: services, of: peripheral)
     }
 
     public func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral) {
-        self.delegate?.didRead(rssi: rssi, of: peripheral)
+        guard let delegate = self.delegate as? PeripheralStateDelegate else {
+            return
+        }
+        delegate.didRead(rssi: rssi, of: peripheral)
     }
+}
 
+// MARK: - PeripheralDiscoveryDelegate
+extension DefaultPeripheral: PeripheralDiscoveryDelegate {
     public func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral) {
-        self.delegate?.didDiscover(services: services, for: peripheral)
+        guard let delegate = self.delegate as? PeripheralDiscoveryDelegate else {
+            return
+        }
+        delegate.didDiscover(services: services, for: peripheral)
     }
 }

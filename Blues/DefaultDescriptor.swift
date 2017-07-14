@@ -15,16 +15,20 @@ open class DefaultDescriptor: Descriptor, DelegatedDescriptorProtocol {
     public weak var delegate: DescriptorDelegate?
 }
 
-// MARK: - ReadableDescriptorDelegate
-extension DefaultDescriptor: ReadableDescriptorDelegate {
+// MARK: - DescriptorReadingDelegate
+extension DefaultDescriptor: DescriptorReadingDelegate {
     public func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
-        self.delegate?.didUpdate(any: any, for: descriptor)
+        if let delegate = self.delegate as? DescriptorReadingDelegate {
+            delegate.didUpdate(any: any, for: descriptor)
+        }
     }
 }
 
-// MARK: - WritableDescriptorDelegate
-extension DefaultDescriptor: WritableDescriptorDelegate {
+// MARK: - DescriptorWritingDelegate
+extension DefaultDescriptor: DescriptorWritingDelegate {
     public func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
-        self.delegate?.didWrite(any: any, for: descriptor)
+        if let delegate = self.delegate as? DescriptorWritingDelegate {
+            delegate.didWrite(any: any, for: descriptor)
+        }
     }
 }

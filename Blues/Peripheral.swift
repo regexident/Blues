@@ -206,8 +206,9 @@ extension Peripheral: CBPeripheralDelegate {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let delegate = self as? PeripheralDelegate
-            delegate?.didUpdate(name: peripheral.name, of: self)
+            if let delegate = self as? PeripheralStateDelegate {
+                delegate.didUpdate(name: peripheral.name, of: self)
+            }
         }
     }
 
@@ -219,7 +220,6 @@ extension Peripheral: CBPeripheralDelegate {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let delegate = self as? PeripheralDelegate
             let services = invalidatedServices.map { coreService -> Service in
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
@@ -230,7 +230,9 @@ extension Peripheral: CBPeripheralDelegate {
                 self.services?[identifier] = service
                 return service
             }
-            delegate?.didModify(services: services, of: self)
+            if let delegate = self as? PeripheralStateDelegate {
+                delegate.didModify(services: services, of: self)
+            }
         }
     }
 
@@ -243,10 +245,11 @@ extension Peripheral: CBPeripheralDelegate {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let delegate = self as? PeripheralDelegate
             let rssi = (rssi != 0) ? rssi as? Int : nil
             let result = Result(success: rssi, failure: error)
-            delegate?.didRead(rssi: result, of: self)
+            if let delegate = self as? PeripheralStateDelegate {
+                delegate.didRead(rssi: result, of: self)
+            }
         }
     }
 
@@ -258,10 +261,11 @@ extension Peripheral: CBPeripheralDelegate {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let delegate = self as? PeripheralDelegate
             let result = Result(success: peripheral.services, failure: error)
             guard case let .ok(coreServices) = result else {
-                delegate?.didDiscover(services: .err(error!), for: self)
+                if let delegate = self as? PeripheralDiscoveryDelegate {
+                    delegate.didDiscover(services: .err(error!), for: self)
+                }
                 return
             }
             var discoveredServices: [Service] = []
@@ -275,7 +279,9 @@ extension Peripheral: CBPeripheralDelegate {
                 services[identifier] = service
             }
             self.services = services
-            delegate?.didDiscover(services: .ok(discoveredServices), for: self)
+            if let delegate = self as? PeripheralDiscoveryDelegate {
+                delegate.didDiscover(services: .ok(discoveredServices), for: self)
+            }
         }
     }
 
@@ -291,10 +297,11 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(service: service) else {
                 return
             }
-            let delegate = wrapper as? ServiceDelegate
             let result = Result(success: service.includedServices, failure: error)
             guard case let .ok(coreServices) = result else {
-                delegate?.didDiscover(includedServices: .err(error!), for: wrapper)
+                if let delegate = wrapper as? ServiceDiscoveryDelegate {
+                    delegate.didDiscover(includedServices: .err(error!), for: wrapper)
+                }
                 return
             }
             var discoveredServices: [Service] = []
@@ -308,7 +315,9 @@ extension Peripheral: CBPeripheralDelegate {
                 services[identifier] = service
             }
             wrapper.includedServices = services
-            delegate?.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
+            if let delegate = wrapper as? ServiceDiscoveryDelegate {
+                delegate.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
+            }
         }
     }
 
@@ -324,10 +333,11 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(service: service) else {
                 return
             }
-            let delegate = wrapper as? ServiceDelegate
             let result = Result(success: service.characteristics, failure: error)
             guard case let .ok(coreCharacteristics) = result else {
-                delegate?.didDiscover(characteristics: .err(error!), for: wrapper)
+                if let delegate = wrapper as? ServiceDiscoveryDelegate {
+                    delegate.didDiscover(characteristics: .err(error!), for: wrapper)
+                }
                 return
             }
             var discoveredCharacteristics: [Characteristic] = []
@@ -344,10 +354,9 @@ extension Peripheral: CBPeripheralDelegate {
                 characteristics[characteristic.identifier] = characteristic
             }
             wrapper.characteristics = characteristics
-            delegate?.didDiscover(
-                characteristics: .ok(discoveredCharacteristics),
-                for: wrapper
-            )
+            if let delegate = wrapper as? ServiceDiscoveryDelegate {
+                delegate.didDiscover(characteristics: .ok(discoveredCharacteristics), for: wrapper)
+            }
         }
     }
 
@@ -363,11 +372,10 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
-            guard let delegate = wrapper as? ReadableCharacteristicDelegate else {
-                return
-            }
             let result = Result(success: characteristic.value, failure: error)
-            delegate.didUpdate(data: result, for: wrapper)
+            if let delegate = wrapper as? CharacteristicReadingDelegate {
+                delegate.didUpdate(data: result, for: wrapper)
+            }
         }
     }
 
@@ -383,11 +391,10 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
-            guard let delegate = wrapper as? WritableCharacteristicDelegate else {
-                return
-            }
             let result = Result(success: characteristic.value, failure: error)
-            delegate.didWrite(data: result, for: wrapper)
+            if let delegate = wrapper as? CharacteristicWritingDelegate {
+                delegate.didWrite(data: result, for: wrapper)
+            }
         }
     }
 
@@ -403,11 +410,10 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
-            guard let delegate = wrapper as? NotifiableCharacteristicDelegate else {
-                return
-            }
             let result = Result(success: characteristic.isNotifying, failure: error)
-            delegate.didUpdate(notificationState: result, for: wrapper)
+            if let delegate = wrapper as? CharacteristicNotificationStateDelegate {
+                delegate.didUpdate(notificationState: result, for: wrapper)
+            }
         }
     }
 
@@ -423,9 +429,6 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(characteristic: characteristic) else {
                 return
             }
-            guard let delegate = wrapper as? DescribableCharacteristicDelegate else {
-                return
-            }
             let coreDescriptors = Result(success: characteristic.descriptors, failure: error)
             let descriptors = coreDescriptors.map { coreDescriptors -> [Descriptor] in
                 coreDescriptors.map { coreDescriptor in
@@ -435,7 +438,9 @@ extension Peripheral: CBPeripheralDelegate {
                     return descriptor
                 }
             }
-            delegate.didDiscover(descriptors: descriptors, for: wrapper)
+            if let delegate = wrapper as? CharacteristicDiscoveryDelegate {
+                delegate.didDiscover(descriptors: descriptors, for: wrapper)
+            }
         }
     }
 
@@ -451,11 +456,10 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
             }
-            guard let delegate = wrapper as? ReadableDescriptorDelegate else {
-                return
-            }
             let result = Result(success: descriptor.value, failure: error)
-            delegate.didUpdate(any: result, for: wrapper)
+            if let delegate = wrapper as? DescriptorReadingDelegate {
+                delegate.didUpdate(any: result, for: wrapper)
+            }
         }
     }
 
@@ -471,11 +475,10 @@ extension Peripheral: CBPeripheralDelegate {
             guard let wrapper = self.wrapperOf(descriptor: descriptor) else {
                 return
             }
-            guard let delegate = wrapper as? WritableDescriptorDelegate else {
-                return
-            }
             let result = Result(success: descriptor.value, failure: error)
-            delegate.didWrite(any: result, for: wrapper)
+            if let delegate = wrapper as? DescriptorWritingDelegate {
+                delegate.didWrite(any: result, for: wrapper)
+            }
         }
     }
 }

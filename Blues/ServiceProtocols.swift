@@ -10,7 +10,7 @@ import Foundation
 
 import Result
 
-public protocol ServiceProtocol {
+public protocol ServiceProtocol: class {
     var identifier: Identifier { get }
 
     var name: String? { get }
@@ -34,15 +34,18 @@ public protocol ServiceProtocol {
 }
 
 public protocol DelegatedServiceProtocol: ServiceProtocol {
-    var delegate: ServiceDelegate? { get }
+    var delegate: ServiceDelegate? { get set }
 }
 
 public protocol DataSourcedServiceProtocol: ServiceProtocol {
-    var dataSource: ServiceDataSource? { get }
+    var dataSource: ServiceDataSource? { get set }
 }
 
 /// A `DelegatedService`'s delegate.
 public protocol ServiceDelegate: class {
+}
+
+public protocol ServiceDiscoveryDelegate: ServiceDelegate {
     /// Invoked when you discover the peripheral’s available services.
     ///
     /// - Note:

@@ -37,13 +37,17 @@ extension DefaultService: ServiceDelegate {
         includedServices: Result<[Service], Error>,
         for service: Service
     ) {
-        self.delegate?.didDiscover(includedServices: includedServices, for: service)
+        if let delegate = self.delegate as? ServiceDiscoveryDelegate {
+            delegate.didDiscover(includedServices: includedServices, for: service)
+        }
     }
 
     public func didDiscover(
         characteristics: Result<[Characteristic], Error>,
         for service: Service
     ) {
-        self.delegate?.didDiscover(characteristics: characteristics, for: service)
+        if let delegate = self.delegate as? ServiceDiscoveryDelegate {
+            delegate.didDiscover(characteristics: characteristics, for: service)
+        }
     }
 }

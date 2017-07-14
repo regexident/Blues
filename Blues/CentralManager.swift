@@ -11,31 +11,6 @@ import CoreBluetooth
 
 import Result
 
-public protocol CentralManagerProtocol {
-    @available(iOS 10.0, *)
-    @available(iOSApplicationExtension 10.0, *)
-    var state: CentralManagerState { get }
-
-    var isScanning: Bool { get }
-
-    var peripherals: [Identifier: Peripheral] { get }
-
-    init(options: CentralManagerOptions?, queue: DispatchQueue)
-
-    func startScanningForPeripherals(
-        advertisingWithServices services: [Identifier]?,
-        options: CentralManagerScanningOptions?
-    )
-    func stopScanningForPeripherals()
-
-    func retrievePeripherals(withIdentifiers identifiers: [Identifier]) -> [Peripheral]
-    func retrieveConnectedPeripherals(withServices serviceUUIDs: [Identifier]) -> [Peripheral]
-
-    func connect(peripheral: Peripheral, options: ConnectionOptions?)
-    func disconnect(peripheral: Peripheral)
-    func disconnectAll()
-}
-
 /// Abstraction layer around `CBCentralManager`.
 open class CentralManager: NSObject, CentralManagerProtocol {
     private struct Constants {
@@ -83,12 +58,18 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         self.queue.async {
             let uuids = services?.map { $0.uuid }
             self.core.scanForPeripherals(withServices: uuids, options: options?.dictionary)
+            if let delegate = self as? CentralManagerDiscoveryDelegate {
+                delegate.didStartScanningForPeripherals(with: self)
+            }
         }
     }
 
     public func stopScanningForPeripherals() {
         self.queue.async {
             self.core.stopScan()
+            if let delegate = self as? CentralManagerDiscoveryDelegate {
+                delegate.didStopScanningForPeripherals(with: self)
+            }
         }
     }
 
@@ -198,13 +179,13 @@ extension CentralManager: CBCentralManagerDelegate {
             } else if central.state == .poweredOff {
                 for peripheral in self.peripherals.values {
                     if peripheral.state == .connected {
-                        if let delegate = self as? CentralManagerDelegate {
+                        if let delegate = self as? CentralManagerConnectionDelegate {
                             delegate.didDisconnect(from: peripheral, error: nil, on: self)
                         }
                     }
                 }
             }
-            if let delegate = self as? CentralManagerDelegate {
+            if let delegate = self as? CentralManagerStateDelegate {
                 delegate.didUpdateState(of: self)
             }
         }
@@ -224,7 +205,7 @@ extension CentralManager: CBCentralManagerDelegate {
             let advertisement = Advertisement(dictionary: advertisementData)
             let wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
             self.peripherals[wrapper.identifier] = wrapper
-            if let delegate = self as? CentralManagerDelegate {
+            if let delegate = self as? CentralManagerDiscoveryDelegate {
                 delegate.didDiscover(
                     peripheral: wrapper,
                     rssi: RSSI as! Int,
@@ -297,7 +278,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 }
                 return peripheral
             }
-            if let delegate = self as? CentralManagerDelegate {
+            if let delegate = self as? CentralManagerRetrievalDelegate {
                 delegate.didRetrieve(peripherals: peripherals, from: self)
             }
         }
@@ -315,7 +296,7 @@ extension CentralManager: CBCentralManagerDelegate {
                 }
                 return peripheral
             }
-            if let delegate = self as? CentralManagerDelegate {
+            if let delegate = self as? CentralManagerRetrievalDelegate {
                 delegate.didRetrieve(connectedPeripherals: peripherals, from: self)
             }
         }

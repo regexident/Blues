@@ -10,7 +10,7 @@ import Foundation
 
 import Result
 
-public protocol PeripheralProtocol {
+public protocol PeripheralProtocol: class {
     var identifier: Identifier { get }
 
     var name: String? { get }
@@ -34,15 +34,17 @@ public protocol PeripheralProtocol {
 }
 
 public protocol DelegatedPeripheralProtocol: PeripheralProtocol {
-    var delegate: PeripheralDelegate? { get }
+    var delegate: PeripheralDelegate? { get set }
 }
 
 public protocol DataSourcedPeripheralProtocol: PeripheralProtocol {
-    var dataSource: PeripheralDataSource? { get }
+    var dataSource: PeripheralDataSource? { get set }
 }
 
-/// A `DelegatedPeripheral`'s delegate.
-public protocol PeripheralDelegate: class {
+/// A `Peripheral`'s delegate.
+public protocol PeripheralDelegate: class {}
+
+public protocol PeripheralStateDelegate: PeripheralDelegate {
     /// Invoked when a peripheral’s name changes.
     ///
     /// - Parameters:
@@ -64,7 +66,9 @@ public protocol PeripheralDelegate: class {
     ///   - rssi: The RSSI, in decibels, of the peripheral, or an error.
     ///   - peripheral: The peripheral providing this information.
     func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral)
+}
 
+public protocol PeripheralDiscoveryDelegate: PeripheralDelegate {
     /// Invoked when you discover the peripheral’s available services.
     ///
     /// - Parameters:

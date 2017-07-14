@@ -31,42 +31,54 @@ extension DefaultCharacteristic: CharacteristicDataSource {
     }
 }
 
-// MARK: - ReadableCharacteristicDelegate
-extension DefaultCharacteristic: ReadableCharacteristicDelegate {
+// MARK: - CharacteristicReadingDelegate
+extension DefaultCharacteristic: CharacteristicReadingDelegate {
     public func didUpdate(
         data: Result<Data, Error>,
         for characteristic: Characteristic
     ) {
-        self.delegate?.didUpdate(data: data, for: characteristic)
+        guard let delegate = self.delegate as? CharacteristicReadingDelegate else {
+            return
+        }
+        delegate.didUpdate(data: data, for: characteristic)
     }
 }
 
-// MARK: - WritableCharacteristicDelegate
-extension DefaultCharacteristic: WritableCharacteristicDelegate {
+// MARK: - CharacteristicWritingDelegate
+extension DefaultCharacteristic: CharacteristicWritingDelegate {
     public func didWrite(
         data: Result<Data, Error>,
         for characteristic: Characteristic
     ) {
-        self.delegate?.didWrite(data: data, for: characteristic)
+        guard let delegate = self.delegate as? CharacteristicWritingDelegate else {
+            return
+        }
+        delegate.didWrite(data: data, for: characteristic)
     }
 }
 
-// MARK: - NotifiableCharacteristicDelegate
-extension DefaultCharacteristic: NotifiableCharacteristicDelegate {
+// MARK: - CharacteristicNotificationStateDelegate
+extension DefaultCharacteristic: CharacteristicNotificationStateDelegate {
     public func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
         for characteristic: Characteristic
     ) {
-        self.delegate?.didUpdate(notificationState: isNotifying, for: characteristic)
+        guard let delegate = self.delegate as? CharacteristicNotificationStateDelegate else {
+            return
+        }
+        delegate.didUpdate(notificationState: isNotifying, for: characteristic)
     }
 }
 
-// MARK: - DescribableCharacteristicDelegate
-extension DefaultCharacteristic: DescribableCharacteristicDelegate {
+// MARK: - CharacteristicDiscoveryDelegate
+extension DefaultCharacteristic: CharacteristicDiscoveryDelegate {
     public func didDiscover(
         descriptors: Result<[Descriptor], Error>,
         for characteristic: Characteristic
     ) {
-        self.delegate?.didDiscover(descriptors: descriptors, for: characteristic)
+        guard let delegate = self.delegate as? CharacteristicDiscoveryDelegate else {
+            return
+        }
+        delegate.didDiscover(descriptors: descriptors, for: characteristic)
     }
 }

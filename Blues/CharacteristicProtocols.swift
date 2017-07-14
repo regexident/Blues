@@ -10,7 +10,7 @@ import Foundation
 
 import Result
 
-public protocol CharacteristicProtocol {
+public protocol CharacteristicProtocol: class {
     var identifier: Identifier { get }
 
     var name: String? { get }
@@ -43,15 +43,17 @@ public protocol CharacteristicProtocol {
 }
 
 public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
-    var delegate: CharacteristicDelegate? { get }
+    var delegate: CharacteristicDelegate? { get set }
 }
 
 public protocol DataSourcedCharacteristicProtocol: CharacteristicProtocol {
-    var dataSource: CharacteristicDataSource? { get }
+    var dataSource: CharacteristicDataSource? { get set }
 }
 
+public protocol CharacteristicDelegate: class {}
+
 /// A readable `Characteristic`'s delegate.
-public protocol ReadableCharacteristicDelegate: class {
+public protocol CharacteristicReadingDelegate: CharacteristicDelegate {
     /// Invoked when you retrieve a specified characteristic’s value,
     /// or when the peripheral device notifies your app that
     /// the characteristic’s value has changed.
@@ -63,7 +65,7 @@ public protocol ReadableCharacteristicDelegate: class {
 }
 
 /// A writable `Characteristic`'s delegate.
-public protocol WritableCharacteristicDelegate: class {
+public protocol CharacteristicWritingDelegate: CharacteristicDelegate {
     /// Invoked when you write data to a characteristic’s value.
     ///
     /// - Note:
@@ -77,7 +79,7 @@ public protocol WritableCharacteristicDelegate: class {
 }
 
 /// A notifiable `Characteristic`'s delegate.
-public protocol NotifiableCharacteristicDelegate: ReadableCharacteristicDelegate {
+public protocol CharacteristicNotificationStateDelegate: CharacteristicReadingDelegate {
     /// Invoked when the peripheral receives a request to start or stop providing
     /// notifications for a specified characteristic’s value.
     ///
@@ -96,7 +98,7 @@ public protocol NotifiableCharacteristicDelegate: ReadableCharacteristicDelegate
 }
 
 /// A describable `Characteristic`'s delegate.
-public protocol DescribableCharacteristicDelegate: class {
+public protocol CharacteristicDiscoveryDelegate: CharacteristicDelegate {
     /// Invoked when you discover the descriptors of a specified characteristic.
     ///
     /// - Note:
@@ -111,12 +113,6 @@ public protocol DescribableCharacteristicDelegate: class {
         for characteristic: Characteristic
     )
 }
-
-public typealias CharacteristicDelegate =
-    ReadableCharacteristicDelegate
-    & WritableCharacteristicDelegate
-    & NotifiableCharacteristicDelegate
-    & DescribableCharacteristicDelegate
 
 /// A `Characteristic`'s data source.
 public protocol CharacteristicDataSource: class {

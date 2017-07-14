@@ -8,17 +8,46 @@
 
 import Foundation
 
-/// The `CentralManagerDelegate` protocol defines the methods
-/// that a delegate of a `CentralManager` object must adopt.
-public typealias CentralManagerDelegate =
-    CentralManagerStateDelegate
-    & CentralManagerRetrievalDelegate
-    & CentralManagerRestorationDelegate
-    & CentralManagerConnectionDelegate
+public protocol CentralManagerProtocol: class {
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
+    var state: CentralManagerState { get }
+
+    var isScanning: Bool { get }
+
+    var peripherals: [Identifier: Peripheral] { get }
+
+    init(options: CentralManagerOptions?, queue: DispatchQueue)
+
+    func startScanningForPeripherals(
+        advertisingWithServices services: [Identifier]?,
+        options: CentralManagerScanningOptions?
+    )
+    func stopScanningForPeripherals()
+
+    func retrievePeripherals(withIdentifiers identifiers: [Identifier]) -> [Peripheral]
+    func retrieveConnectedPeripherals(withServices serviceUUIDs: [Identifier]) -> [Peripheral]
+
+    func connect(peripheral: Peripheral, options: ConnectionOptions?)
+    func disconnect(peripheral: Peripheral)
+    func disconnectAll()
+}
+
+public protocol DelegatedCentralManagerProtocol: CentralManagerProtocol {
+    var delegate: CentralManagerDelegate? { get set }
+}
+
+public protocol DataSourcedCentralManagerProtocol: CentralManagerProtocol {
+    var dataSource: CentralManagerDataSource? { get set }
+}
 
 /// The `CentralManagerDelegate` protocol defines the methods
 /// that a delegate of a `CentralManager` object must adopt.
-public protocol CentralManagerStateDelegate: class {
+public protocol CentralManagerDelegate: class {}
+
+/// The `CentralManagerDelegate` protocol defines the additional optional
+/// methods that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerStateDelegate: CentralManagerDelegate {
     /// Invoked when the central manager’s state is updated.
     ///
     /// - Parameters:
@@ -27,9 +56,21 @@ public protocol CentralManagerStateDelegate: class {
     func didUpdateState(of manager: CentralManager)
 }
 
-/// The `CentralManagerRestorationDelegate` protocol defines some of the methods
-/// that a delegate of a `CentralManager` object must adopt.
-public protocol CentralManagerRetrievalDelegate: class {
+/// The `CentralManagerDiscoveryDelegate` protocol defines some of the additional optional
+/// methods that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerDiscoveryDelegate: CentralManagerDelegate {
+    /// Invoked when the central manager starts scanning for peripherals.
+    ///
+    /// - Parameters:
+    ///   - manager:       The central manager doing the scanning.
+    func didStartScanningForPeripherals(with manager: CentralManager)
+
+    /// Invoked when the central manager stops scanning for peripherals.
+    ///
+    /// - Parameters:
+    ///   - manager:       The central manager doing the scanning.
+    func didStopScanningForPeripherals(with manager: CentralManager)
+
     /// Invoked when the central manager discovers a peripheral while scanning.
     ///
     /// - Parameters:
@@ -37,7 +78,11 @@ public protocol CentralManagerRetrievalDelegate: class {
     ///   - rssi:          The rssi value.
     ///   - manager:       The central manager providing the update.
     func didDiscover(peripheral: Peripheral, rssi: Int, with manager: CentralManager)
+}
 
+/// The `CentralManagerRestorationDelegate` protocol defines some of the additional optional
+/// methods that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerRetrievalDelegate: CentralManagerDelegate {
     /// Invoked when the central manager retrieves a list of known peripherals.
     ///
     /// - Parameters:
@@ -54,9 +99,9 @@ public protocol CentralManagerRetrievalDelegate: class {
     func didRetrieve(connectedPeripherals: [Peripheral], from manager: CentralManager)
 }
 
-/// The `CentralManagerRestorationDelegate` protocol defines some of the methods
-/// that a delegate of a `CentralManager` object must adopt.
-public protocol CentralManagerRestorationDelegate: class {
+/// The `CentralManagerRestorationDelegate` protocol defines some of the additional optional
+/// methods that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerRestorationDelegate: CentralManagerDelegate {
     /// Invoked when the central manager is about to be restored by the system.
     ///
     /// - Note:
@@ -80,9 +125,9 @@ public protocol CentralManagerRestorationDelegate: class {
     func didRestore(peripheral: Peripheral, with manager: CentralManager)
 }
 
-/// The `CentralManagerConnectionDelegate` protocol defines some of the methods
-/// that a delegate of a `CentralManager` object must adopt.
-public protocol CentralManagerConnectionDelegate: class {
+/// The `CentralManagerConnectionDelegate` protocol defines some of the additional optional
+/// methods that a delegate of a `CentralManager` object must adopt.
+public protocol CentralManagerConnectionDelegate: CentralManagerDelegate {
     /// Invoked when a connection is about to be created with a peripheral.
     ///
     /// - Parameters:

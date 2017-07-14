@@ -10,7 +10,7 @@ import Foundation
 
 import Result
 
-public protocol DescriptorProtocol {
+public protocol DescriptorProtocol: class {
     var identifier: Identifier { get }
 
     var name: String? { get }
@@ -29,10 +29,13 @@ public protocol DescriptorProtocol {
 }
 
 public protocol DelegatedDescriptorProtocol: DescriptorProtocol {
-    var delegate: DescriptorDelegate? { get }
+    var delegate: DescriptorDelegate? { get set }
 }
 
-public protocol ReadableDescriptorDelegate: class {
+/// A `DelegatedDescriptor`'s delegate.
+public protocol DescriptorDelegate: class {}
+
+public protocol DescriptorReadingDelegate: DescriptorDelegate {
     /// Invoked when you retrieve a specified characteristic descriptor’s value.
     ///
     /// - Parameters:
@@ -41,7 +44,7 @@ public protocol ReadableDescriptorDelegate: class {
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor)
 }
 
-public protocol WritableDescriptorDelegate: class {
+public protocol DescriptorWritingDelegate: DescriptorDelegate {
     /// Invoked when you write data to a characteristic descriptor’s value.
     ///
     /// - Parameters:
@@ -49,11 +52,6 @@ public protocol WritableDescriptorDelegate: class {
     ///   - descriptor: The descriptor whose value has been retrieved.
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
 }
-
-/// A `DelegatedDescriptor`'s delegate.
-public typealias DescriptorDelegate =
-    ReadableDescriptorDelegate
-    & WritableDescriptorDelegate
 
 /// A descriptor of a peripheral’s characteristic, providing further information about its value.
 public protocol DescriptorValueTransformer {
