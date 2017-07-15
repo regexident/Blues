@@ -11,75 +11,86 @@ import Blues
 
 import Result
 
+protocol PeripheralViewControllerDelegate: class {
+    func connect(peripheral: Peripheral)
+    func disconnect(peripheral: Peripheral)
+}
+
 class PeripheralViewController: UITableViewController {
 
     var characteristicViewController: CharacteristicViewController?
 
-    weak var previousPeripheralDelegate: PeripheralDelegate?
-    weak var peripheral: Peripheral? {
+    var peripheral: DefaultPeripheral? {
         willSet {
-            if self.peripheral !== newValue {
-                guard let peripheral = self.peripheral as? DefaultPeripheral else {
-                    return
-                }
-                peripheral.delegate = self.previousPeripheralDelegate
-                peripheral.disconnect()
-            }
+            self.peripheral?.delegate = nil
         }
         didSet {
-            self.sortedServices = []
-            guard let peripheral = self.peripheral as? DefaultPeripheral else {
-                self.previousPeripheralDelegate = nil
-                oldValue?.disconnect()
-                return
+            if let peripheral = self.peripheral {
+                peripheral.delegate = self
+                if let services = peripheral.services {
+                    for service in services {
+                        self.characteristicsByService[service] = service.characteristics ?? []
+                    }
+                }
+                self.navigationItem.rightBarButtonItem = self.barButtonItem
+            } else {
+                self.navigationItem.rightBarButtonItem = nil
             }
-            self.previousPeripheralDelegate = peripheral.delegate
-            peripheral.delegate = self
-            peripheral.connect()
+            self.tableView.reloadData()
         }
     }
 
-    let queue: DispatchQueue = .init(label: "serial")
+    weak var delegate: PeripheralViewControllerDelegate?
 
-    lazy var sortedServices: [Service] = {
-        guard let services = self.peripheral?.services?.values else {
-            return []
-        }
-        return Array(services)
-    }()
+    @IBOutlet var barButtonItem: UIBarButtonItem!
 
-    var sortedCharacteristicsByService: [Identifier: [Characteristic]] = [:]
+    fileprivate let queue: DispatchQueue = .init(label: "serial")
+
+    var services: [Service] {
+         return Array(self.characteristicsByService.keys)
+    }
+
+    var characteristicsByService: [Service: [Characteristic]] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.clearsSelectionOnViewWillAppear = true
+
         guard let peripheral = self.peripheral else {
             return
         }
+
         self.title = self.title(for: peripheral)
-        self.clearsSelectionOnViewWillAppear = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.peripheral?.connect()
-        
         self.tableView.reloadData()
+
+        guard let peripheral = self.peripheral else {
+            self.navigationItem.rightBarButtonItem = nil
+            return
+        }
+
+        peripheral.delegate = self
+
+        self.navigationItem.rightBarButtonItem = self.barButtonItem
+        if peripheral.state == .connected {
+            self.barButtonItem?.title = "Disconnect"
+        } else {
+            self.barButtonItem?.title = "Connect"
+        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        guard let peripheral = self.peripheral as? DefaultPeripheral else {
+        guard let peripheral = self.peripheral else {
             return
         }
-
-        self.peripheral?.disconnect()
-
-        if peripheral.delegate === self {
-            peripheral.delegate = self.previousPeripheralDelegate
-        }
+        peripheral.delegate = nil
     }
 
     override func willMove(toParentViewController parent: UIViewController?) {
@@ -90,7 +101,7 @@ class PeripheralViewController: UITableViewController {
 
         // The back button was pressed or interactive gesture used:
         if parent == nil {
-            self.peripheral = nil
+            // do something
         }
     }
 
@@ -99,8 +110,8 @@ class PeripheralViewController: UITableViewController {
             guard let indexPath = self.tableView.indexPathForSelectedRow else {
                 return
             }
-            let service = self.sortedServices[indexPath.section]
-            let characteristics = self.sortedCharacteristicsByService[service.identifier]!
+            let service = self.services[indexPath.section]
+            let characteristics = self.characteristicsByService[service]!
             let characteristic = characteristics[indexPath.row]
 
             let controller = segue.destination as! CharacteristicViewController
@@ -108,6 +119,21 @@ class PeripheralViewController: UITableViewController {
             controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
             self.characteristicViewController = controller
+        }
+    }
+
+    @IBAction fileprivate func toggleConnection(_ sender: UIBarButtonItem) {
+        guard let delegate = self.delegate else {
+            fatalError("Expected 'self.delegate', found nil.")
+        }
+
+        guard let peripheral = self.peripheral else {
+            return
+        }
+        if peripheral.state == .connected {
+            delegate.disconnect(peripheral: peripheral)
+        } else {
+            delegate.connect(peripheral: peripheral)
         }
     }
 
@@ -143,29 +169,84 @@ class PeripheralViewController: UITableViewController {
     }
 }
 
+extension PeripheralViewController {
+    func willConnect() {
+        DispatchQueue.main.async {
+            if let buttonItem = self.navigationItem.rightBarButtonItem {
+                buttonItem.isEnabled = false
+                buttonItem.title = "Connecting…"
+            }
+        }
+    }
+
+    func didConnect() {
+        guard let peripheral = self.peripheral else {
+            return
+        }
+
+        if peripheral.services == nil {
+            peripheral.discover(services: nil)
+        }
+
+        DispatchQueue.main.async {
+            if let buttonItem = self.navigationItem.rightBarButtonItem {
+                buttonItem.isEnabled = true
+                buttonItem.title = "Disconnect"
+            }
+        }
+    }
+
+    func willDisconnect() {
+        DispatchQueue.main.async {
+            if let buttonItem = self.navigationItem.rightBarButtonItem {
+                buttonItem.isEnabled = false
+                buttonItem.title = "Disconnecting…"
+            }
+        }
+    }
+
+    func didDisconnect(error: Swift.Error?) {
+        DispatchQueue.main.async {
+            if let buttonItem = self.navigationItem.rightBarButtonItem {
+                buttonItem.isEnabled = true
+                buttonItem.title = "Connect"
+            }
+        }
+    }
+
+    func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
+        
+    }
+}
+
 // MARK: - UITableViewDataSource
 extension PeripheralViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.sortedServices.count
+//        print("\n")
+//        print("self.sortedServices.count:", self.sortedServices.count)
+        return self.characteristicsByService.count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let service = self.sortedServices[section]
+        let service = self.services[section]
+//        print("service:", service)
         return ServiceNames.nameOf(service: service.identifier) ?? service.name
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let service = self.sortedServices[section]
-        let characteristics = self.sortedCharacteristicsByService[service.identifier] ?? []
+        let service = self.services[section]
+        let characteristics = self.characteristicsByService[service]!
+//        print("characteristics:", characteristics)
         return characteristics.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CharacteristicCell", for: indexPath)
 
-        let service = self.sortedServices[indexPath.section]
-        let characteristics = self.sortedCharacteristicsByService[service.identifier]!
+        let service = self.services[indexPath.section]
+        let characteristics = self.characteristicsByService[service]!
         let characteristic = characteristics[indexPath.row]
+//        print("characteristic:", characteristic)
 
         cell.textLabel!.text = self.humanReadableValue(for: characteristic)
         cell.detailTextLabel!.text = self.title(for: characteristic)
@@ -174,54 +255,43 @@ extension PeripheralViewController {
     }
 }
 
+// MARK: - UITableViewDelegate
+extension PeripheralViewController{
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        guard let peripheral = self.peripheral else {
+            return false
+        }
+        return peripheral.state == .connected
+    }
+}
+
 // MARK: - PeripheralDelegate
-extension PeripheralViewController: PeripheralDelegate {
-    public func willRestore(peripheral: Peripheral) {
-    }
-
-    public func didRestore(peripheral: Peripheral) {
-    }
-
-    public func willConnect(to peripheral: Peripheral) {
-    }
-
-    public func didConnect(to peripheral: Peripheral) {
-        peripheral.discover(services: nil)
-    }
-
-    public func willDisconnect(from peripheral: Peripheral) {
-    }
-
-    public func didDisconnect(from peripheral: Peripheral, error: Swift.Error?) {
-    }
-
-    public func didFailToConnect(to peripheral: Peripheral, error: Swift.Error?) {
-        print("Error: \(String(describing: error))")
-    }
-
+extension PeripheralViewController: PeripheralStateDelegate {
     func didUpdate(name: String?, of peripheral: Peripheral) {
         self.title = self.title(for: peripheral)
     }
 
     func didModify(services: [Service], of peripheral: Peripheral) {
+
     }
 
     func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral) {
-    }
 
+    }
+}
+
+extension PeripheralViewController: PeripheralDiscoveryDelegate {
     func didDiscover(services: Result<[Service], Error>, for peripheral: Peripheral) {
         guard case let .ok(services) = services else {
             return
         }
         self.queue.async {
-            self.sortedServices = services.sorted {
-                ($0.name ?? "") < ($1.name ?? "")
-            }
             for service in services {
-                service.discover(characteristics: nil)
+                self.characteristicsByService[service] = service.characteristics ?? []
                 if let service = service as? DefaultService {
                     service.delegate = self
                 }
+                service.discover(characteristics: nil)
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -231,7 +301,7 @@ extension PeripheralViewController: PeripheralDelegate {
 }
 
 // MARK: - ServiceDelegate
-extension PeripheralViewController: ServiceDelegate {
+extension PeripheralViewController: ServiceDiscoveryDelegate {
     func didDiscover(includedServices: Result<[Service], Error>, for service: Service) {
 
     }
@@ -241,14 +311,13 @@ extension PeripheralViewController: ServiceDelegate {
             return
         }
         self.queue.async {
-            self.sortedCharacteristicsByService[service.identifier] = characteristics
+            self.characteristicsByService[service] = service.characteristics ?? []
             for characteristic in characteristics {
-                characteristic.discoverDescriptors()
                 if let characteristic = characteristic as? DefaultCharacteristic {
-                    characteristic.read()
-                    characteristic.set(notifyValue: true)
                     characteristic.delegate = self
                 }
+                characteristic.discoverDescriptors()
+                characteristic.read()
                 characteristic.set(notifyValue: true)
             }
             DispatchQueue.main.async {
@@ -258,52 +327,78 @@ extension PeripheralViewController: ServiceDelegate {
     }
 }
 
-// MARK: - ReadableCharacteristicDelegate
-extension PeripheralViewController: ReadableCharacteristicDelegate {
+// MARK: - CharacteristicReadingDelegate
+extension PeripheralViewController: CharacteristicReadingDelegate {
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         let service = characteristic.service
         self.queue.async {
-            let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
-            let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
-            let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
+            let services = self.services
+            let characteristics = self.characteristicsByService[service]!
+
+            let section = services.index(of: characteristic.service)!
+            let row = characteristics.index(of: characteristic)!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
-                self.tableView.beginUpdates()
                 self.tableView.reloadRows(at: [indexPath], with: .none)
-                self.tableView.endUpdates()
             }
         }
     }
 }
 
-// MARK: - WritableCharacteristicDelegate
-extension PeripheralViewController: WritableCharacteristicDelegate {
+// MARK: - CharacteristicWritingDelegate
+extension PeripheralViewController: CharacteristicWritingDelegate {
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         let service = characteristic.service
         self.queue.async {
-            let sortedCharacteristics = self.sortedCharacteristicsByService[service.identifier]!
-            let section = self.sortedServices.index(where: { $0.identifier == service.identifier })!
-            let row = sortedCharacteristics.index(where: { $0.identifier == characteristic.identifier })!
+            let services = self.services
+            let characteristics = self.characteristicsByService[service]!
+
+            let section = services.index(of: characteristic.service)!
+            let row = characteristics.index(of: characteristic)!
             let indexPath = IndexPath(row: row, section: section)
             DispatchQueue.main.async {
-                self.tableView.beginUpdates()
                 self.tableView.reloadRows(at: [indexPath], with: .none)
-                self.tableView.endUpdates()
             }
         }
     }
 }
 
-// MARK: - NotifiableCharacteristicDelegate
-extension PeripheralViewController: NotifiableCharacteristicDelegate {
+// MARK: - CharacteristicNotificationStateDelegate
+extension PeripheralViewController: CharacteristicNotificationStateDelegate {
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
 
     }
 }
 
-// MARK: - DescribableCharacteristicDelegate
-extension PeripheralViewController: DescribableCharacteristicDelegate {
+// MARK: - CharacteristicDiscoveryDelegate
+extension PeripheralViewController: CharacteristicDiscoveryDelegate {
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
+        guard case let .ok(descriptors) = descriptors else {
+            return
+        }
+        self.queue.async {
+            for descriptor in descriptors {
+                if let descriptor = descriptor as? DefaultDescriptor {
+                    descriptor.delegate = self
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+}
+
+// MARK: - DescriptorReadingDelegate
+extension PeripheralViewController: DescriptorReadingDelegate {
+    public func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
+
+    }
+}
+
+// MARK: - DescriptorWritingDelegate
+extension PeripheralViewController: DescriptorWritingDelegate {
+    public func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
 
     }
 }

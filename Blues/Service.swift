@@ -48,7 +48,11 @@ open class Service: ServiceProtocol {
     ///   contain one characteristic that describes the intended body location
     ///   of the device’s heart rate sensor and another characteristic that
     ///   transmits heart rate measurement data.
-    public var characteristics: [Identifier: Characteristic]?
+    public var characteristics: [Characteristic]? {
+        return self.characteristicsByIdentifier.map { Array($0.values) }
+    }
+
+    internal var characteristicsByIdentifier: [Identifier: Characteristic]? = nil
 
     /// A list of included services.
     ///
@@ -56,7 +60,11 @@ open class Service: ServiceProtocol {
     ///   A service of a peripheral may contain a reference to other services
     ///   that are available on the peripheral.
     ///   These other services are the included services of the service.
-    public var includedServices: [Identifier: Service]?
+    public var includedServices: [Service]? {
+        return self.includedServicesByIdentifier.map { Array($0.values) }
+    }
+
+    internal var includedServicesByIdentifier: [Identifier: Service]? = nil
 
     internal var core: CBService!
 
@@ -86,10 +94,10 @@ open class Service: ServiceProtocol {
         where C: Characteristic,
               C: TypeIdentifiable
     {
-        guard let characteristics = self.characteristics else {
+        guard let characteristicsByIdentifier = self.characteristicsByIdentifier else {
             return nil
         }
-        return characteristics[type.typeIdentifier] as? C
+        return characteristicsByIdentifier[type.typeIdentifier] as? C
     }
 
     /// Discovers the specified included services of a service.
@@ -146,14 +154,47 @@ open class Service: ServiceProtocol {
 
     internal func wrapper(for core: CBCharacteristic) -> Characteristic {
         let identifier = Identifier(uuid: core.uuid)
-        let characteristic: Characteristic
-        if let dataSource = self as? ServiceDataSource {
-            characteristic = dataSource.characteristic(with: identifier, for: self)
-        } else {
-            characteristic = DefaultCharacteristic(identifier: identifier, service: self)
-        }
+        let characteristic = self.dataSource(from: ServiceDataSource.self) { dataSource in
+            return dataSource.characteristic(with: identifier, for: self)
+        } ?? DefaultCharacteristic(identifier: identifier, service: self)
         characteristic.core = core
         return characteristic
+    }
+
+    internal func dataSource<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
+        if let dataSource = self as? T {
+            return closure(dataSource)
+        } else if let dataSourcedSelf = self as? DataSourcedServiceProtocol {
+            if let dataSource = dataSourcedSelf.dataSource as? T {
+                return closure(dataSource)
+            }
+        }
+        return nil
+    }
+
+    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+        if let delegate = self as? T {
+            return closure(delegate)
+        } else if let delegatedSelf = self as? DelegatedServiceProtocol {
+            if let delegate = delegatedSelf.delegate as? T {
+                return closure(delegate)
+            }
+        }
+        return nil
+    }
+}
+
+// MARK: - Equatable
+extension Service: Equatable {
+    public static func == (lhs: Service, rhs: Service) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}
+
+// MARK: - Hashable
+extension Service: Hashable {
+    public var hashValue: Int {
+        return self.identifier.hashValue
     }
 }
 

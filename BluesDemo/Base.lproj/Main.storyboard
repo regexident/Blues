@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -83,7 +83,13 @@
                             <outlet property="delegate" destination="7bK-jq-Zjz" id="RA6-mI-bju"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Peripherals" id="Zdf-7t-Un8"/>
+                    <navigationItem key="navigationItem" title="Peripherals" id="Zdf-7t-Un8">
+                        <barButtonItem key="rightBarButtonItem" title="Scan" id="tvt-uy-ckI">
+                            <connections>
+                                <action selector="scanForDevices:" destination="7bK-jq-Zjz" id="5Dt-o1-BNi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>
@@ -149,7 +155,16 @@
                             <outlet property="delegate" destination="GNh-MR-ppU" id="dCT-s8-nPa"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Services" id="PCY-RH-c0q"/>
+                    <navigationItem key="navigationItem" title="Services" id="PCY-RH-c0q">
+                        <barButtonItem key="rightBarButtonItem" title="Connect" id="IJc-nC-3xR">
+                            <connections>
+                                <action selector="toggleConnection:" destination="GNh-MR-ppU" id="kfF-bO-OaU"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="barButtonItem" destination="IJc-nC-3xR" id="QwG-RZ-YVB"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZIh-6Q-nJl" sceneMemberID="firstResponder"/>
             </objects>

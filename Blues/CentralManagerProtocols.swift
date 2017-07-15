@@ -15,7 +15,7 @@ public protocol CentralManagerProtocol: class {
 
     var isScanning: Bool { get }
 
-    var peripherals: [Identifier: Peripheral] { get }
+    var peripherals: [Peripheral] { get }
 
     init(options: CentralManagerOptions?, queue: DispatchQueue)
 

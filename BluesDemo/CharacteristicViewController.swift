@@ -236,8 +236,8 @@ extension CharacteristicViewController {
     }
 }
 
-// MARK: - ReadableCharacteristicDelegate
-extension CharacteristicViewController: ReadableCharacteristicDelegate {
+// MARK: - CharacteristicReadingDelegate
+extension CharacteristicViewController: CharacteristicReadingDelegate {
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
@@ -250,8 +250,8 @@ extension CharacteristicViewController: ReadableCharacteristicDelegate {
     }
 }
 
-// MARK: - WritableCharacteristicDelegate
-extension CharacteristicViewController: WritableCharacteristicDelegate {
+// MARK: - CharacteristicWritingDelegate
+extension CharacteristicViewController: CharacteristicWritingDelegate {
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic) {
         self.queue.async {
             let indexPath = IndexPath(row: 0, section: Section.values.rawValue)
@@ -264,15 +264,15 @@ extension CharacteristicViewController: WritableCharacteristicDelegate {
     }
 }
 
-// MARK: - NotifiableCharacteristicDelegate
-extension CharacteristicViewController: NotifiableCharacteristicDelegate {
+// MARK: - CharacteristicNotificationStateDelegate
+extension CharacteristicViewController: CharacteristicNotificationStateDelegate {
     func didUpdate(notificationState isNotifying: Result<Bool, Error>, for characteristic: Characteristic) {
 
     }
 }
 
-// MARK: - DescribableCharacteristicDelegate
-extension CharacteristicViewController: DescribableCharacteristicDelegate {
+// MARK: - CharacteristicDiscoveryDelegate
+extension CharacteristicViewController: CharacteristicDiscoveryDelegate {
     func didDiscover(descriptors: Result<[Descriptor], Error>, for characteristic: Characteristic) {
         guard case let .ok(descriptors) = descriptors else {
             return
@@ -288,8 +288,8 @@ extension CharacteristicViewController: DescribableCharacteristicDelegate {
     }
 }
 
-// MARK: - DescriptorDelegate
-extension CharacteristicViewController: DescriptorDelegate {
+// MARK: - DescriptorReadingDelegate
+extension CharacteristicViewController: DescriptorReadingDelegate {
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue
@@ -302,7 +302,10 @@ extension CharacteristicViewController: DescriptorDelegate {
             }
         }
     }
+}
 
+// MARK: - DescriptorWritingDelegate
+extension CharacteristicViewController: DescriptorWritingDelegate {
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor) {
         self.queue.async {
             let section = Section.descriptors.rawValue

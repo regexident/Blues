@@ -18,7 +18,7 @@ public protocol CharacteristicProtocol: class {
     var service: Service { get }
     var peripheral: Peripheral { get }
 
-    var descriptors: [Identifier: Descriptor]? { get }
+    var descriptors: [Descriptor]? { get }
 
     init(identifier: Identifier, service: Service)
 

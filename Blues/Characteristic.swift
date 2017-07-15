@@ -73,7 +73,11 @@ open class Characteristic: CharacteristicProtocol {
     ///   For example, they may describe the value in human-readable form
     ///   and describe how the value should be formatted for presentation purposes.
     ///   For more information about characteristic descriptors, see `Descriptor`.
-    public var descriptors: [Identifier: Descriptor]? = nil
+    public var descriptors: [Descriptor]? {
+        return self.descriptorsByIdentifier.map { Array($0.values) }
+    }
+
+    internal var descriptorsByIdentifier: [Identifier: Descriptor]? = nil
 
     internal var core: CBCharacteristic!
 
@@ -109,10 +113,10 @@ open class Characteristic: CharacteristicProtocol {
         where D: Descriptor,
               D: TypeIdentifiable
     {
-        guard let descriptors = self.descriptors else {
+        guard let descriptorsByIdentifier = self.descriptorsByIdentifier else {
             return nil
         }
-        return descriptors[type.typeIdentifier] as? D
+        return descriptorsByIdentifier[type.typeIdentifier] as? D
     }
 
     /// The properties of the characteristic.
@@ -215,13 +219,47 @@ open class Characteristic: CharacteristicProtocol {
     internal func wrapper(for core: CBDescriptor) -> Descriptor {
         let identifier = Identifier(uuid: core.uuid)
         let descriptor: Descriptor
-        if let dataSource = self as? CharacteristicDataSource {
-            descriptor = dataSource.descriptor(with: identifier, for: self)
-        } else {
-            descriptor = DefaultDescriptor(identifier: identifier, characteristic: self)
-        }
+        descriptor = self.dataSource(from: CharacteristicDataSource.self) { dataSource in
+            return dataSource.descriptor(with: identifier, for: self)
+        } ?? DefaultDescriptor(identifier: identifier, characteristic: self)
         descriptor.core = core
         return descriptor
+    }
+
+    internal func dataSource<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
+        if let dataSource = self as? T {
+            return closure(dataSource)
+        } else if let dataSourcedSelf = self as? DataSourcedCharacteristicProtocol {
+            if let dataSource = dataSourcedSelf.dataSource as? T {
+                return closure(dataSource)
+            }
+        }
+        return nil
+    }
+
+    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+        if let delegate = self as? T {
+            return closure(delegate)
+        } else if let delegatedSelf = self as? DelegatedCharacteristicProtocol {
+            if let delegate = delegatedSelf.delegate as? T {
+                return closure(delegate)
+            }
+        }
+        return nil
+    }
+}
+
+// MARK: - Equatable
+extension Characteristic: Equatable {
+    public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}
+
+// MARK: - Hashable
+extension Characteristic: Hashable {
+    public var hashValue: Int {
+        return self.identifier.hashValue
     }
 }
 

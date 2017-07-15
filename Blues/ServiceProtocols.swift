@@ -17,8 +17,8 @@ public protocol ServiceProtocol: class {
 
     var peripheral: Peripheral { get }
 
-    var characteristics: [Identifier: Characteristic]? { get }
-    var includedServices: [Identifier: Service]? { get }
+    var characteristics: [Characteristic]? { get }
+    var includedServices: [Service]? { get }
 
     var automaticallyDiscoveredCharacteristics: [Identifier]? { get }
 

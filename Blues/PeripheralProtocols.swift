@@ -19,7 +19,7 @@ public protocol PeripheralProtocol: class {
 
     var state: PeripheralState { get }
 
-    var services: [Identifier: Service]? { get }
+    var services: [Service]? { get }
 
     var connectionOptions: ConnectionOptions? { get }
 

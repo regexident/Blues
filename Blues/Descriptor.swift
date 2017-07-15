@@ -120,6 +120,31 @@ open class Descriptor: DescriptorProtocol {
     public func write(data: Data) {
         self.peripheral.write(data: data, for: self)
     }
+
+    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+        if let delegate = self as? T {
+            return closure(delegate)
+        } else if let delegatedSelf = self as? DelegatedDescriptorProtocol {
+            if let delegate = delegatedSelf.delegate as? T {
+                return closure(delegate)
+            }
+        }
+        return nil
+    }
+}
+
+// MARK: - Equatable
+extension Descriptor: Equatable {
+    public static func == (lhs: Descriptor, rhs: Descriptor) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}
+
+// MARK: - Hashable
+extension Descriptor: Hashable {
+    public var hashValue: Int {
+        return self.identifier.hashValue
+    }
 }
 
 // MARK: - CustomStringConvertible
