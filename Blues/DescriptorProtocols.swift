@@ -67,7 +67,7 @@ public protocol DescriptorValueTransformer {
     func transform(value: Value) -> Result<Data, TypedDescriptorError>
 }
 
-public protocol TypedDescriptor {
+public protocol TypedDescriptorProtocol {
     associatedtype Transformer: DescriptorValueTransformer
 
     var transformer: Transformer { get }
