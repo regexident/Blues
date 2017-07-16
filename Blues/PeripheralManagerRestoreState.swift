@@ -1,0 +1,60 @@
+//
+//  PeripheralManagerRestoreState.swift
+//  Blues
+//
+//  Created by Vincent Esche on 7/16/17.
+//  Copyright © 2017 NWTN Berlin. All rights reserved.
+//
+
+import Foundation
+import CoreBluetooth
+
+public struct PeripheralManagerRestoreState {
+    /// An array (an instance of NSArray) of CBMutableService objects that contains all of the
+    /// services that were published to the local peripheral’s database at the time the app
+    /// was terminated by the system.
+    ///
+    /// - Note:
+    ///   All the information about a service is restored, including any included services,
+    ///   characteristics, characteristic descriptors, and subscribed centrals.
+    public let services: [MutableService]?
+
+    /// The advertisement with which the peripheral manager was advertising
+    /// at the time the app was terminated by the system.
+    public let advertisement: Advertisement
+
+    private enum Keys {
+        static let services = CBPeripheralManagerRestoredStateServicesKey
+        static let advertisementData = CBPeripheralManagerRestoredStateAdvertisementDataKey
+    }
+
+    internal init(dictionary: [String: Any]) {
+        let servicesKey = Keys.services
+        if let value = dictionary[servicesKey] {
+            guard let services = value as? [CBMutableService] else {
+                fatalError("Unexpected value: \"\(value)\" for key \(servicesKey)")
+            }
+            self.services = services.map {
+                MutableService(core: $0)
+            }
+        } else {
+            self.services = nil
+        }
+
+        let advertisementDataKey = Keys.advertisementData
+        let advertisementData = dictionary[advertisementDataKey]
+        guard let advertisementDictionary = advertisementData as? [String : Any] else {
+            fatalError("Unexpected value: \"\(advertisementData ?? "nil")\" for key \(advertisementDataKey)")
+        }
+        self.advertisement = Advertisement(dictionary: advertisementDictionary)
+    }
+
+    internal var dictionary: [String: Any] {
+        var dictionary: [String: Any] = [:]
+        if let services = self.services {
+            dictionary[Keys.services] = services.map { $0.core }
+        }
+        dictionary[Keys.advertisementData] = self.advertisement.dictionary
+        return dictionary
+    }
+}

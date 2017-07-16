@@ -1,0 +1,157 @@
+//
+//  PeripheralManagerProtocols.swift
+//  Blues
+//
+//  Created by Vincent Esche on 7/16/17.
+//  Copyright © 2017 NWTN Berlin. All rights reserved.
+//
+
+import Foundation
+import CoreBluetooth
+
+public protocol PeripheralManagerProtocol: class {
+    weak var delegate: PeripheralManagerDelegate? { get set }
+
+    var isAdvertising: Bool { get }
+
+    static func authorizationStatus() -> PeripheralManagerAuthorizationStatus
+
+    init(queue: DispatchQueue, options: [String : Any]?)
+
+    func startAdvertising(_ advertisement: Advertisement?)
+    func stopAdvertising()
+
+    func setDesiredConnectionLatency(
+        _ latency: PeripheralManagerConnectionLatency,
+        for central: Central
+    )
+
+    func add(_ service: MutableService)
+    func remove(_ service: MutableService)
+    func removeAllServices()
+
+    func respond(to request: ATTRequest, withResult result: CBATTError.Code)
+
+    func update(
+        data: Data,
+        for characteristic: MutableCharacteristic,
+        onSubscribedCentrals centrals: [Central]?
+    ) -> Bool
+}
+
+public protocol DelegatedPeripheralManagerProtocol: PeripheralManagerProtocol {
+    var delegate: PeripheralManagerDelegate? { get set }
+}
+
+/// The delegate of a `PeripheralManager` object must adopt the `PeripheralManagerDelegate`
+/// protocol. The single required method indicates the availability of the peripheral manager,
+/// while the optional methods provide information about centrals, which can connect and access
+/// the local database.
+public protocol PeripheralManagerDelegate: class {}
+
+public protocol PeripheralManagerStateDelegate: PeripheralManagerDelegate {
+    /// Invoked whenever the peripheral manager's state has been updated. Commands should only be
+    /// issued when the state is `poweredOn`. A state below `poweredOn` implies that advertisement
+    /// has paused and any connected centrals have been disconnected. If the state moves below
+    /// `poweredOff`, advertisement is stopped and must be explicitly restarted, and the
+    /// local database is cleared and all services must be re-added.
+    ///
+    /// - Parameter manager: The peripheral manager whose state has changed.
+    func peripheralManagerDidUpdateState(_ manager: PeripheralManager)
+}
+
+public protocol PeripheralManagerRestorationDelegate: PeripheralManagerDelegate {
+    /// For apps that opt-in to state preservation and restoration, this is the first method invoked
+    /// when your app is relaunched into the background to complete some Bluetooth-related task.
+    /// Use this method to synchronize your app's state with the state of the Bluetooth system.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager providing this information.
+    ///   - dict: A dictionary containing information about _peripheral_ that
+    ///     was preserved by the system at the time the app was terminated.
+    func peripheralManager(
+        _ manager: PeripheralManager,
+        willRestoreState state: PeripheralManagerRestoreState
+    )
+}
+
+public protocol PeripheralManagerAdvertisingDelegate: PeripheralManagerDelegate {
+    /// This method returns the result of a `startAdvertising:` call. If advertisement could not
+    /// be started, the cause will be detailed in the _error_ parameter.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager providing this information.
+    ///   - error: If an error occurred, the cause of the failure.
+    func peripheralManagerDidStartAdvertising(_ manager: PeripheralManager, error: Error?)
+}
+
+public protocol PeripheralManagerServiceAdditionDelegate: PeripheralManagerDelegate {
+    /// This method returns the result of an @link addService: @/link call. If the service could
+    /// not be published to the local database, the cause will be detailed in the _error_ parameter.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager providing this information.
+    ///   - service: The service that was added to the local database.
+    ///   - error: If an error occurred, the cause of the failure.
+    func peripheralManager(_ manager: PeripheralManager, didAdd service: MutableService, error: Error?)
+}
+
+public protocol PeripheralManagerSubscriptionDelegate: PeripheralManagerDelegate {
+    /// This method is invoked when a central configures _characteristic_ to notify or indicate.
+    /// It should be used as a cue to start sending updates as the characteristic value changes.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager providing this update.
+    ///   - central: The central that issued the command.
+    ///   - characteristic: The characteristic on which notifications or indications were enabled.
+    func peripheralManager(
+        _ manager: PeripheralManager,
+        central: Central,
+        didSubscribeTo characteristic: MutableCharacteristic
+    )
+
+    /// This method is invoked when a central removes notifications/indications
+    /// from _characteristic_.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager providing this update.
+    ///   - central: The central that issued the command.
+    ///   - characteristic: The characteristic on which notifications or indications were disabled.
+    func peripheralManager(
+        _ manager: PeripheralManager,
+        central: Central,
+        didUnsubscribeFrom characteristic: Characteristic
+    )
+}
+
+public protocol PeripheralManagerReadingDelegate: PeripheralManagerDelegate {
+    /// This method is invoked when _peripheral_ receives an ATT request for a characteristic with
+    /// a dynamic value. For every invocation of this method, `respondToRequest:withResult:`
+    /// must be called.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager requesting this information.
+    ///   - request: A `ATTRequest` object.
+    func peripheralManager(_ manager: PeripheralManager, didReceiveRead request: ATTRequest)
+}
+
+public protocol PeripheralManagerWritingDelegate: PeripheralManagerDelegate {
+    /// This method is invoked when _peripheral_ receives an ATT request or command for one or more
+    /// characteristics with a dynamic value. For every invocation of this method,
+    /// `respondToRequest:withResult:` should be called exactly once. If _requests_ contains
+    /// multiple requests, they must be treated as an atomic unit. If the execution of one of the
+    /// requests would cause a failure, the request and error reason should be provided to
+    /// `respondToRequest:withResult:` and none of the requests should be executed.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral manager requesting this information.
+    ///   - requests: A list of one or more `ATTRequest` objects.
+    func peripheralManager(_ manager: PeripheralManager, didReceiveWrite requests: [ATTRequest])
+
+    /// This method is invoked after a failed call to
+    /// `updateValue:forCharacteristic:onSubscribedCentrals:`, when _peripheral_ is again ready
+    /// to send characteristic value updates.
+    ///
+    /// - Parameter peripheral: The peripheral manager providing this update.
+    func peripheralManagerIsReady(toUpdateSubscribers manager: PeripheralManager)
+}

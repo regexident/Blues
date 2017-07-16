@@ -75,6 +75,12 @@ open class Peripheral: NSObject, PeripheralProtocol {
         self.queue = centralManager.queue
     }
 
+    internal init(core: CBPeripheral, centralManager: CentralManager) {
+        self.identifier = Identifier(uuid: core.identifier)
+        self.core = core
+        self.queue = centralManager.queue
+    }
+
     /// The service associated with a given type if it has previously been discovered in this peripheral.
     public func service<S>(ofType type: S.Type) -> S?
         where S: Service,
@@ -144,14 +150,14 @@ open class Peripheral: NSObject, PeripheralProtocol {
 
     internal func wrapper(for core: CBService) -> Service {
         let identifier = Identifier(uuid: core.uuid)
-        let service = self.dataSource(from: PeripheralDataSource.self) { dataSource in
+        let service = self.dataSourced(from: PeripheralDataSource.self) { dataSource in
             return dataSource.service(with: identifier, for: self)
         } ?? DefaultService(identifier: identifier, peripheral: self)
         service.core = core
         return service
     }
 
-    internal func dataSource<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func dataSourced<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
         if let dataSource = self as? T {
             return closure(dataSource)
         } else if let dataSourcedSelf = self as? DataSourcedPeripheralProtocol {
@@ -162,7 +168,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
         return nil
     }
 
-    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
         if let delegate = self as? T {
             return closure(delegate)
         } else if let delegatedSelf = self as? DelegatedPeripheralProtocol {
@@ -243,7 +249,7 @@ extension Peripheral: CBPeripheralDelegate {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            self.delegate(to: PeripheralStateDelegate.self) { delegate in
+            self.delegated(to: PeripheralStateDelegate.self) { delegate in
                 delegate.didUpdate(name: peripheral.name, of: self)
             }
         }
@@ -267,7 +273,7 @@ extension Peripheral: CBPeripheralDelegate {
                 self.servicesByIdentifier?[identifier] = service
                 return service
             }
-            self.delegate(to: PeripheralStateDelegate.self) { delegate in
+            self.delegated(to: PeripheralStateDelegate.self) { delegate in
                 delegate.didModify(services: services, of: self)
             }
         }
@@ -284,7 +290,7 @@ extension Peripheral: CBPeripheralDelegate {
             }
             let rssi = (rssi != 0) ? rssi as? Int : nil
             let result = Result(success: rssi, failure: error)
-            self.delegate(to: PeripheralStateDelegate.self) { delegate in
+            self.delegated(to: PeripheralStateDelegate.self) { delegate in
                 delegate.didRead(rssi: result, of: self)
             }
         }
@@ -300,7 +306,7 @@ extension Peripheral: CBPeripheralDelegate {
             }
             let result = Result(success: peripheral.services, failure: error)
             guard case let .ok(coreServices) = result else {
-                self.delegate(to: PeripheralDiscoveryDelegate.self) { delegate in
+                self.delegated(to: PeripheralDiscoveryDelegate.self) { delegate in
                     delegate.didDiscover(services: .err(error!), for: self)
                 }
                 return
@@ -316,7 +322,7 @@ extension Peripheral: CBPeripheralDelegate {
                 servicesByIdentifier[identifier] = service
             }
             self.servicesByIdentifier = servicesByIdentifier
-            self.delegate(to: PeripheralDiscoveryDelegate.self) { delegate in
+            self.delegated(to: PeripheralDiscoveryDelegate.self) { delegate in
                 delegate.didDiscover(services: .ok(discoveredServices), for: self)
             }
         }
@@ -336,7 +342,7 @@ extension Peripheral: CBPeripheralDelegate {
             }
             let result = Result(success: service.includedServices, failure: error)
             guard case let .ok(coreServices) = result else {
-                wrapper.delegate(to: ServiceDiscoveryDelegate.self) { delegate in
+                wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
                     delegate.didDiscover(includedServices: .err(error!), for: wrapper)
                 }
                 return
@@ -352,7 +358,7 @@ extension Peripheral: CBPeripheralDelegate {
                 services[identifier] = service
             }
             wrapper.includedServicesByIdentifier = services
-            wrapper.delegate(to: ServiceDiscoveryDelegate.self) { delegate in
+            wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
                 delegate.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
             }
         }
@@ -372,7 +378,7 @@ extension Peripheral: CBPeripheralDelegate {
             }
             let result = Result(success: service.characteristics, failure: error)
             guard case let .ok(coreCharacteristics) = result else {
-                wrapper.delegate(to: ServiceDiscoveryDelegate.self) { delegate in
+                wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
                     delegate.didDiscover(characteristics: .err(error!), for: wrapper)
                 }
                 return
@@ -391,7 +397,7 @@ extension Peripheral: CBPeripheralDelegate {
                 characteristicsByIdentifier[characteristic.identifier] = characteristic
             }
             wrapper.characteristicsByIdentifier = characteristicsByIdentifier
-            wrapper.delegate(to: ServiceDiscoveryDelegate.self) { delegate in
+            wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
                 delegate.didDiscover(characteristics: .ok(discoveredCharacteristics), for: wrapper)
             }
         }
@@ -410,7 +416,7 @@ extension Peripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.delegate(to: CharacteristicReadingDelegate.self) { delegate in
+            wrapper.delegated(to: CharacteristicReadingDelegate.self) { delegate in
                 delegate.didUpdate(data: result, for: wrapper)
             }
         }
@@ -429,7 +435,7 @@ extension Peripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.value, failure: error)
-            wrapper.delegate(to: CharacteristicWritingDelegate.self) { delegate in
+            wrapper.delegated(to: CharacteristicWritingDelegate.self) { delegate in
                 delegate.didWrite(data: result, for: wrapper)
             }
         }
@@ -448,7 +454,7 @@ extension Peripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: characteristic.isNotifying, failure: error)
-            wrapper.delegate(to: CharacteristicNotificationStateDelegate.self) { delegate in
+            wrapper.delegated(to: CharacteristicNotificationStateDelegate.self) { delegate in
                 delegate.didUpdate(notificationState: result, for: wrapper)
             }
         }
@@ -475,7 +481,7 @@ extension Peripheral: CBPeripheralDelegate {
                     return descriptor
                 }
             }
-            wrapper.delegate(to: CharacteristicDiscoveryDelegate.self) { delegate in
+            wrapper.delegated(to: CharacteristicDiscoveryDelegate.self) { delegate in
                 delegate.didDiscover(descriptors: descriptors, for: wrapper)
             }
         }
@@ -494,7 +500,7 @@ extension Peripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.delegate(to: DescriptorReadingDelegate.self) { delegate in
+            wrapper.delegated(to: DescriptorReadingDelegate.self) { delegate in
                 delegate.didUpdate(any: result, for: wrapper)
             }
         }
@@ -513,7 +519,7 @@ extension Peripheral: CBPeripheralDelegate {
                 return
             }
             let result = Result(success: descriptor.value, failure: error)
-            wrapper.delegate(to: DescriptorWritingDelegate.self) { delegate in
+            wrapper.delegated(to: DescriptorWritingDelegate.self) { delegate in
                 delegate.didWrite(any: result, for: wrapper)
             }
         }

@@ -83,6 +83,12 @@ open class Descriptor: DescriptorProtocol {
         self._characteristic = characteristic
     }
 
+    internal init(core: CBDescriptor, characteristic: Characteristic) {
+        self.identifier = Identifier(uuid: core.uuid)
+        self.core = core
+        self._characteristic = characteristic
+    }
+
     /// Retrieves the value of the characteristic descriptor, or an error.
     ///
     /// - Note:
@@ -121,7 +127,7 @@ open class Descriptor: DescriptorProtocol {
         self.peripheral.write(data: data, for: self)
     }
 
-    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
         if let delegate = self as? T {
             return closure(delegate)
         } else if let delegatedSelf = self as? DelegatedDescriptorProtocol {

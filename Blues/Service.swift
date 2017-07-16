@@ -89,6 +89,12 @@ open class Service: ServiceProtocol {
         self._peripheral = peripheral
     }
 
+    internal init(core: CBService, peripheral: Peripheral) {
+        self.identifier = Identifier(uuid: core.uuid)
+        self.core = core
+        self._peripheral = peripheral
+    }
+
     /// The characteristic associated with a given type if it has previously been discovered in this service.
     public func characteristic<C>(ofType type: C.Type) -> C?
         where C: Characteristic,
@@ -154,14 +160,14 @@ open class Service: ServiceProtocol {
 
     internal func wrapper(for core: CBCharacteristic) -> Characteristic {
         let identifier = Identifier(uuid: core.uuid)
-        let characteristic = self.dataSource(from: ServiceDataSource.self) { dataSource in
+        let characteristic = self.dataSourced(from: ServiceDataSource.self) { dataSource in
             return dataSource.characteristic(with: identifier, for: self)
         } ?? DefaultCharacteristic(identifier: identifier, service: self)
         characteristic.core = core
         return characteristic
     }
 
-    internal func dataSource<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func dataSourced<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
         if let dataSource = self as? T {
             return closure(dataSource)
         } else if let dataSourcedSelf = self as? DataSourcedServiceProtocol {
@@ -172,7 +178,7 @@ open class Service: ServiceProtocol {
         return nil
     }
 
-    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
         if let delegate = self as? T {
             return closure(delegate)
         } else if let delegatedSelf = self as? DelegatedServiceProtocol {

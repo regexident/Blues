@@ -42,6 +42,12 @@ public protocol CharacteristicProtocol: class {
     func set(notifyValue: Bool)
 }
 
+public protocol TypedCharacteristicProtocol {
+    associatedtype Transformer: CharacteristicValueTransformer
+
+    var transformer: Transformer { get }
+}
+
 public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
     var delegate: CharacteristicDelegate? { get set }
 }
@@ -143,10 +149,4 @@ public protocol CharacteristicValueTransformer {
     /// The transformation logic for encoding the characteristic's
     /// type-safe value into a data representation
     func transform(value: Value) -> Result<Data, TypedCharacteristicError>
-}
-
-public protocol TypedCharacteristic {
-    associatedtype Transformer: CharacteristicValueTransformer
-
-    var transformer: Transformer { get }
 }

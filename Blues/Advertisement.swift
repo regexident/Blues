@@ -109,7 +109,7 @@ public struct Advertisement {
         return NSKeyedArchiver.archivedData(withRootObject: plist)
     }
 
-    fileprivate let dictionary: [String: Any]
+    internal let dictionary: [String: Any]
 
     private enum Keys {
         static let localName = CBAdvertisementDataLocalNameKey

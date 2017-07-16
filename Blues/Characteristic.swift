@@ -11,14 +11,6 @@ import CoreBluetooth
 
 import Result
 
-public protocol TypedCharacteristicProtocol: CharacteristicProtocol, TypedCharacteristic {
-    var value: Result<Transformer.Value?, TypedCharacteristicError> { get }
-
-    func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedCharacteristicError>
-
-    func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError>
-}
-
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
 open class Characteristic: CharacteristicProtocol {
@@ -48,7 +40,7 @@ open class Characteristic: CharacteristicProtocol {
         return self._service
     }
 
-    private unowned var _service: Service
+    private weak var _service: Service!
     
     /// The peripheral that this characteristic belongs to.
     ///
@@ -84,6 +76,12 @@ open class Characteristic: CharacteristicProtocol {
     public required init(identifier: Identifier, service: Service) {
         self.identifier = identifier
         self.core = nil
+        self._service = service
+    }
+
+    internal init(core: CBCharacteristic, service: Service!) {
+        self.identifier = Identifier(uuid: core.uuid)
+        self.core = core
         self._service = service
     }
 
@@ -219,14 +217,14 @@ open class Characteristic: CharacteristicProtocol {
     internal func wrapper(for core: CBDescriptor) -> Descriptor {
         let identifier = Identifier(uuid: core.uuid)
         let descriptor: Descriptor
-        descriptor = self.dataSource(from: CharacteristicDataSource.self) { dataSource in
+        descriptor = self.dataSourced(from: CharacteristicDataSource.self) { dataSource in
             return dataSource.descriptor(with: identifier, for: self)
         } ?? DefaultDescriptor(identifier: identifier, characteristic: self)
         descriptor.core = core
         return descriptor
     }
 
-    internal func dataSource<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func dataSourced<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
         if let dataSource = self as? T {
             return closure(dataSource)
         } else if let dataSourcedSelf = self as? DataSourcedCharacteristicProtocol {
@@ -237,7 +235,7 @@ open class Characteristic: CharacteristicProtocol {
         return nil
     }
 
-    internal func delegate<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
+    internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
         if let delegate = self as? T {
             return closure(delegate)
         } else if let delegatedSelf = self as? DelegatedCharacteristicProtocol {
@@ -275,8 +273,8 @@ extension Characteristic: CustomStringConvertible {
     }
 }
 
-// MARK: - TypedCharacteristic
-extension TypedCharacteristic where Self: CharacteristicProtocol {
+// MARK: - TypedCharacteristicProtocol
+extension TypedCharacteristicProtocol where Self: CharacteristicProtocol {
     /// A type-safe value representation of the characteristic.
     ///
     /// - Note:

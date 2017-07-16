@@ -13,21 +13,23 @@ public struct CentralManagerScanningOptions {
     /// A Boolean value that specifies whether the scan
     /// should run without duplicate filtering.
     ///
-    /// If `true`, filtering is disabled and a discovery event is generated each
-    /// time the central receives an advertising packet from the peripheral.
-    /// Disabling this filtering can have an adverse effect on battery life and
-    /// should be used only if necessary.
+    /// - Note:
+    ///   If `true`, filtering is disabled and a discovery event is generated each
+    ///   time the central receives an advertising packet from the peripheral.
+    ///   Disabling this filtering can have an adverse effect on battery life and
+    ///   should be used only if necessary.
     ///
-    /// If `false`, multiple discoveries of the same peripheral are coalesced
-    /// into a single discovery event.
+    ///   If `false`, multiple discoveries of the same peripheral are coalesced
+    ///   into a single discovery event.
     ///
-    /// If the key is not specified, the default value is `false`.
+    ///   If the key is not specified, the default value is `false`.
     public let allowDuplicates: Bool?
 
     /// An array of service identifiers that you want to scan for.
     ///
-    /// Specifying this scan option causes the central manager to also scan for
-    /// peripherals soliciting any of the services contained in the array.
+    /// - Note:
+    ///   Specifying this scan option causes the central manager to also scan for
+    ///   peripherals soliciting any of the services contained in the array.
     public let solicitedServiceIdentifiers: [Identifier]?
 
     private enum Keys {
@@ -83,9 +85,10 @@ public struct CentralManagerRestoreState {
     /// that were connected to the central manager (or had a connection pending)
     /// at the time the app was terminated by the system.
     ///
-    /// When possible, all the information about a peripheral is restored,
-    /// including any discovered services, characteristics, characteristic
-    /// descriptors, and characteristic notification states.
+    /// - Note:
+    ///   When possible, all the information about a peripheral is restored,
+    ///   including any discovered services, characteristics, characteristic
+    ///   descriptors, and characteristic notification states.
     public let peripherals: [Peripheral]?
 
     /// An array of service `Identifier` objects that identifies all the services
