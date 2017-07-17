@@ -113,6 +113,9 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) {
+        if let services = services, services.isEmpty {
+            return
+        }
         self.core.discoverServices(services?.map { $0.core })
     }
 
@@ -318,7 +321,9 @@ extension Peripheral: CBPeripheralDelegate {
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
                 service.discover(characteristics: characteristics)
-                discoveredServices.append(service)
+                if servicesByIdentifier[service.identifier] == nil {
+                    discoveredServices.append(service)
+                }
                 servicesByIdentifier[identifier] = service
             }
             self.servicesByIdentifier = servicesByIdentifier
@@ -347,19 +352,21 @@ extension Peripheral: CBPeripheralDelegate {
                 }
                 return
             }
-            var discoveredServices: [Service] = []
-            var services: [Identifier: Service] = wrapper.includedServicesByIdentifier ?? [:]
+            var discoveredIncludedServices: [Service] = []
+            var includedServicesByIdentifier = wrapper.includedServicesByIdentifier ?? [:]
             for coreService in coreServices {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
                 let characteristics = service.automaticallyDiscoveredCharacteristics
                 service.discover(characteristics: characteristics)
-                discoveredServices.append(service)
-                services[identifier] = service
+                if includedServicesByIdentifier[service.identifier] == nil {
+                    discoveredIncludedServices.append(service)
+                }
+                includedServicesByIdentifier[identifier] = service
             }
-            wrapper.includedServicesByIdentifier = services
+            wrapper.includedServicesByIdentifier = includedServicesByIdentifier
             wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
-                delegate.didDiscover(includedServices: .ok(discoveredServices), for: wrapper)
+                delegate.didDiscover(includedServices: .ok(discoveredIncludedServices), for: wrapper)
             }
         }
     }
@@ -393,7 +400,9 @@ extension Peripheral: CBPeripheralDelegate {
                 if characteristic.shouldDiscoverDescriptorsAutomatically {
                     characteristic.discoverDescriptors()
                 }
-                discoveredCharacteristics.append(characteristic)
+                if characteristicsByIdentifier[characteristic.identifier] == nil {
+                    discoveredCharacteristics.append(characteristic)
+                }
                 characteristicsByIdentifier[characteristic.identifier] = characteristic
             }
             wrapper.characteristicsByIdentifier = characteristicsByIdentifier

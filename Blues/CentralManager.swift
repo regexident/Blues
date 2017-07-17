@@ -50,10 +50,6 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         options: CentralManagerScanningOptions? = nil,
         timeout: TimeInterval? = nil
     ) {
-        guard !self.core.isScanning else {
-            return
-        }
-
         self.queue.async {
             let uuids = services?.map { $0.uuid }
             self.core.scanForPeripherals(withServices: uuids, options: options?.dictionary)
@@ -238,11 +234,9 @@ extension CentralManager: CBCentralManagerDelegate {
             if central.state == .poweredOn {
                 // nothing for now
             } else if central.state == .poweredOff {
-                for peripheral in self.peripherals {
-                    if peripheral.state == .connected {
-                        self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
-                            delegate.didDisconnect(from: peripheral, error: nil, on: self)
-                        }
+                for peripheral in self.peripherals where peripheral.state == .connected {
+                    self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
+                        delegate.didDisconnect(from: peripheral, error: nil, on: self)
                     }
                 }
             }

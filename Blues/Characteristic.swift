@@ -136,6 +136,9 @@ open class Characteristic: CharacteristicProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discoverDescriptors() {
+        if self.descriptors != nil {
+            return
+        }
         self.peripheral.discoverDescriptors(for: self)
     }
 

@@ -22,19 +22,23 @@ public struct CentralManagerScanningOptions {
     ///   If `false`, multiple discoveries of the same peripheral are coalesced
     ///   into a single discovery event.
     ///
-    ///   If the key is not specified, the default value is `false`.
-    public let allowDuplicates: Bool?
+    ///   The default value is `false`.
+    public var allowDuplicates: Bool = false
 
     /// An array of service identifiers that you want to scan for.
     ///
     /// - Note:
     ///   Specifying this scan option causes the central manager to also scan for
     ///   peripherals soliciting any of the services contained in the array.
-    public let solicitedServiceIdentifiers: [Identifier]?
+    public var solicitedServiceIdentifiers: [Identifier]?
 
     private enum Keys {
         static let allowDuplicates = CBCentralManagerScanOptionAllowDuplicatesKey
         static let solicitedServiceIdentifiers = CBCentralManagerScanOptionSolicitedServiceUUIDsKey
+    }
+
+    public init() {
+
     }
 
     internal init(dictionary: [String: Any]) {
@@ -45,7 +49,7 @@ public struct CentralManagerScanningOptions {
             }
             self.allowDuplicates = allowDuplicates
         } else {
-            self.allowDuplicates = nil
+            self.allowDuplicates = false
         }
 
         let solicitedServicesKey = Keys.solicitedServiceIdentifiers
@@ -63,9 +67,7 @@ public struct CentralManagerScanningOptions {
 
     internal var dictionary: [String: Any] {
         var dictionary: [String: Any] = [:]
-        if let allowDuplicates = self.allowDuplicates {
-            dictionary[Keys.allowDuplicates] = allowDuplicates
-        }
+        dictionary[Keys.allowDuplicates] = self.allowDuplicates
         if let solicitedServiceIdentifiers = self.solicitedServiceIdentifiers {
             let identifiers = solicitedServiceIdentifiers.map { $0.core }
             dictionary[Keys.solicitedServiceIdentifiers] = identifiers

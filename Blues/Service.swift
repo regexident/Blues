@@ -155,6 +155,9 @@ open class Service: ServiceProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(characteristics: [Identifier]?) {
+        if let characteristics = characteristics, characteristics.isEmpty {
+            return
+        }
         return self.peripheral.discover(characteristics: characteristics, for: self)
     }
 
