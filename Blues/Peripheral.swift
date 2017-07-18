@@ -319,9 +319,9 @@ extension Peripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
-                let characteristics = service.automaticallyDiscoveredCharacteristics
-                service.discover(characteristics: characteristics)
                 if servicesByIdentifier[service.identifier] == nil {
+                    let characteristics = service.automaticallyDiscoveredCharacteristics
+                    service.discover(characteristics: characteristics)
                     discoveredServices.append(service)
                 }
                 servicesByIdentifier[identifier] = service
@@ -357,9 +357,9 @@ extension Peripheral: CBPeripheralDelegate {
             for coreService in coreServices {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
-                let characteristics = service.automaticallyDiscoveredCharacteristics
-                service.discover(characteristics: characteristics)
                 if includedServicesByIdentifier[service.identifier] == nil {
+                    let characteristics = service.automaticallyDiscoveredCharacteristics
+                    service.discover(characteristics: characteristics)
                     discoveredIncludedServices.append(service)
                 }
                 includedServicesByIdentifier[identifier] = service
@@ -394,13 +394,13 @@ extension Peripheral: CBPeripheralDelegate {
             var characteristicsByIdentifier = wrapper.characteristicsByIdentifier ?? [:]
             for coreCharacteristic in coreCharacteristics {
                 let characteristic = wrapper.wrapper(for: coreCharacteristic)
-                if characteristic.shouldSubscribeToNotificationsAutomatically {
-                    characteristic.set(notifyValue: true)
-                }
-                if characteristic.shouldDiscoverDescriptorsAutomatically {
-                    characteristic.discoverDescriptors()
-                }
                 if characteristicsByIdentifier[characteristic.identifier] == nil {
+                    if characteristic.shouldSubscribeToNotificationsAutomatically {
+                        characteristic.set(notifyValue: true)
+                    }
+                    if characteristic.shouldDiscoverDescriptorsAutomatically {
+                        characteristic.discoverDescriptors()
+                    }
                     discoveredCharacteristics.append(characteristic)
                 }
                 characteristicsByIdentifier[characteristic.identifier] = characteristic
