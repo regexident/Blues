@@ -317,3 +317,11 @@ extension TypedCharacteristicProtocol where Self: CharacteristicProtocol {
         return data.mapErr { .other($0) }.andThen { self.transformer.transform(data: $0) }
     }
 }
+
+extension TypedCharacteristicProtocol
+    where Self: StringConvertibleCharacteristicProtocol,
+          Self.Transformer.Value: CustomStringConvertible {
+    public var stringValue: Result<String?, TypedCharacteristicError> {
+        return self.value.map { $0?.description }
+    }
+}

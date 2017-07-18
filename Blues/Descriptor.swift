@@ -206,3 +206,11 @@ extension TypedDescriptorProtocol where Self: DescriptorProtocol {
         return any.mapErr { .other($0) }.andThen { self.transformer.transform(any: $0) }
     }
 }
+
+extension TypedDescriptorProtocol
+    where Self: StringConvertibleDescriptorProtocol,
+          Self.Transformer.Value: CustomStringConvertible {
+    public var stringValue: Result<String?, TypedDescriptorError> {
+        return self.value.map { $0?.description }
+    }
+}

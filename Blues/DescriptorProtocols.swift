@@ -28,6 +28,16 @@ public protocol DescriptorProtocol: class {
     func write(data: Data)
 }
 
+public protocol TypedDescriptorProtocol: DescriptorProtocol {
+    associatedtype Transformer: DescriptorValueTransformer
+
+    var transformer: Transformer { get }
+}
+
+public protocol StringConvertibleDescriptorProtocol: DescriptorProtocol {
+    var stringValue: Result<String?, TypedDescriptorError> { get }
+}
+
 public protocol DelegatedDescriptorProtocol: DescriptorProtocol {
     var delegate: DescriptorDelegate? { get set }
 }
@@ -65,14 +75,4 @@ public protocol DescriptorValueTransformer {
     /// The transformation logic for encoding the descriptor's
     /// type-safe value into a data representation
     func transform(value: Value) -> Result<Data, TypedDescriptorError>
-}
-
-public protocol TypedDescriptorProtocol: DescriptorProtocol {
-    associatedtype Transformer: DescriptorValueTransformer
-
-    var transformer: Transformer { get }
-}
-
-public protocol StringConvertibleDescriptorProtocol: DescriptorProtocol {
-    var stringValue: Result<String?, TypedDescriptorError> { get }
 }
