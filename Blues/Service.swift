@@ -72,9 +72,9 @@ open class Service: ServiceProtocol {
     /// Return `nil` to discover all available characteristics.
     ///
     /// - Note:
-    ///   Default implementation returns `true`
+    ///   Default implementation returns `[]`
     open var automaticallyDiscoveredCharacteristics: [Identifier]? {
-        return nil
+        return []
     }
 
     /// `.ok(isPrimary)` with a boolean value indicating whether the type

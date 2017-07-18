@@ -39,9 +39,9 @@ open class Peripheral: NSObject, PeripheralProtocol {
     /// Return `nil` to discover all available services.
     ///
     /// - Note:
-    ///   Default implementation returns `true`
+    ///   Default implementation returns `[]`
     open var automaticallyDiscoveredServices: [Identifier]? {
-        return nil
+        return []
     }
 
     /// The state of the peripheral
