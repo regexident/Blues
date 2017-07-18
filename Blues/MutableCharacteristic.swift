@@ -113,7 +113,7 @@ extension TypedCharacteristicProtocol where Self: MutableCharacteristicProtocol 
         return self.transformer.transform(data: data).map { .some($0) }
     }
 
-    mutating func set(value: Transformer.Value?) -> Result<(), TypedCharacteristicError> {
+    func set(value: Transformer.Value?) -> Result<(), TypedCharacteristicError> {
         guard let value = value else {
             self.data = nil
             return .ok(())

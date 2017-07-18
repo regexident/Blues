@@ -42,10 +42,14 @@ public protocol CharacteristicProtocol: class {
     func set(notifyValue: Bool)
 }
 
-public protocol TypedCharacteristicProtocol {
+public protocol TypedCharacteristicProtocol: CharacteristicProtocol {
     associatedtype Transformer: CharacteristicValueTransformer
 
     var transformer: Transformer { get }
+}
+
+public protocol StringConvertibleCharacteristicProtocol: CharacteristicProtocol {
+    var stringValue: Result<String?, TypedCharacteristicError> { get }
 }
 
 public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
