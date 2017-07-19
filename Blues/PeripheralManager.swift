@@ -56,6 +56,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ) {
         self.init()
         self.core = CBPeripheralManager(delegate: self, queue: queue, options: options)
+        self.core.delegate = self
     }
 
     /// Starts advertising. Supported advertising data types are `AdvertisementDataLocalNameKey`
@@ -164,6 +165,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     }
 }
 
+// MARK: - CBPeripheralManagerDelegate
 extension PeripheralManager: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ manager: CBPeripheralManager) {
         self.delegated(to: PeripheralManagerStateDelegate.self) { delegate in

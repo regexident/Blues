@@ -43,6 +43,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     ) {
         super.init()
         self.core = CBCentralManager(delegate: self, queue: queue, options: options?.dictionary)
+        self.core.delegate = self
     }
 
     public func startScanningForPeripherals(
