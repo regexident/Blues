@@ -268,7 +268,14 @@
 			isa = PBXGroup;
 			children = (
 				BFCB8DF31DC0E22200D5430D /* Blues.h */,
-				BFE23EAB1DC5642D00F94D20 /* Generic Attributes */,
+				BF102D551F0D27680099D8AB /* Descriptor */,
+				BF102D561F0D27710099D8AB /* Characteristic */,
+				BF102D571F0D27780099D8AB /* Service */,
+				BF102D581F0D27810099D8AB /* Peripheral */,
+				BF5CD5561F1BED8700C2702A /* Central */,
+				BF102D591F0D27890099D8AB /* CentralManager */,
+				BF5CD5551F1BED5E00C2702A /* PeripheralManager */,
+				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
 			);
 			path = Blues;
@@ -306,21 +313,6 @@
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
 			);
 			name = Auxiliaries;
-			sourceTree = "<group>";
-		};
-		BFE23EAB1DC5642D00F94D20 /* Generic Attributes */ = {
-			isa = PBXGroup;
-			children = (
-				BF102D551F0D27680099D8AB /* Descriptor */,
-				BF102D561F0D27710099D8AB /* Characteristic */,
-				BF102D571F0D27780099D8AB /* Service */,
-				BF102D581F0D27810099D8AB /* Peripheral */,
-				BF5CD5561F1BED8700C2702A /* Central */,
-				BF102D591F0D27890099D8AB /* CentralManager */,
-				BF5CD5551F1BED5E00C2702A /* PeripheralManager */,
-				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
-			);
-			name = "Generic Attributes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
