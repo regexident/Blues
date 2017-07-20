@@ -62,7 +62,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
                 let timer = Timer(
                     timeInterval: timeout,
                     target: self,
-                    selector: #selector(CentralManager.didReachScanningTimeout(_:)),
+                    selector: #selector(CentralManager.didStopScanningAfterTimeout(_:)),
                     userInfo: nil,
                     repeats: false
                 )
@@ -183,7 +183,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         return nil
     }
 
-    @objc private func didReachScanningTimeout(_ timer: Timer) {
+    @objc private func didStopScanningAfterTimeout(_ timer: Timer) {
         self.stopScanningForPeripherals()
         timer.invalidate()
         self.timer = nil
@@ -255,12 +255,15 @@ extension CentralManager: CBCentralManagerDelegate {
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
-            guard self.peripheralsByIdentifier[identifier] == nil else {
-                return
+            let existing = self.peripheralsByIdentifier[identifier]
+            let wrapper: Peripheral
+            if let existingWrapper = existing {
+                wrapper = existingWrapper
+            } else {
+                let advertisement = Advertisement(dictionary: advertisementData)
+                wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
+                self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             }
-            let advertisement = Advertisement(dictionary: advertisementData)
-            let wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
-            self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             self.delegated(to: CentralManagerDiscoveryDelegate.self) { delegate in
                 delegate.didDiscover(peripheral: wrapper, rssi: RSSI as! Int, with: self)
             }
