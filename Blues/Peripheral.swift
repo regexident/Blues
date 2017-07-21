@@ -113,7 +113,8 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) {
-        if let services = services, services.isEmpty {
+        let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
+        guard shouldDiscoverServices else {
             return
         }
         self.core.discoverServices(services?.map { $0.core })
@@ -269,15 +270,20 @@ extension Peripheral: CBPeripheralDelegate {
             let services = invalidatedServices.map { coreService -> Service in
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
-                let characteristics = service.automaticallyDiscoveredCharacteristics
-                if let characteristics = characteristics, !characteristics.isEmpty {
-                    service.discover(characteristics: characteristics)
-                }
                 self.servicesByIdentifier?[identifier] = service
                 return service
             }
             self.delegated(to: PeripheralStateDelegate.self) { delegate in
                 delegate.didModify(services: services, of: self)
+            }
+            // We discover after calling the delegate to give them
+            // a chance to set delegates on the modified servises:
+            for service in services {
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                let shouldDiscoverCharacteristics = characteristics.map { !$0.isEmpty } ?? true
+                if shouldDiscoverCharacteristics {
+                    service.discover(characteristics: characteristics)
+                }
             }
         }
     }

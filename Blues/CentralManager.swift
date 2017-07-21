@@ -218,14 +218,22 @@ extension CentralManager: CBCentralManagerDelegate {
             let restoreState = CentralManagerRestoreState(dictionary: dictionary) { core in
                 let peripheral = self.wrapper(for: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
-                let services = peripheral.automaticallyDiscoveredServices
-                if let services = services, !services.isEmpty {
-                    peripheral.discover(services: services)
-                }
                 return peripheral
             }
             self.delegated(to: CentralManagerRestorationDelegate.self) { delegate in
                 delegate.willRestore(state: restoreState, of: self)
+            }
+            // We discover after calling the delegate to give them
+            // a chance to set delegates on the restored peripherals:
+            guard let peripherals = restoreState.peripherals else {
+                return
+            }
+            for peripheral in peripherals {
+                let services = peripheral.automaticallyDiscoveredServices
+                let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
+                if shouldDiscoverServices {
+                    peripheral.discover(services: services)
+                }
             }
         }
     }
@@ -279,12 +287,15 @@ extension CentralManager: CBCentralManagerDelegate {
             guard let wrapper = self.peripheralsByIdentifier[identifier] else {
                 return
             }
-            let services = wrapper.automaticallyDiscoveredServices
-            if let services = services, !services.isEmpty {
-                wrapper.discover(services: services)
-            }
             self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
                 delegate.didConnect(to: wrapper, on: self)
+            }
+            // We discover after calling the delegate to give them
+            // a chance to set delegates on the connected peripheral:
+            let services = wrapper.automaticallyDiscoveredServices
+            let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
+            if shouldDiscoverServices {
+                wrapper.discover(services: services)
             }
         }
     }
