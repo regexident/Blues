@@ -277,7 +277,7 @@ extension Characteristic: CustomStringConvertible {
 }
 
 // MARK: - TypedCharacteristicProtocol
-extension TypedCharacteristicProtocol where Self: CharacteristicProtocol {
+extension TypedCharacteristicProtocol {
     /// A type-safe value representation of the characteristic.
     ///
     /// - Note:

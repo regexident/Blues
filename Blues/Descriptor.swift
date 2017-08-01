@@ -166,7 +166,7 @@ extension Descriptor: CustomStringConvertible {
 }
 
 // MARK: - TypedDescriptorProtocol
-extension TypedDescriptorProtocol where Self: DescriptorProtocol {
+extension TypedDescriptorProtocol {
     /// A type-safe value representation of the descriptor.
     ///
     /// - Note:
