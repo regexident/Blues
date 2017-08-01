@@ -28,6 +28,46 @@
 		BF5CD5501F1BED5800C2702A /* ATTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */; };
 		BF5CD5511F1BED5800C2702A /* ATTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53C1F1BED5800C2702A /* ATTError.swift */; };
 		BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */; };
+		BF70B4C11F30E743005FCCD9 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */; };
+		BF70B4C21F30E743005FCCD9 /* MutableDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5331F1BED5800C2702A /* MutableDescriptor.swift */; };
+		BF70B4C31F30E743005FCCD9 /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
+		BF70B4C41F30E743005FCCD9 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
+		BF70B4C51F30E743005FCCD9 /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE661DC2D99200870202 /* Characteristic.swift */; };
+		BF70B4C61F30E743005FCCD9 /* MutableCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5341F1BED5800C2702A /* MutableCharacteristic.swift */; };
+		BF70B4C71F30E743005FCCD9 /* CharacteristicProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */; };
+		BF70B4C81F30E743005FCCD9 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
+		BF70B4C91F30E743005FCCD9 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
+		BF70B4CA1F30E743005FCCD9 /* MutableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5351F1BED5800C2702A /* MutableService.swift */; };
+		BF70B4CB1F30E743005FCCD9 /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */; };
+		BF70B4CC1F30E743005FCCD9 /* DefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD911EC3470300FAD246 /* DefaultService.swift */; };
+		BF70B4CD1F30E743005FCCD9 /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
+		BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */; };
+		BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */; };
+		BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53A1F1BED5800C2702A /* Central.swift */; };
+		BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */; };
+		BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */; };
+		BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
+		BF70B4D41F30E743005FCCD9 /* PeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD52B1F1BED5800C2702A /* PeripheralManager.swift */; };
+		BF70B4D51F30E743005FCCD9 /* PeripheralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD52C1F1BED5800C2702A /* PeripheralManagerProtocols.swift */; };
+		BF70B4D61F30E743005FCCD9 /* Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */; };
+		BF70B4D71F30E743005FCCD9 /* AdvertisementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */; };
+		BF70B4D81F30E743005FCCD9 /* ATTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53C1F1BED5800C2702A /* ATTError.swift */; };
+		BF70B4D91F30E743005FCCD9 /* ATTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */; };
+		BF70B4DA1F30E743005FCCD9 /* AttributePermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */; };
+		BF70B4DB1F30E744005FCCD9 /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
+		BF70B4DC1F30E744005FCCD9 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
+		BF70B4DD1F30E744005FCCD9 /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
+		BF70B4DE1F30E744005FCCD9 /* CharacteristicProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */; };
+		BF70B4DF1F30E744005FCCD9 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */; };
+		BF70B4E01F30E744005FCCD9 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB51DC6BC0000F94D20 /* Error.swift */; };
+		BF70B4E11F30E744005FCCD9 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB11DC694FC00F94D20 /* Identifier.swift */; };
+		BF70B4E21F30E744005FCCD9 /* PeripheralManagerAuthorizationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5391F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift */; };
+		BF70B4E31F30E744005FCCD9 /* PeripheralManagerConnectionLatency.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5371F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift */; };
+		BF70B4E41F30E744005FCCD9 /* PeripheralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5321F1BED5800C2702A /* PeripheralManagerRestoreState.swift */; };
+		BF70B4E51F30E744005FCCD9 /* PeripheralManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5381F1BED5800C2702A /* PeripheralManagerState.swift */; };
+		BF70B4E61F30E744005FCCD9 /* PeripheralState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */; };
+		BF70B4E71F30E744005FCCD9 /* WriteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE711DC3B4FB00870202 /* WriteType.swift */; };
+		BF70B4E91F30E855005FCCD9 /* libResult.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF70B4E81F30E855005FCCD9 /* libResult.a */; };
 		BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
 		BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; };
@@ -61,6 +101,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		BF70B4B61F30E70F005FCCD9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
@@ -83,6 +135,8 @@
 		BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTRequest.swift; sourceTree = "<group>"; };
 		BF5CD53C1F1BED5800C2702A /* ATTError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTError.swift; sourceTree = "<group>"; };
 		BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributePermissions.swift; sourceTree = "<group>"; };
+		BF70B4B81F30E70F005FCCD9 /* libBlues.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlues.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF70B4E81F30E855005FCCD9 /* libResult.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libResult.a; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/libResult.a"; sourceTree = "<group>"; };
 		BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerState.swift; sourceTree = "<group>"; };
 		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerOptions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -111,6 +165,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		BF70B4B51F30E70F005FCCD9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF70B4E91F30E855005FCCD9 /* libResult.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BFCB8DEC1DC0E22200D5430D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -203,6 +265,7 @@
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF70B4E81F30E855005FCCD9 /* libResult.a */,
 				BFA1CC341E66DA42009B077C /* Result.framework */,
 			);
 			name = Frameworks;
@@ -223,6 +286,7 @@
 			children = (
 				BFCB8DF01DC0E22200D5430D /* Blues.framework */,
 				BFCB8DF91DC0E22200D5430D /* BluesTests.xctest */,
+				BF70B4B81F30E70F005FCCD9 /* libBlues.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -291,6 +355,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		BF70B4B71F30E70F005FCCD9 /* Blues (Static) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF70B4C01F30E70F005FCCD9 /* Build configuration list for PBXNativeTarget "Blues (Static)" */;
+			buildPhases = (
+				BF70B4B41F30E70F005FCCD9 /* Sources */,
+				BF70B4B51F30E70F005FCCD9 /* Frameworks */,
+				BF70B4B61F30E70F005FCCD9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Blues (Static)";
+			productName = "Blues (Static)";
+			productReference = BF70B4B81F30E70F005FCCD9 /* libBlues.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		BFCB8DEF1DC0E22200D5430D /* Blues */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFCB8E041DC0E22200D5430D /* Build configuration list for PBXNativeTarget "Blues" */;
@@ -337,15 +418,20 @@
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "NWTN Berlin";
 				TargetAttributes = {
+					BF70B4B71F30E70F005FCCD9 = {
+						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = RHSV5Y8MLD;
+					};
 					BFCB8DEF1DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = RHSV5Y8MLD;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					BFCB8DF81DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = RHSV5Y8MLD;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -364,6 +450,7 @@
 			projectRoot = "";
 			targets = (
 				BFCB8DEF1DC0E22200D5430D /* Blues */,
+				BF70B4B71F30E70F005FCCD9 /* Blues (Static) */,
 				BFCB8DF81DC0E22200D5430D /* BluesTests */,
 			);
 		};
@@ -387,6 +474,52 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		BF70B4B41F30E70F005FCCD9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF70B4C11F30E743005FCCD9 /* Descriptor.swift in Sources */,
+				BF70B4C21F30E743005FCCD9 /* MutableDescriptor.swift in Sources */,
+				BF70B4C31F30E743005FCCD9 /* DescriptorProtocols.swift in Sources */,
+				BF70B4C41F30E743005FCCD9 /* DefaultDescriptor.swift in Sources */,
+				BF70B4C51F30E743005FCCD9 /* Characteristic.swift in Sources */,
+				BF70B4C61F30E743005FCCD9 /* MutableCharacteristic.swift in Sources */,
+				BF70B4C71F30E743005FCCD9 /* CharacteristicProtocols.swift in Sources */,
+				BF70B4C81F30E743005FCCD9 /* DefaultCharacteristic.swift in Sources */,
+				BF70B4C91F30E743005FCCD9 /* Service.swift in Sources */,
+				BF70B4CA1F30E743005FCCD9 /* MutableService.swift in Sources */,
+				BF70B4CB1F30E743005FCCD9 /* ServiceProtocols.swift in Sources */,
+				BF70B4CC1F30E743005FCCD9 /* DefaultService.swift in Sources */,
+				BF70B4CD1F30E743005FCCD9 /* Peripheral.swift in Sources */,
+				BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */,
+				BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */,
+				BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */,
+				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
+				BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */,
+				BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */,
+				BF70B4D41F30E743005FCCD9 /* PeripheralManager.swift in Sources */,
+				BF70B4D51F30E743005FCCD9 /* PeripheralManagerProtocols.swift in Sources */,
+				BF70B4D61F30E743005FCCD9 /* Advertisement.swift in Sources */,
+				BF70B4D71F30E743005FCCD9 /* AdvertisementPersistence.swift in Sources */,
+				BF70B4D81F30E743005FCCD9 /* ATTError.swift in Sources */,
+				BF70B4D91F30E743005FCCD9 /* ATTRequest.swift in Sources */,
+				BF70B4DA1F30E743005FCCD9 /* AttributePermissions.swift in Sources */,
+				BF70B4DB1F30E744005FCCD9 /* CentralManagerOptions.swift in Sources */,
+				BF70B4DC1F30E744005FCCD9 /* CentralManagerRestoreState.swift in Sources */,
+				BF70B4DD1F30E744005FCCD9 /* ManagerState.swift in Sources */,
+				BF70B4DE1F30E744005FCCD9 /* CharacteristicProperties.swift in Sources */,
+				BF70B4DF1F30E744005FCCD9 /* ConnectionOptions.swift in Sources */,
+				BF70B4E01F30E744005FCCD9 /* Error.swift in Sources */,
+				BF70B4E11F30E744005FCCD9 /* Identifier.swift in Sources */,
+				BF70B4E21F30E744005FCCD9 /* PeripheralManagerAuthorizationStatus.swift in Sources */,
+				BF70B4E31F30E744005FCCD9 /* PeripheralManagerConnectionLatency.swift in Sources */,
+				BF70B4E41F30E744005FCCD9 /* PeripheralManagerRestoreState.swift in Sources */,
+				BF70B4E51F30E744005FCCD9 /* PeripheralManagerState.swift in Sources */,
+				BF70B4E61F30E744005FCCD9 /* PeripheralState.swift in Sources */,
+				BF70B4E71F30E744005FCCD9 /* WriteType.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BFCB8DEB1DC0E22200D5430D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -452,6 +585,46 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		BF70B4BE1F30E70F005FCCD9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Blues;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF70B4BF1F30E70F005FCCD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Blues;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		BFCB8E021DC0E22200D5430D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -500,12 +673,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -554,10 +728,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -578,13 +753,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -601,12 +774,10 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -619,7 +790,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -632,13 +802,21 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		BF70B4C01F30E70F005FCCD9 /* Build configuration list for PBXNativeTarget "Blues (Static)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF70B4BE1F30E70F005FCCD9 /* Debug */,
+				BF70B4BF1F30E70F005FCCD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		BFCB8DEA1DC0E22200D5430D /* Build configuration list for PBXProject "Blues" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
