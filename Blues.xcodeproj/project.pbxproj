@@ -34,10 +34,6 @@
 		BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
 		BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD911EC3470300FAD246 /* DefaultService.swift */; };
 		BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
-		BFA1CC301E66DA42009B077C /* Blues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; };
-		BFA1CC311E66DA42009B077C /* Blues.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BFA1CC351E66DA42009B077C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; };
-		BFA1CC361E66DA42009B077C /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFACE1511DC3E2B900328A63 /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */; };
 		BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */; };
 		BFB360541DE2FEAC00B7931F /* CharacteristicProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */; };
@@ -56,13 +52,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		BFA1CC321E66DA42009B077C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFCB8DE71DC0E22200D5430D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BFCB8DEF1DC0E22200D5430D;
-			remoteInfo = Blues;
-		};
 		BFCB8DFB1DC0E22200D5430D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFCB8DE71DC0E22200D5430D /* Project object */;
@@ -71,21 +60,6 @@
 			remoteInfo = Blues;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		BFA1CC371E66DA42009B077C /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BFA1CC311E66DA42009B077C /* Blues.framework in Embed Frameworks */,
-				BFA1CC361E66DA42009B077C /* Result.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
@@ -134,7 +108,6 @@
 		BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProperties.swift; sourceTree = "<group>"; };
 		BFE23EB11DC694FC00F94D20 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		BFE23EB51DC6BC0000F94D20 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		BFE9035E1DC3EA3600F1BF42 /* BluesDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluesDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,15 +124,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BFE9035B1DC3EA3600F1BF42 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BFA1CC301E66DA42009B077C /* Blues.framework in Frameworks */,
-				BFA1CC351E66DA42009B077C /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,7 +223,6 @@
 			children = (
 				BFCB8DF01DC0E22200D5430D /* Blues.framework */,
 				BFCB8DF91DC0E22200D5430D /* BluesTests.xctest */,
-				BFE9035E1DC3EA3600F1BF42 /* BluesDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -364,25 +327,6 @@
 			productReference = BFCB8DF91DC0E22200D5430D /* BluesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BFE9035D1DC3EA3600F1BF42 /* BluesDemo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BFE9036F1DC3EA3600F1BF42 /* Build configuration list for PBXNativeTarget "BluesDemo" */;
-			buildPhases = (
-				BFE9035A1DC3EA3600F1BF42 /* Sources */,
-				BFE9035B1DC3EA3600F1BF42 /* Frameworks */,
-				BFE9035C1DC3EA3600F1BF42 /* Resources */,
-				BFA1CC371E66DA42009B077C /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BFA1CC331E66DA42009B077C /* PBXTargetDependency */,
-			);
-			name = BluesDemo;
-			productName = BluesDemo;
-			productReference = BFE9035E1DC3EA3600F1BF42 /* BluesDemo.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -404,11 +348,6 @@
 						DevelopmentTeam = RHSV5Y8MLD;
 						ProvisioningStyle = Automatic;
 					};
-					BFE9035D1DC3EA3600F1BF42 = {
-						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = RHSV5Y8MLD;
-						ProvisioningStyle = Automatic;
-					};
 				};
 			};
 			buildConfigurationList = BFCB8DEA1DC0E22200D5430D /* Build configuration list for PBXProject "Blues" */;
@@ -426,7 +365,6 @@
 			targets = (
 				BFCB8DEF1DC0E22200D5430D /* Blues */,
 				BFCB8DF81DC0E22200D5430D /* BluesTests */,
-				BFE9035D1DC3EA3600F1BF42 /* BluesDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -440,13 +378,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BFCB8DF71DC0E22200D5430D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BFE9035C1DC3EA3600F1BF42 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -510,21 +441,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BFE9035A1DC3EA3600F1BF42 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		BFA1CC331E66DA42009B077C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BFCB8DEF1DC0E22200D5430D /* Blues */;
-			targetProxy = BFA1CC321E66DA42009B077C /* PBXContainerItemProxy */;
-		};
 		BFCB8DFC1DC0E22200D5430D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BFCB8DEF1DC0E22200D5430D /* Blues */;
@@ -723,40 +642,6 @@
 			};
 			name = Release;
 		};
-		BFE903701DC3EA3600F1BF42 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = RHSV5Y8MLD;
-				INFOPLIST_FILE = BluesDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesDemo";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		BFE903711DC3EA3600F1BF42 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = RHSV5Y8MLD;
-				INFOPLIST_FILE = BluesDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesDemo";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -783,15 +668,6 @@
 			buildConfigurations = (
 				BFCB8E081DC0E22200D5430D /* Debug */,
 				BFCB8E091DC0E22200D5430D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BFE9036F1DC3EA3600F1BF42 /* Build configuration list for PBXNativeTarget "BluesDemo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BFE903701DC3EA3600F1BF42 /* Debug */,
-				BFE903711DC3EA3600F1BF42 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
