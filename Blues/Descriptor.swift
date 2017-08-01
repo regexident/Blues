@@ -98,6 +98,7 @@ open class Descriptor: DescriptorProtocol {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func read() {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.readData(for: self)
     }
 
@@ -124,7 +125,12 @@ open class Descriptor: DescriptorProtocol {
     ///
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func write(data: Data) {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.write(data: data, for: self)
+    }
+
+    fileprivate func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
     internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {

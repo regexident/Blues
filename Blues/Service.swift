@@ -158,6 +158,10 @@ open class Service: ServiceProtocol {
         return self.peripheral.discover(characteristics: characteristics, for: self)
     }
 
+    fileprivate func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
+    }
+
     internal func wrapper(for core: CBCharacteristic) -> Characteristic {
         let identifier = Identifier(uuid: core.uuid)
         let characteristic = self.dataSourced(from: ServiceDataSource.self) { dataSource in

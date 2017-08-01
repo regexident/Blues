@@ -167,7 +167,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         return self.core.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
     }
 
-    internal func apiMisuseErrorMessage() -> String {
+    fileprivate func apiMisuseErrorMessage() -> String {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 

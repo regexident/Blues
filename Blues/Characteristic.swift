@@ -157,6 +157,7 @@ open class Characteristic: CharacteristicProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func read() {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.readData(for: self)
     }
 
@@ -187,6 +188,7 @@ open class Characteristic: CharacteristicProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(data: Data, type: WriteType) {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.write(data: data, for: self, type: type)
     }
 
@@ -214,7 +216,12 @@ open class Characteristic: CharacteristicProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func set(notifyValue: Bool) {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.set(notifyValue: notifyValue, for: self)
+    }
+
+    internal func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
     internal func wrapper(for core: CBDescriptor) -> Descriptor {

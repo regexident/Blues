@@ -154,7 +154,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         }
     }
 
-    internal func apiMisuseErrorMessage() -> String {
+    fileprivate func apiMisuseErrorMessage() -> String {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
@@ -238,6 +238,9 @@ extension CentralManager: CBCentralManagerDelegate {
             }
             // We discover after calling the delegate to give them
             // a chance to set delegates on the restored peripherals:
+            guard self.state == .poweredOn else {
+                return
+            }
             guard let peripherals = restoreState.peripherals else {
                 return
             }
