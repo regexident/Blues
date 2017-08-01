@@ -11,7 +11,7 @@ import Foundation
 public protocol CentralManagerProtocol: class {
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
-    var state: CentralManagerState { get }
+    var state: ManagerState { get }
 
     var isScanning: Bool { get }
 

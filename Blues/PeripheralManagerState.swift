@@ -25,7 +25,7 @@ public enum PeripheralManagerState {
     case poweredOff
     case poweredOn
 
-    internal var core: CBPeripheralManagerState {
+    internal var core: CBManagerState {
         switch self {
         case .unknown: return .unknown
         case .resetting: return .resetting

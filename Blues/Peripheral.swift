@@ -113,6 +113,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
         guard shouldDiscoverServices else {
             return
@@ -130,6 +131,10 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///   delegate object, which includes the RSSI value as a parameter.
     public func readRSSI() {
         return self.core.readRSSI()
+    }
+
+    internal func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
     internal func isValid(core peripheral: CBPeripheral) -> Bool {
@@ -184,34 +189,42 @@ open class Peripheral: NSObject, PeripheralProtocol {
     }
 
     internal func discover(includedServices: [Identifier]?, for service: Service) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.discoverIncludedServices(includedServices?.map { $0.core }, for: service.core)
     }
 
     internal func discover(characteristics: [Identifier]?, for service: Service) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.discoverCharacteristics(characteristics?.map { $0.core }, for: service.core)
     }
 
     internal func discoverDescriptors(for characteristic: Characteristic) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.discoverDescriptors(for: characteristic.core)
     }
 
     internal func readData(for characteristic: Characteristic) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.readValue(for: characteristic.core)
     }
 
     internal func readData(for descriptor: Descriptor) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.readValue(for: descriptor.core)
     }
 
     internal func write(data: Data, for characteristic: Characteristic, type: WriteType) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.writeValue(data, for: characteristic.core, type: type.inner)
     }
 
     internal func write(data: Data, for descriptor: Descriptor) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.writeValue(data, for: descriptor.core)
     }
 
     internal func set(notifyValue: Bool, for characteristic: Characteristic) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         self.core.setNotifyValue(notifyValue, for: characteristic.core)
     }
 }

@@ -19,8 +19,8 @@ open class CentralManager: NSObject, CentralManagerProtocol {
 
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
-    public var state: CentralManagerState {
-        return CentralManagerState(from: self.core.state)
+    public var state: ManagerState {
+        return ManagerState(from: self.core.state)
     }
 
     public var isScanning: Bool {
@@ -51,6 +51,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         options: CentralManagerScanningOptions? = nil,
         timeout: TimeInterval? = nil
     ) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.queue.async {
             let uuids = services?.map { $0.uuid }
             self.core.scanForPeripherals(withServices: uuids, options: options?.dictionary)
@@ -76,6 +77,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func stopScanningForPeripherals() {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.queue.async {
             self.core.stopScan()
             if let timer = self.timer {
@@ -89,6 +91,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func retrievePeripherals(withIdentifiers identifiers: [Identifier]) -> [Peripheral] {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         let cbuuids = identifiers.map {
             $0.core.uuidString
         }
@@ -101,6 +104,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func retrieveConnectedPeripherals(withServices serviceUUIDs: [Identifier]) -> [Peripheral] {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         let cbuuids = serviceUUIDs.map { $0.core }
         let innerPeripherals = self.core.retrieveConnectedPeripherals(withServices: cbuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
@@ -110,6 +114,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func connect(peripheral: Peripheral, options: ConnectionOptions? = nil) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         if (peripheral.state == .connected) || (peripheral.state == .connecting) {
             return
         }
@@ -124,6 +129,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func disconnect(peripheral: Peripheral) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         if (peripheral.state == .disconnected) || (peripheral.state == .disconnecting) {
             return
         }
@@ -138,6 +144,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
     
     public func disconnectAll() {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.queue.async {
             for peripheral in self.peripherals {
                 if peripheral.state == .connected {
@@ -145,6 +152,10 @@ open class CentralManager: NSObject, CentralManagerProtocol {
                 }
             }
         }
+    }
+
+    internal func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
     internal func wrapper(for core: CBPeripheral, advertisement: Advertisement?) -> Peripheral {
@@ -184,7 +195,9 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     @objc private func didStopScanningAfterTimeout(_ timer: Timer) {
-        self.stopScanningForPeripherals()
+        if self.state == .poweredOn {
+            self.stopScanningForPeripherals()
+        }
         timer.invalidate()
         self.timer = nil
     }

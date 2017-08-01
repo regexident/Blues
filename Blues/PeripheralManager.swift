@@ -34,6 +34,12 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
 
     internal var core: CBPeripheralManager!
 
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
+    public var state: ManagerState {
+        return ManagerState(from: self.core.state)
+    }
+
     /// This method does not prompt the user for access. You can use it to detect restricted access
     /// and simply hide UI instead of prompting for access.
     ///
@@ -74,11 +80,13 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///
     /// - Parameter advertisementData: An optional dictionary containing the data to be advertised.
     public func startAdvertising(_ advertisement: Advertisement?) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.startAdvertising(advertisement?.dictionary)
     }
 
     /// Stops advertising.
     public func stopAdvertising() {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.stopAdvertising()
     }
 
@@ -94,6 +102,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         _ latency: PeripheralManagerConnectionLatency,
         for central: Central
     ) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.setDesiredConnectionLatency(latency.core, for: central.core)
     }
 
@@ -102,6 +111,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///
     /// - Parameter service: A GATT service.
     public func add(_ service: MutableService) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.add(service.core)
     }
 
@@ -110,11 +120,13 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///
     /// - Parameter service: A GATT service.
     public func remove(_ service: MutableService) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.remove(service.core)
     }
 
     /// Removes all published services from the local database.
     public func removeAllServices() {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.removeAllServices()
     }
 
@@ -125,6 +137,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///   - request: The original request that was received from the central.
     ///   - result: The result of attempting to fulfill _request_.
     public func respond(to request: ATTRequest, withResult result: CBATTError.Code) {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         self.core.respond(to: request.core, withResult: result)
     }
 
@@ -146,11 +159,16 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         for characteristic: MutableCharacteristic,
         onSubscribedCentrals centrals: [Central]?
     ) -> Bool {
+        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         let characteristic = characteristic.core
         let centrals = centrals.map { centrals in
             centrals.map { $0.core }
         }
         return self.core.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
+    }
+
+    internal func apiMisuseErrorMessage() -> String {
+        return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
     internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {

@@ -1,5 +1,5 @@
 //
-//  CentralManagerState.swift
+//  ManagerState.swift
 //  Blues
 //
 //  Created by Vincent Esche on 28/10/2016.
@@ -12,7 +12,7 @@ import CoreBluetooth
 /// Abstraction layer around `CBManagerState`.
 @available(iOS 10.0, *)
 @available(iOSApplicationExtension 10.0, *)
-public enum CentralManagerState {
+public enum ManagerState {
     /// The current state of the manager is unknown; an update is imminent.
     case unknown
     /// The connection with the system service was momentarily lost; an update is imminent.

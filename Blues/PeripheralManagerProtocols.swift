@@ -10,6 +10,10 @@ import Foundation
 import CoreBluetooth
 
 public protocol PeripheralManagerProtocol: class {
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
+    var state: ManagerState { get }
+    
     weak var delegate: PeripheralManagerDelegate? { get set }
 
     var isAdvertising: Bool { get }

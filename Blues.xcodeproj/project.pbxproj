@@ -28,7 +28,7 @@
 		BF5CD5501F1BED5800C2702A /* ATTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */; };
 		BF5CD5511F1BED5800C2702A /* ATTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53C1F1BED5800C2702A /* ATTError.swift */; };
 		BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */; };
-		BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */; };
+		BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
 		BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; };
 		BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
@@ -83,7 +83,7 @@
 		BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTRequest.swift; sourceTree = "<group>"; };
 		BF5CD53C1F1BED5800C2702A /* ATTError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTError.swift; sourceTree = "<group>"; };
 		BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributePermissions.swift; sourceTree = "<group>"; };
-		BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerState.swift; sourceTree = "<group>"; };
+		BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerState.swift; sourceTree = "<group>"; };
 		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerOptions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD911EC3470300FAD246 /* DefaultService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -263,7 +263,7 @@
 				BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */,
 				BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */,
 				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
-				BF77CEFD1DC3E45F005E41FD /* CentralManagerState.swift */,
+				BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */,
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
 				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
@@ -399,7 +399,7 @@
 				BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
 				BF5CD5481F1BED5800C2702A /* MutableDescriptor.swift in Sources */,
-				BF77CEFE1DC3E45F005E41FD /* CentralManagerState.swift in Sources */,
+				BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */,
 				BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */,
 				BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */,
 				BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */,
@@ -578,6 +578,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -600,6 +601,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Blues/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nwtn-berlin.Blues";
 				PRODUCT_NAME = "$(TARGET_NAME)";
