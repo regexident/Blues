@@ -117,6 +117,7 @@
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultPeripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BF33042C1F3731CF0011FE87 /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
 		BF3FFE661DC2D99200870202 /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Characteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Descriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionOptions.swift; sourceTree = "<group>"; };
@@ -245,6 +246,15 @@
 			name = CentralManager;
 			sourceTree = "<group>";
 		};
+		BF3304201F372E020011FE87 /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				BF33042C1F3731CF0011FE87 /* Universal.xcconfig */,
+			);
+			name = Configs;
+			path = Blues.xcodeproj/Configs;
+			sourceTree = "<group>";
+		};
 		BF5CD5551F1BED5E00C2702A /* PeripheralManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,6 +287,7 @@
 				BFCB8DF21DC0E22200D5430D /* Blues */,
 				BFCB8DFD1DC0E22200D5430D /* BluesTests */,
 				BFA1CC2D1E66D9E8009B077C /* Frameworks */,
+				BF3304201F372E020011FE87 /* Configs */,
 				BFCB8DF11DC0E22200D5430D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -429,9 +440,8 @@
 					};
 					BFCB8DF81DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = RHSV5Y8MLD;
 						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -586,11 +596,11 @@
 /* Begin XCBuildConfiguration section */
 		BF70B4BE1F30E70F005FCCD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -606,11 +616,11 @@
 		};
 		BF70B4BF1F30E70F005FCCD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -741,10 +751,9 @@
 		};
 		BFCB8E051DC0E22200D5430D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -762,10 +771,9 @@
 		};
 		BFCB8E061DC0E22200D5430D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -782,25 +790,31 @@
 		};
 		BFCB8E081DC0E22200D5430D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = RHSV5Y8MLD;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = BluesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
 		BFCB8E091DC0E22200D5430D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF33042C1F3731CF0011FE87 /* Universal.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = RHSV5Y8MLD;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = BluesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-.BluesTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
