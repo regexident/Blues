@@ -16,19 +16,29 @@ public struct ConnectionOptions {
     /// an alert for a given peripheral if the app is suspended
     /// when a successful connection is made.
     //    @available(iOS 6, tvOS 6, *)
-    let notifyOnConnection: Bool?
+    public let notifyOnConnection: Bool?
 
     /// A Boolean value that specifies whether the system should display
     /// a disconnection alert for a given peripheral if the app is
     /// suspended at the time of the disconnection.
     //    @available(iOS 8, OSX 10.10, tvOS 9, *)
-    let notifyOnDisconnection: Bool?
+    public let notifyOnDisconnection: Bool?
 
     /// A Boolean value that specifies whether the system should display
     /// an alert for all notifications received from a given peripheral
     /// if the app is suspended at the time.
     //    @available(iOS 6, tvOS 6, *)
-    let notifyOnNotification: Bool?
+    public let notifyOnNotification: Bool?
+
+    init(
+        notifyOnConnection: Bool? = nil,
+        notifyOnDisconnection: Bool? = nil,
+        notifyOnNotification: Bool? = nil
+    ) {
+        self.notifyOnConnection = notifyOnConnection
+        self.notifyOnDisconnection = notifyOnDisconnection
+        self.notifyOnNotification = notifyOnNotification
+    }
 
     enum Keys {
         static let notifyOnConnection = CBConnectPeripheralOptionNotifyOnConnectionKey

@@ -125,7 +125,6 @@ open class CentralManager: NSObject, CentralManagerProtocol {
             peripheral.connectionOptions = options
             self.core.connect(peripheral.core, options: options?.dictionary)
         }
-        return
     }
 
     public func disconnect(peripheral: Peripheral) {
@@ -140,7 +139,6 @@ open class CentralManager: NSObject, CentralManagerProtocol {
             peripheral.connectionOptions = nil
             self.core.cancelPeripheralConnection(peripheral.core)
         }
-        return
     }
     
     public func disconnectAll() {

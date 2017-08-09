@@ -36,14 +36,15 @@ public struct CentralManagerOptions {
     ///
     /// - Note: Pass `nil` if you have a single shared manager, or a custom
     /// UID if you have multiple background instances of CentralManager in the app.
-    public var restoreIdentifier: RestoreIdentifier? = nil
+    public let restoreIdentifier: RestoreIdentifier?
 
     /// System should display a warning dialog to the user
     /// if Bluetooth is powered off when the manager is instantiated.
-    public var showPowerAlert: Bool? = nil
+    public let showPowerAlert: Bool?
 
-    public init() {
-
+    public init(restoreIdentifier: RestoreIdentifier? = nil, showPowerAlert: Bool? = nil) {
+        self.restoreIdentifier = restoreIdentifier
+        self.showPowerAlert = showPowerAlert
     }
 
     enum Keys {
