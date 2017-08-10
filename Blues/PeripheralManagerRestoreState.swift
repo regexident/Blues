@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+#if os(iOS) || os(OSX)
+
 public struct PeripheralManagerRestoreState {
     /// An array (an instance of NSArray) of CBMutableService objects that contains all of the
     /// services that were published to the local peripheral’s database at the time the app
@@ -58,3 +60,5 @@ public struct PeripheralManagerRestoreState {
         return dictionary
     }
 }
+
+#endif

@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+#if os(iOS) || os(OSX)
+
 /// The `PeripheralManager` class is an abstraction of the Peripheral and Broadcaster GAP roles,
 /// and the GATT Server role. Its primary function is to allow you to manage published services
 /// within the GATT database, and to advertise these services to other devices.
@@ -271,3 +273,5 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         }
     }
 }
+
+#endif

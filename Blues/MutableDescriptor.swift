@@ -11,6 +11,8 @@ import CoreBluetooth
 
 import Result
 
+#if os(iOS) || os(OSX)
+
 open class MutableDescriptor : CBDescriptor {
     internal var core: CBMutableDescriptor
 
@@ -31,3 +33,5 @@ open class MutableDescriptor : CBDescriptor {
         self.core = core
     }
 }
+
+#endif

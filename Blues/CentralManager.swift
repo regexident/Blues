@@ -20,6 +20,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
     public var state: ManagerState {
+        print("self.core.state:", self.core.state.rawValue)
         return ManagerState(from: self.core.state)
     }
 
@@ -114,10 +115,13 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
 
     public func connect(peripheral: Peripheral, options: ConnectionOptions? = nil) {
+        print("self.state:", self.state)
         assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
         if (peripheral.state == .connected) || (peripheral.state == .connecting) {
+            print("Already connected or connecting.")
             return
         }
+        print("Connecting.")
         self.queue.async {
             self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
                 delegate.willConnect(to: peripheral, on: self)
@@ -253,6 +257,8 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 
     @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        let state = ManagerState(from: central.state)
+        print("centralManagerDidUpdateState ->", state)
         self.queue.async {
             if central.state == .poweredOn {
                 // nothing for now

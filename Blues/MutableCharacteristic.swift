@@ -11,6 +11,8 @@ import CoreBluetooth
 
 import Result
 
+#if os(iOS) || os(OSX)
+
 public protocol MutableCharacteristicProtocol: class {
     var permissions: AttributePermissions { get set }
     var subscribedCentrals: [Central]? { get }
@@ -131,3 +133,5 @@ extension TypedCharacteristicProtocol where Self: MutableCharacteristicProtocol 
         return data.mapErr { .other($0) }.andThen { self.transformer.transform(data: $0) }
     }
 }
+
+#endif

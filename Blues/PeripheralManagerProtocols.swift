@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+#if os(iOS) || os(OSX)
+
 public protocol PeripheralManagerProtocol: class {
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
@@ -159,3 +161,5 @@ public protocol PeripheralManagerWritingDelegate: PeripheralManagerDelegate {
     /// - Parameter peripheral: The peripheral manager providing this update.
     func peripheralManagerIsReady(toUpdateSubscribers manager: PeripheralManager)
 }
+
+#endif

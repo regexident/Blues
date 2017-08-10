@@ -11,6 +11,8 @@ import CoreBluetooth
 
 import Result
 
+#if os(iOS) || os(OSX)
+
 /// Used to create a local service or included service, which can be added to the local database
 /// via `CBPeripheralManager`. Once a service is published, it is cached and can no longer
 /// be changed. This class adds write access to all properties in the `CBService` class.
@@ -57,3 +59,5 @@ open class MutableService {
         self.core = core
     }
 }
+
+#endif
