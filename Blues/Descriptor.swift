@@ -203,13 +203,13 @@ extension TypedDescriptorProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedDescriptorError> {
-        return self.transformer.transform(value: value).andThen { data in
+        return self.transformer.transform(value: value).flatMap { data in
             return .ok(self.write(data: data))
         }
     }
 
     public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypedDescriptorError> {
-        return any.mapErr { .other($0) }.andThen { self.transformer.transform(any: $0) }
+        return any.mapErr { .other($0) }.flatMap { self.transformer.transform(any: $0) }
     }
 }
 

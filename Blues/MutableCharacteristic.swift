@@ -130,7 +130,7 @@ extension TypedCharacteristicProtocol where Self: MutableCharacteristicProtocol 
     }
 
     public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError> {
-        return data.mapErr { .other($0) }.andThen { self.transformer.transform(data: $0) }
+        return data.mapErr { .other($0) }.flatMap { self.transformer.transform(data: $0) }
     }
 }
 
