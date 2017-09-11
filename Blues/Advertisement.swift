@@ -155,7 +155,8 @@ public struct Advertisement {
         dictionary[Keys.solicitedServiceUUIDs] = mapUUIDs(plist[Keys.solicitedServiceUUIDs])
         dictionary[Keys.txPowerLevel] = plist[Keys.txPowerLevel]
         dictionary[Keys.isConnectable] = plist[Keys.isConnectable]
-        self.dictionary = dictionary
+        
+        self.init(dictionary: dictionary)
     }
 }
 

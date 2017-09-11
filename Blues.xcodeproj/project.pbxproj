@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
+		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
 		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
 		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
 		BF180BEA1EC35123008F7982 /* DefaultPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */; };
@@ -82,7 +84,6 @@
 		BFBFE37C20062A4E00402ED7 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBFE3772006296200402ED7 /* Result.swift */; };
 		BFC429011F0F923F006C1F8C /* AdvertisementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */; };
 		BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; };
-		BFCB8DFF1DC0E22200D5430D /* BluesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */; };
 		BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */; };
 		BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */; };
 		BFCB8E131DC1104400D5430D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
@@ -114,6 +115,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
+		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultPeripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -154,7 +157,6 @@
 		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
 		BFCB8DF41DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFCB8DF91DC0E22200D5430D /* BluesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluesTests.swift; sourceTree = "<group>"; };
 		BFCB8E001DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFCB8E0A1DC0E45600D5430D /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Peripheral.swift; sourceTree = "<group>"; };
 		BFCB8E0C1DC0E5EF00D5430D /* Advertisement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Advertisement.swift; sourceTree = "<group>"; };
@@ -192,6 +194,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2EEFC32A1F669B6800BB7657 /* Mockables */ = {
+			isa = PBXGroup;
+			children = (
+				2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */,
+			);
+			name = Mockables;
+			sourceTree = "<group>";
+		};
+		2EEFC3301F66AA0900BB7657 /* Auxiliaries */ = {
+			isa = PBXGroup;
+			children = (
+				2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */,
+			);
+			path = Auxiliaries;
+			sourceTree = "<group>";
+		};
 		BF102D551F0D27680099D8AB /* Descriptor */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +292,7 @@
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2EEFC3331F66AD0500BB7657 /* CoreBluetooth.framework */,
 				BF70B4E81F30E855005FCCD9 /* libResult.a */,
 				BFA1CC341E66DA42009B077C /* Result.framework */,
 			);
@@ -313,6 +332,7 @@
 				BF102D591F0D27890099D8AB /* CentralManager */,
 				BF5CD5551F1BED5E00C2702A /* PeripheralManager */,
 				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
+				2EEFC32A1F669B6800BB7657 /* Mockables */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
 			);
 			path = Blues;
@@ -321,8 +341,9 @@
 		BFCB8DFD1DC0E22200D5430D /* BluesTests */ = {
 			isa = PBXGroup;
 			children = (
-				BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */,
+				2EEFC3301F66AA0900BB7657 /* Auxiliaries */,
 				BFCB8E001DC0E22200D5430D /* Info.plist */,
+				2EEFC33A1F66D45C00BB7657 /* Helpers.swift */,
 			);
 			path = BluesTests;
 			sourceTree = "<group>";
@@ -503,7 +524,7 @@
 				BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */,
 				BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */,
 				BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */,
-				BFBFE37C20062A4E00402ED7 /* Result.swift in Sources */,
+				2EEFC3361F66AD5D00BB7657 /* CoreMockables.swift in Sources */,
 				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
 				BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */,
 				BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */,
@@ -550,6 +571,7 @@
 				BF180BEA1EC35123008F7982 /* DefaultPeripheral.swift in Sources */,
 				BF5CD5411F1BED5800C2702A /* PeripheralManagerProtocols.swift in Sources */,
 				BF3FFE6C1DC3A7A300870202 /* Descriptor.swift in Sources */,
+				2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */,
 				BF5CD54E1F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift in Sources */,
 				BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */,
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
@@ -581,7 +603,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFCB8DFF1DC0E22200D5430D /* BluesTests.swift in Sources */,
+				2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */,
+				2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
