@@ -130,21 +130,21 @@ class AdvertisementTestCase: XCTestCase {
     func testDataRepresentation() {
         let advertisement = Advertisement(dictionary: dictionary)
         let data = advertisement.data
-        guard let copy = Advertisement(data: data) else {
+        guard let restored = Advertisement(data: data) else {
             return XCTFail()
         }
         
-        XCTAssertEqual(advertisement.localName, copy.localName)
-        XCTAssertEqual(advertisement.isConnectable, copy.isConnectable)
-        XCTAssertEqual(advertisement.txPowerLevel, copy.txPowerLevel)
-        XCTAssertEqual(advertisement.manufacturerData, copy.manufacturerData)
-        XCTAssert(areOptionalsEqual(advertisement.serviceUUIDs, copy.serviceUUIDs))
-        XCTAssert(areOptionalsEqual(advertisement.solicitedServiceUUIDs, copy.solicitedServiceUUIDs))
-        XCTAssert(areOptionalsEqual(advertisement.overflowServiceUUIDs, copy.overflowServiceUUIDs))
+        XCTAssertEqual(advertisement.localName, restored.localName)
+        XCTAssertEqual(advertisement.isConnectable, restored.isConnectable)
+        XCTAssertEqual(advertisement.txPowerLevel, restored.txPowerLevel)
+        XCTAssertEqual(advertisement.manufacturerData, restored.manufacturerData)
+        XCTAssert(areOptionalsEqual(advertisement.serviceUUIDs, restored.serviceUUIDs))
+        XCTAssert(areOptionalsEqual(advertisement.solicitedServiceUUIDs, restored.solicitedServiceUUIDs))
+        XCTAssert(areOptionalsEqual(advertisement.overflowServiceUUIDs, restored.overflowServiceUUIDs))
         
         guard
             let leftServiceData = advertisement.serviceData,
-            let rightServiceData = copy.serviceData
+            let rightServiceData = restored.serviceData
         else {
             return XCTFail()
         }
@@ -153,6 +153,12 @@ class AdvertisementTestCase: XCTestCase {
             XCTAssertEqual(left.key.string, right.key.string)
             XCTAssertEqual(left.value, right.value)
         }
+    }
+    
+    func testFailingDataRepresentation() {
+        let data = Data()
+        let advertisement = Advertisement(data: data)
+        XCTAssertNil(advertisement)
     }
     
     //MARK: Primitive Values

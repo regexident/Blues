@@ -128,11 +128,12 @@ public struct Advertisement {
     }
 
     /// Creates an advertisement from an opaque plist-compatible `Data` representation.
-    public init(data: Data) {
+    public init?(data: Data) {
         let unarchivedObject = NSKeyedUnarchiver.unarchiveObject(with: data)
         guard let plist = unarchivedObject as? [String : Any] else {
-            let typeName = String(describing: type(of: unarchivedObject!))
-            fatalError("Expected archived value of type '[String: Any]', found '\(typeName)'.")
+            let typeName = String(describing: type(of: unarchivedObject))
+            Log.shared.error("Expected archived value of type '[String: Any]', found '\(typeName)'.")
+            return nil
         }
         var dictionary: [String : Any] = [:]
         let mapUUIDs: (Any?) -> [CBUUID]? = {
