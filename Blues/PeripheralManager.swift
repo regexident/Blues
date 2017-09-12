@@ -34,7 +34,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         return self.core.isAdvertising
     }
 
-    internal var core: CBPeripheralManager!
+    internal var core: CorePeripheralManagerProtocol!
 
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
@@ -64,6 +64,12 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ) {
         self.init()
         self.core = CBPeripheralManager(delegate: self, queue: queue, options: options)
+        self.core.delegate = self
+    }
+    
+    internal convenience init(core: CorePeripheralManagerProtocol) {
+        self.init()
+        self.core = core
         self.core.delegate = self
     }
 

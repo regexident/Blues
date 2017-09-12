@@ -50,7 +50,7 @@ open class Descriptor: DescriptorProtocol {
     ///       return super.service as! CustomService
     ///   }
     ///   ```
-    open var service: Service {
+    open var service: ServiceProtocol {
         return self.characteristic.service
     }
 

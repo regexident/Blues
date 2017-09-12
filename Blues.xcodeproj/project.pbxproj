@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */; };
+		2E0B23411F680CE400AF2B80 /* PeripheralManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */; };
 		2E0B23431F68105300AF2B80 /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B23421F68105300AF2B80 /* TestSetup.swift */; };
 		2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2E9D01911F66EE2500E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
@@ -126,6 +127,7 @@
 
 /* Begin PBXFileReference section */
 		2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralTestCase.swift; sourceTree = "<group>"; };
+		2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralManagerTestCase.swift; sourceTree = "<group>"; };
 		2E0B23421F68105300AF2B80 /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
@@ -217,6 +219,14 @@
 				2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */,
 			);
 			path = Central;
+			sourceTree = "<group>";
+		};
+		2E0B233F1F680CCE00AF2B80 /* PeripheralManager */ = {
+			isa = PBXGroup;
+			children = (
+				2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */,
+			);
+			path = PeripheralManager;
 			sourceTree = "<group>";
 		};
 		2EEFC32A1F669B6800BB7657 /* Mockables */ = {
@@ -319,7 +329,6 @@
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2EEFC3331F66AD0500BB7657 /* CoreBluetooth.framework */,
 				BF70B4E81F30E855005FCCD9 /* libResult.a */,
 				BFA1CC341E66DA42009B077C /* Result.framework */,
 			);
@@ -368,6 +377,7 @@
 		BFCB8DFD1DC0E22200D5430D /* BluesTests */ = {
 			isa = PBXGroup;
 			children = (
+				2E0B233F1F680CCE00AF2B80 /* PeripheralManager */,
 				2E0B233B1F67ED3800AF2B80 /* Central */,
 				2EEFC3301F66AA0900BB7657 /* Auxiliaries */,
 				BFCB8E001DC0E22200D5430D /* Info.plist */,
@@ -639,6 +649,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */,
+				2E0B23411F680CE400AF2B80 /* PeripheralManagerTestCase.swift in Sources */,
 				2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */,
 				2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */,
 				2E0B23431F68105300AF2B80 /* TestSetup.swift in Sources */,

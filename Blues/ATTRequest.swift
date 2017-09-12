@@ -25,9 +25,9 @@ public class ATTRequest {
     //    /// contain the data to be written.
     //    open var value: Data?
 
-    internal var core: CBATTRequest
+    internal var core: CoreATTRequestProtocol
 
-    init(core: CBATTRequest) {
+    init(core: CoreATTRequestProtocol) {
         self.core = core
     }
 }

@@ -14,7 +14,7 @@ public protocol DescriptorProtocol: class {
     var name: String? { get }
 
     var characteristic: Characteristic { get }
-    var service: Service { get }
+    var service: ServiceProtocol { get }
     var peripheral: Peripheral { get }
 
     var any: Any? { get }

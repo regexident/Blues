@@ -34,11 +34,11 @@ open class Characteristic: CharacteristicProtocol {
     ///       return super.service as! CustomService
     ///   }
     ///   ```
-    public var service: Service {
+    public var service: ServiceProtocol {
         return self._service
     }
 
-    private weak var _service: Service!
+    private weak var _service: ServiceProtocol!
     
     /// The peripheral that this characteristic belongs to.
     ///
@@ -71,7 +71,7 @@ open class Characteristic: CharacteristicProtocol {
 
     internal var core: CBCharacteristic!
 
-    public required init(identifier: Identifier, service: Service) {
+    public required init(identifier: Identifier, service: ServiceProtocol) {
         self.identifier = identifier
         self.core = nil
         self._service = service
