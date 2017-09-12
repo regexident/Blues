@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2E9D01911F66EE2500E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
 		2E9D01921F66F00000E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
+		2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
 		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
 		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
@@ -118,6 +120,7 @@
 
 /* Begin PBXFileReference section */
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMockables.swift; sourceTree = "<group>"; };
 		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
 		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
