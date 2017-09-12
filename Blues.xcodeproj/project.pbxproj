@@ -10,6 +10,8 @@
 		2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2E9D01911F66EE2500E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
 		2E9D01921F66F00000E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
+		2E9D01941F67E21400E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
+		2E9D01981F67E6B100E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
 		2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
 		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
@@ -120,6 +122,7 @@
 
 /* Begin PBXFileReference section */
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
 		2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMockables.swift; sourceTree = "<group>"; };
 		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
 		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -364,13 +367,14 @@
 				BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */,
 				BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */,
 				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
-				BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */,
+				2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */,
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
 				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
 				BFBFE3772006296200402ED7 /* Result.swift */,
 				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
 				2E9D01901F66EE2500E50A08 /* Log.swift */,
+				BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */,
 				BF5CD5391F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift */,
 				BF5CD5371F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift */,
 				BF5CD5321F1BED5800C2702A /* PeripheralManagerRestoreState.swift */,
@@ -552,6 +556,7 @@
 				BF70B4E11F30E744005FCCD9 /* Identifier.swift in Sources */,
 				BF70B4E21F30E744005FCCD9 /* PeripheralManagerAuthorizationStatus.swift in Sources */,
 				BF70B4E31F30E744005FCCD9 /* PeripheralManagerConnectionLatency.swift in Sources */,
+				2E9D01981F67E6B100E50A08 /* CentralManagerScanningOptions.swift in Sources */,
 				BF70B4E41F30E744005FCCD9 /* PeripheralManagerRestoreState.swift in Sources */,
 				BF70B4E51F30E744005FCCD9 /* PeripheralManagerState.swift in Sources */,
 				BF70B4E61F30E744005FCCD9 /* PeripheralState.swift in Sources */,
@@ -601,6 +606,7 @@
 				BF5CD5501F1BED5800C2702A /* ATTRequest.swift in Sources */,
 				BF5CD54F1F1BED5800C2702A /* Central.swift in Sources */,
 				BFCB8E131DC1104400D5430D /* Service.swift in Sources */,
+				2E9D01941F67E21400E50A08 /* CentralManagerScanningOptions.swift in Sources */,
 				BF5CD54C1F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift in Sources */,
 				BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */,
 				BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */,

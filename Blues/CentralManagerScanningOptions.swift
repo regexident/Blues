@@ -1,0 +1,79 @@
+//
+//  CentralManagerScanningOptions.swift
+//  Blues
+//
+//  Created by Michał Kałużny on 12/09/2017.
+//  Copyright © 2017 NWTN Berlin. All rights reserved.
+//
+
+import Foundation
+import CoreBluetooth
+
+public struct CentralManagerScanningOptions {
+    /// A Boolean value that specifies whether the scan
+    /// should run without duplicate filtering.
+    ///
+    /// - Note:
+    ///   If `true`, filtering is disabled and a discovery event is generated each
+    ///   time the central receives an advertising packet from the peripheral.
+    ///   Disabling this filtering can have an adverse effect on battery life and
+    ///   should be used only if necessary.
+    ///
+    ///   If `false`, multiple discoveries of the same peripheral are coalesced
+    ///   into a single discovery event.
+    ///
+    ///   The default value is `false`.
+    public var allowDuplicates: Bool = false
+    
+    /// An array of service identifiers that you want to scan for.
+    ///
+    /// - Note:
+    ///   Specifying this scan option causes the central manager to also scan for
+    ///   peripherals soliciting any of the services contained in the array.
+    public var solicitedServiceIdentifiers: [Identifier]?
+    
+    private enum Keys {
+        static let allowDuplicates = CBCentralManagerScanOptionAllowDuplicatesKey
+        static let solicitedServiceIdentifiers = CBCentralManagerScanOptionSolicitedServiceUUIDsKey
+    }
+    
+    public init() {
+        
+    }
+    
+    internal init?(dictionary: [String: Any]) {
+        let allowDuplicatesKey = Keys.allowDuplicates
+        if let value = dictionary[allowDuplicatesKey] {
+            guard let allowDuplicates = value as? Bool else {
+                Log.shared.error("Unexpected value: \"\(value)\" for key \(allowDuplicatesKey)")
+                return nil
+            }
+            self.allowDuplicates = allowDuplicates
+        } else {
+            self.allowDuplicates = false
+        }
+        
+        let solicitedServicesKey = Keys.solicitedServiceIdentifiers
+        if let value = dictionary[solicitedServicesKey] {
+            guard let solicitedServiceIdentifiers = value as? [CBUUID] else {
+                Log.shared.error("Unexpected value: \"\(value)\" for key \(solicitedServicesKey)")
+                return nil
+            }
+            self.solicitedServiceIdentifiers = solicitedServiceIdentifiers.map {
+                Identifier(uuid: $0)
+            }
+        } else {
+            self.solicitedServiceIdentifiers = nil
+        }
+    }
+    
+    internal var dictionary: [String: Any] {
+        var dictionary: [String: Any] = [:]
+        dictionary[Keys.allowDuplicates] = self.allowDuplicates
+        if let solicitedServiceIdentifiers = self.solicitedServiceIdentifiers {
+            let identifiers = solicitedServiceIdentifiers.map { $0.core }
+            dictionary[Keys.solicitedServiceIdentifiers] = identifiers
+        }
+        return dictionary
+    }
+}
