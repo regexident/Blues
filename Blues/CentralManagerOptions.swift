@@ -66,15 +66,24 @@ public struct CentralManagerOptions {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary to take values from.
-    init(dictionary: [String: Any]) {
-        guard let restoreIdentifier = dictionary[Keys.restoreIdentifier] as? String? else {
-            fatalError()
+    init?(dictionary: [String: Any]) {
+        guard let rawRestoreIdentifier = dictionary[Keys.restoreIdentifier] as? String? else {
+            Log.shared.error("Provided dictionary contains non-string value for \(Keys.showPowerAlert)")
+            return nil
         }
-        self.restoreIdentifier = restoreIdentifier.map { .custom($0) }
-
+        
+        let restoreIdentifier = rawRestoreIdentifier.map { RestoreIdentifier.custom($0) }
+        
         guard let showPowerAlert = dictionary[Keys.showPowerAlert] as? Bool? else {
-            fatalError()
+            Log.shared.error("Provided dictionary contains non-boolean value for \(Keys.showPowerAlert)")
+            return nil
         }
+
+        self.init(restoreIdentifier: restoreIdentifier, showPowerAlert: showPowerAlert)
+    }
+    
+    public init(restoreIdentifier: RestoreIdentifier? = nil, showPowerAlert: Bool? = nil) {
+        self.restoreIdentifier = restoreIdentifier
         self.showPowerAlert = showPowerAlert
     }
 }
