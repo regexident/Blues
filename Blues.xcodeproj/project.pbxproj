@@ -535,7 +535,7 @@
 				BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */,
 				BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */,
 				BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */,
-				2EEFC3361F66AD5D00BB7657 /* CoreMockables.swift in Sources */,
+				2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */,
 				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
 				BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */,
 				BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */,
