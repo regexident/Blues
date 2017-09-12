@@ -62,21 +62,24 @@ public struct CentralManagerRestoreState {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary to take values from.
-    internal init(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
-        guard let scanOptions = dictionary[Keys.scanOptions] as? [String: Any]? else {
-            fatalError()
+    internal init?(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
+        guard let scanOptionsDictionary = dictionary[Keys.scanOptions] as? [String: Any] else {
+            return nil
         }
-        self.scanOptions = scanOptions.map {
-            CentralManagerScanningOptions(dictionary: $0)
+        
+        guard let scanOptions = CentralManagerScanningOptions(dictionary: scanOptionsDictionary) else {
+            return nil
         }
+        
+        self.scanOptions = scanOptions
 
         guard let peripherals = dictionary[Keys.peripherals] as? [CBPeripheral]? else {
-            fatalError()
+            return nil
         }
         self.peripherals = peripherals?.map { closure($0) }
 
         guard let scanServices = dictionary[Keys.scanServices] as? [CBUUID]? else {
-            fatalError()
+            return nil
         }
         self.scanServices = scanServices?.map {
             Identifier(uuid: $0)

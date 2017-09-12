@@ -224,11 +224,16 @@ extension CentralManager: CBCentralManagerDelegate {
         willRestoreState dictionary: [String: Any]
     ) {
         self.queue.async {
-            let restoreState = CentralManagerRestoreState(dictionary: dictionary) { core in
+            let restoreStateClosure = { (core: CBPeripheral) -> Peripheral in
                 let peripheral = self.wrapper(for: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
                 return peripheral
             }
+            
+            guard let restoreState = CentralManagerRestoreState(dictionary: dictionary, closure: restoreStateClosure) else {
+                return
+            }
+            
             self.delegated(to: CentralManagerRestorationDelegate.self) { delegate in
                 delegate.willRestore(state: restoreState, of: self)
             }
