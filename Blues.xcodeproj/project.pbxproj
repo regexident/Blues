@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */; };
 		2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2E9D01911F66EE2500E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
 		2E9D01921F66F00000E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
@@ -121,6 +122,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralTestCase.swift; sourceTree = "<group>"; };
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
 		2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMockables.swift; sourceTree = "<group>"; };
@@ -203,6 +205,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2E0B233B1F67ED3800AF2B80 /* Central */ = {
+			isa = PBXGroup;
+			children = (
+				2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */,
+			);
+			path = Central;
+			sourceTree = "<group>";
+		};
 		2EEFC32A1F669B6800BB7657 /* Mockables */ = {
 			isa = PBXGroup;
 			children = (
@@ -350,6 +360,7 @@
 		BFCB8DFD1DC0E22200D5430D /* BluesTests */ = {
 			isa = PBXGroup;
 			children = (
+				2E0B233B1F67ED3800AF2B80 /* Central */,
 				2EEFC3301F66AA0900BB7657 /* Auxiliaries */,
 				BFCB8E001DC0E22200D5430D /* Info.plist */,
 				2EEFC33A1F66D45C00BB7657 /* Helpers.swift */,
@@ -620,6 +631,7 @@
 			files = (
 				2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */,
 				2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */,
+				2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
