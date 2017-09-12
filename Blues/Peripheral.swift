@@ -73,12 +73,6 @@ open class Peripheral: NSObject, PeripheralProtocol {
         self.queue = centralManager.queue
     }
 
-    internal init(core: CBPeripheral, centralManager: CentralManager) {
-        self.identifier = Identifier(uuid: core.identifier)
-        self.core = core
-        self.queue = centralManager.queue
-    }
-
     /// The service associated with a given type if it has previously been discovered in this peripheral.
     public func service<S>(ofType type: S.Type) -> S?
         where S: Service,

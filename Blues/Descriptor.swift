@@ -81,12 +81,6 @@ open class Descriptor: DescriptorProtocol {
         self._characteristic = characteristic
     }
 
-    internal init(core: CBDescriptor, characteristic: Characteristic) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self._characteristic = characteristic
-    }
-
     /// Retrieves the value of the characteristic descriptor, or an error.
     ///
     /// - Note:

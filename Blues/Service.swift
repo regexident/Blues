@@ -87,12 +87,6 @@ open class Service: ServiceProtocol {
         self._peripheral = peripheral
     }
 
-    internal init(core: CBService, peripheral: Peripheral) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self._peripheral = peripheral
-    }
-
     /// The characteristic associated with a given type if it has previously been discovered in this service.
     public func characteristic<C>(ofType type: C.Type) -> C?
         where C: Characteristic,

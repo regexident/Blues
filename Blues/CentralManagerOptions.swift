@@ -41,12 +41,7 @@ public struct CentralManagerOptions {
     /// System should display a warning dialog to the user
     /// if Bluetooth is powered off when the manager is instantiated.
     public let showPowerAlert: Bool?
-
-    public init(restoreIdentifier: RestoreIdentifier? = nil, showPowerAlert: Bool? = nil) {
-        self.restoreIdentifier = restoreIdentifier
-        self.showPowerAlert = showPowerAlert
-    }
-
+    
     enum Keys {
         static let restoreIdentifier = CBCentralManagerOptionRestoreIdentifierKey
         static let showPowerAlert = CBCentralManagerOptionShowPowerAlertKey

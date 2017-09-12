@@ -77,12 +77,6 @@ open class Characteristic: CharacteristicProtocol {
         self._service = service
     }
 
-    internal init(core: CBCharacteristic, service: Service!) {
-        self.identifier = Identifier(uuid: core.uuid)
-        self.core = core
-        self._service = service
-    }
-
     /// Whether the characteristic should discover descriptors automatically
     ///
     /// - Note:
