@@ -63,7 +63,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     /// Options customizing the behavior of the connection.
     public var connectionOptions: ConnectionOptions?
 
-    internal var core: CBPeripheral!
+    internal var core: CorePeripheralProtocol!
 
     internal var queue: DispatchQueue
 
@@ -129,8 +129,8 @@ open class Peripheral: NSObject, PeripheralProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func isValid(core peripheral: CBPeripheral) -> Bool {
-        return peripheral == self.core
+    internal func isValid(core peripheral: CorePeripheralProtocol) -> Bool {
+        return peripheral.identifier == self.core.identifier
     }
 
     internal func wrapperOf(service: CBService) -> Service? {

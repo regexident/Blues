@@ -30,17 +30,22 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
     internal var peripheralsByIdentifier: [Identifier: Peripheral] = [:]
 
-    internal var core: CBCentralManager!
+    internal var core: CoreCentralManagerProtocol!
 
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
     internal var timer: Timer?
 
-    public required init(
+    public required convenience init(
         options: CentralManagerOptions? = nil,
         queue: DispatchQueue = .global()
     ) {
+        let core = CBCentralManager(delegate: nil, queue: queue, options: options?.dictionary)
+        self.init(core: core)
+    }
+    
+    internal init(core: CoreCentralManagerProtocol) {
         super.init()
-        self.core = CBCentralManager(delegate: self, queue: queue, options: options?.dictionary)
+        self.core = core
         self.core.delegate = self
     }
 
@@ -154,7 +159,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func wrapper(for core: CBPeripheral, advertisement: Advertisement?) -> Peripheral {
+    internal func wrapper(for core: CorePeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
         let identifier = Identifier(uuid: core.identifier)
         let peripheral = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
             return dataSource.peripheral(
@@ -219,12 +224,58 @@ extension CentralManager {
 
 // MARK: - CBCentralManagerDelegate:
 extension CentralManager: CBCentralManagerDelegate {
+    
+    @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        self.coreCentralManagerDidUpdateState(central)
+    }
+
     @objc public func centralManager(
         _ central: CBCentralManager,
         willRestoreState dictionary: [String: Any]
+        ) {
+        self.coreCentralManager(central, willRestoreState: dictionary)
+    }
+    
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didDiscover peripheral: CBPeripheral,
+        advertisementData: [String: Any],
+        rssi RSSI: NSNumber
+    ) {
+        self.coreCentralManager(central, didDiscover: peripheral, advertisementData: advertisementData, rssi: RSSI)
+    }
+
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didConnect peripheral: CBPeripheral
+    ) {
+        self.coreCentralManager(central, didConnect: peripheral)
+    }
+
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didFailToConnect peripheral: CBPeripheral,
+        error: Swift.Error?
+    ) {
+        self.coreCentralManager(central, didFailToConnect: peripheral, error: error)
+    }
+
+    @objc public func centralManager(
+        _ central: CBCentralManager,
+        didDisconnectPeripheral peripheral: CBPeripheral,
+        error: Swift.Error?
+    ) {
+        self.coreCentralManager(central, didDisconnectPeripheral: peripheral, error: error)
+    }
+}
+
+extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
+    func coreCentralManager(
+        _ central: CoreCentralManagerProtocol,
+        willRestoreState dictionary: [String : Any]
     ) {
         self.queue.async {
-            let restoreStateClosure = { (core: CBPeripheral) -> Peripheral in
+            let restoreStateClosure = { (core: CorePeripheralProtocol) -> Peripheral in
                 let peripheral = self.wrapper(for: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
                 return peripheral
@@ -254,8 +305,8 @@ extension CentralManager: CBCentralManagerDelegate {
             }
         }
     }
-
-    @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+    
+    func coreCentralManagerDidUpdateState(_ central: CoreCentralManagerProtocol) {
         let state = ManagerState(from: central.state)
         self.queue.async {
             if state == .poweredOn {
@@ -273,9 +324,9 @@ extension CentralManager: CBCentralManagerDelegate {
         }
     }
 
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didDiscover peripheral: CBPeripheral,
+    func coreCentralManager(
+        _ central: CoreCentralManagerProtocol,
+        didDiscover peripheral: CorePeripheralProtocol,
         advertisementData: [String: Any],
         rssi RSSI: NSNumber
     ) {
@@ -295,10 +346,10 @@ extension CentralManager: CBCentralManagerDelegate {
             }
         }
     }
-
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didConnect peripheral: CBPeripheral
+    
+    func coreCentralManager(
+        _ central: CoreCentralManagerProtocol,
+        didConnect peripheral: CorePeripheralProtocol
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
@@ -317,11 +368,11 @@ extension CentralManager: CBCentralManagerDelegate {
             }
         }
     }
-
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didFailToConnect peripheral: CBPeripheral,
-        error: Swift.Error?
+    
+    func coreCentralManager(
+        _ central: CoreCentralManagerProtocol,
+        didFailToConnect peripheral: CorePeripheralProtocol,
+        error: Error?
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
@@ -333,11 +384,11 @@ extension CentralManager: CBCentralManagerDelegate {
             }
         }
     }
-
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didDisconnectPeripheral peripheral: CBPeripheral,
-        error: Swift.Error?
+    
+    func coreCentralManager(
+        _ central: CoreCentralManagerProtocol,
+        didDisconnectPeripheral peripheral: CorePeripheralProtocol,
+        error: Error?
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
@@ -349,40 +400,6 @@ extension CentralManager: CBCentralManagerDelegate {
             }
         }
     }
-
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didRetrievePeripherals peripherals: [CBPeripheral]
-    ) {
-        self.queue.async {
-            let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
-                let identifier = Identifier(uuid: peripheral.identifier)
-                guard let peripheral = self.peripheralsByIdentifier[identifier] else {
-                    return nil
-                }
-                return peripheral
-            }
-            self.delegated(to: CentralManagerRetrievalDelegate.self) { delegate in
-                delegate.didRetrieve(peripherals: peripherals, from: self)
-            }
-        }
-    }
-
-    @objc public func centralManager(
-        _ central: CBCentralManager,
-        didRetrieveConnectedPeripherals peripherals: [CBPeripheral]
-    ) {
-        self.queue.async {
-            let peripherals: [Peripheral] = peripherals.flatMap { peripheral in
-                let identifier = Identifier(uuid: peripheral.identifier)
-                guard let peripheral = self.peripheralsByIdentifier[identifier] else {
-                    return nil
-                }
-                return peripheral
-            }
-            self.delegated(to: CentralManagerRetrievalDelegate.self) { delegate in
-                delegate.didRetrieve(connectedPeripherals: peripherals, from: self)
-            }
-        }
-    }
 }
+
+

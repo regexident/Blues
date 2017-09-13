@@ -89,7 +89,7 @@ extension CBATTRequest: CoreATTRequestProtocol {}
 
 extension CBPeripheralManager: CorePeripheralManagerProtocol {
     func respond(to request: CoreATTRequestProtocol, withResult result: CBATTError.Code) {
-        guard let request = cast(request, to: CBATTRequest.self) else {
+        guard let request = protocolCast(request, to: CBATTRequest.self) else {
             return
         }
         
@@ -97,7 +97,7 @@ extension CBPeripheralManager: CorePeripheralManagerProtocol {
     }
     
     func setDesiredConnectionLatency(_ latency: CBPeripheralManagerConnectionLatency, for central: CoreCentralProtocol) {
-        guard let central = cast(central, to: CBCentral.self) else {
+        guard let central = protocolCast(central, to: CBCentral.self) else {
             return
         }
         
@@ -117,7 +117,7 @@ extension CBPeripheralManager: CorePeripheralManagerProtocol {
     }
 }
 
-private func cast<T, U>(_ generic: T, to: U.Type) -> U? {
+internal func protocolCast<T, U>(_ generic: T, to: U.Type) -> U? {
     guard let concrete = generic as? U else {
         Log.shared.error("Failed to cast generic value of type \(T.self) to concrete type \(U.self)")
         return nil

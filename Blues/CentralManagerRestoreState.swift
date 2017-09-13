@@ -46,7 +46,7 @@ public struct CentralManagerRestoreState {
         }
 
         if let peripherals = self.peripherals {
-            let peripherals: [CBPeripheral] = peripherals.flatMap { $0.core }
+            let peripherals: [CorePeripheralProtocol] = peripherals.flatMap { $0.core }
             dictionary[Keys.peripherals] = peripherals
         }
 
@@ -62,7 +62,7 @@ public struct CentralManagerRestoreState {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary to take values from.
-    internal init?(dictionary: [String: Any], closure: (CBPeripheral) -> Peripheral) {
+    internal init?(dictionary: [String: Any], closure: (CorePeripheralProtocol) -> Peripheral) {
         guard let scanOptionsDictionary = dictionary[Keys.scanOptions] as? [String: Any] else {
             return nil
         }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 open class DefaultCentralManager:
     CentralManager, DelegatedCentralManagerProtocol, DataSourcedCentralManagerProtocol
@@ -16,10 +17,11 @@ open class DefaultCentralManager:
     public weak var delegate: CentralManagerDelegate?
     public weak var dataSource: CentralManagerDataSource?
 
-    public required init(
+    public required convenience init(
         options: CentralManagerOptions? = nil,
         queue: DispatchQueue = .global()
     ) {
-        super.init(options: options, queue: queue)
+        let core = CBCentralManager(delegate: nil, queue: queue, options: options?.dictionary)
+        self.init(core: core)
     }
 }

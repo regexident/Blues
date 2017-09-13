@@ -17,9 +17,16 @@
 		2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */; };
 		2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */; };
 		2E9D01981F67E6B100E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
+		2EDF838C1F69430E00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
+		2EDF838D1F6943AD00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
+		2EDF838F1F69447100AEEE00 /* CBPeripheralMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */; };
 		2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
 		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
+		2EFE13761F68305900DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
+		2EFE13771F6830CC00DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
+		2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */; };
+		2EFE137C1F68314500DAE7E7 /* CBCentralManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */; };
 		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
 		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
 		BF180BEA1EC35123008F7982 /* DefaultPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */; };
@@ -132,10 +139,15 @@
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
 		2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptionsTestCase.swift; sourceTree = "<group>"; };
+		2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePeripheral.swift; sourceTree = "<group>"; };
+		2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBPeripheralMock.swift; sourceTree = "<group>"; };
 		2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMockables.swift; sourceTree = "<group>"; };
 		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
 		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerOptionsTestCase.swift; sourceTree = "<group>"; };
+		2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCentralManager.swift; sourceTree = "<group>"; };
+		2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerTestCase.swift; sourceTree = "<group>"; };
+		2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBCentralManagerMock.swift; sourceTree = "<group>"; };
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultPeripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -233,6 +245,8 @@
 			isa = PBXGroup;
 			children = (
 				2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */,
+				2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */,
+				2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */,
 			);
 			name = Mockables;
 			sourceTree = "<group>";
@@ -245,6 +259,23 @@
 				2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */,
 			);
 			path = Auxiliaries;
+			sourceTree = "<group>";
+		};
+		2EFE13741F68303200DAE7E7 /* Central Manager */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */,
+			);
+			path = "Central Manager";
+			sourceTree = "<group>";
+		};
+		2EFE137A1F68313600DAE7E7 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */,
+				2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		BF102D551F0D27680099D8AB /* Descriptor */ = {
@@ -377,12 +408,14 @@
 		BFCB8DFD1DC0E22200D5430D /* BluesTests */ = {
 			isa = PBXGroup;
 			children = (
+				2E0B23421F68105300AF2B80 /* TestSetup.swift */,
+				2EEFC33A1F66D45C00BB7657 /* Helpers.swift */,
+				2EFE13741F68303200DAE7E7 /* Central Manager */,
 				2E0B233F1F680CCE00AF2B80 /* PeripheralManager */,
 				2E0B233B1F67ED3800AF2B80 /* Central */,
 				2EEFC3301F66AA0900BB7657 /* Auxiliaries */,
+				2EFE137A1F68313600DAE7E7 /* Mocks */,
 				BFCB8E001DC0E22200D5430D /* Info.plist */,
-				2EEFC33A1F66D45C00BB7657 /* Helpers.swift */,
-				2E0B23421F68105300AF2B80 /* TestSetup.swift */,
 			);
 			path = BluesTests;
 			sourceTree = "<group>";
@@ -569,6 +602,8 @@
 				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
 				BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */,
 				BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */,
+				2EDF838D1F6943AD00AEEE00 /* CorePeripheral.swift in Sources */,
+				2EFE13771F6830CC00DAE7E7 /* CoreCentralManager.swift in Sources */,
 				2E9D01921F66F00000E50A08 /* Log.swift in Sources */,
 				BF70B4D41F30E743005FCCD9 /* PeripheralManager.swift in Sources */,
 				BF70B4D51F30E743005FCCD9 /* PeripheralManagerProtocols.swift in Sources */,
@@ -619,6 +654,8 @@
 				BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */,
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
 				BF5CD5491F1BED5800C2702A /* MutableCharacteristic.swift in Sources */,
+				2EDF838C1F69430E00AEEE00 /* CorePeripheral.swift in Sources */,
+				2EFE13761F68305900DAE7E7 /* CoreCentralManager.swift in Sources */,
 				2E9D01911F66EE2500E50A08 /* Log.swift in Sources */,
 				BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */,
 				BFACE1511DC3E2B900328A63 /* CentralManager.swift in Sources */,
@@ -650,11 +687,14 @@
 			files = (
 				2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */,
 				2E0B23411F680CE400AF2B80 /* PeripheralManagerTestCase.swift in Sources */,
+				2EFE137C1F68314500DAE7E7 /* CBCentralManagerMock.swift in Sources */,
 				2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */,
 				2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */,
 				2E0B23431F68105300AF2B80 /* TestSetup.swift in Sources */,
 				2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */,
 				2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift in Sources */,
+				2EDF838F1F69447100AEEE00 /* CBPeripheralMock.swift in Sources */,
+				2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
