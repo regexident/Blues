@@ -36,7 +36,7 @@ internal protocol CoreCentralProtocol: CorePeerProtocol {
 }
 
 internal protocol CoreServiceProtocol: CoreAttributeProtocol {
-    unowned(unsafe) var peripheral: CBPeripheral { get }
+    unowned(unsafe) var genericPeripheral: CorePeripheralProtocol { get }
     var isPrimary: Bool { get }
     var includedServices: [CBService]? { get }
     var characteristics: [CBCharacteristic]? { get }
@@ -82,7 +82,11 @@ protocol CoreATTRequestProtocol {
 extension CBPeer: CorePeerProtocol {}
 extension CBAttribute: CoreAttributeProtocol {}
 extension CBCentral: CoreCentralProtocol {}
-extension CBService: CoreServiceProtocol {}
+extension CBService: CoreServiceProtocol {
+    var genericPeripheral: CorePeripheralProtocol {
+        return peripheral
+    }
+}
 extension CBManager: CoreManagerProtocol {}
 extension CBCharacteristic: CoreCharacteristicsProtocol {}
 extension CBATTRequest: CoreATTRequestProtocol {}

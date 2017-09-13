@@ -19,7 +19,7 @@ protocol CorePeripheralProtocol: class, CorePeerProtocol {
     
     var state: CBPeripheralState { get }
     
-    var services: [CBService]? { get }
+    var genericServices: [CoreServiceProtocol]? { get }
     
     var canSendWriteWithoutResponse: Bool { get }
     
@@ -56,5 +56,9 @@ extension CorePeripheralProtocol {
     }
 }
 
-extension CBPeripheral: CorePeripheralProtocol {}
+extension CBPeripheral: CorePeripheralProtocol {
+    var genericServices: [CoreServiceProtocol]? {
+        return services
+    }
+}
 

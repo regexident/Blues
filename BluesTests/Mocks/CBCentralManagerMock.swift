@@ -16,7 +16,7 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         self.init(delegate: nil, queue: nil, options: nil)
     }
     
-    var delegate: CBCentralManagerDelegate?
+    var delegate: CBCentralManagerDelegate? = nil
     var genericDelegate: CoreCentralCentralManagerDelegateProtocol? = nil
     
     var isScanning: Bool = false
@@ -26,22 +26,32 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         }
     }
     
-    var retrievablePeripherals: [UUID: [String: Any]] = [:]
+    var peripherals: [CorePeripheralProtocol] = []
     
     required convenience init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?) {
         self.init(delegate: delegate, queue: queue, options: nil)
     }
     
-    required init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {
-        self.delegate = delegate
-    }
+    required init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {}
     
     func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CorePeripheralProtocol] {
-        return []
+        return peripherals
+            .filter { identifiers.contains($0.identifier) }
     }
     
     func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CorePeripheralProtocol] {
-        return []
+        let uuids = Set(serviceUUIDs)
+        return peripherals
+            .filter {
+                guard let servicesArray = $0.genericServices else {
+                    return false
+                }
+                
+                let services = Set(servicesArray.map { $0.uuid} )
+                let common = services.union(uuids)
+                
+                return common.count > 0
+            }
     }
     
     func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?) {
@@ -56,5 +66,10 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
     }
     
     func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol) {
+    }
+    
+    func discover(_ peripheral: CorePeripheralProtocol, advertisement: [String: Any]) {
+        self.peripherals.append(peripheral)
+        self.genericDelegate?.coreCentralManager(self, didDiscover: peripheral, advertisementData: advertisement, rssi: 100)
     }
 }

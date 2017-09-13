@@ -19,13 +19,9 @@ class CentralManagerTestCase: XCTestCase {
         
         central.startScanningForPeripherals()
         
-        let expectation = XCTestExpectation()
-        DispatchQueue.main.async {
+        onNextRunLoop {
             XCTAssertTrue(mock.isScanning)
-            expectation.fulfill()
         }
-        
-        wait(for: [expectation], timeout: 1)
     }
     
     func testCanStopScanning() {
@@ -35,13 +31,9 @@ class CentralManagerTestCase: XCTestCase {
         mock.isScanning = true
         central.stopScanningForPeripherals()
         
-        let expectation = XCTestExpectation()
-        DispatchQueue.main.async {
+        onNextRunLoop {
             XCTAssertFalse(mock.isScanning)
-            expectation.fulfill()
         }
-        
-        wait(for: [expectation], timeout: 1)
     }
     
     func testCanStartScanningWithTimeout() {
@@ -63,5 +55,49 @@ class CentralManagerTestCase: XCTestCase {
         }
         
         self.wait(for: [turnOnExpectation, turnOffExpectation], timeout: 2)
+    }
+    
+    func testRetrievePeripheralsByPeripheralUUIDs() {
+        let mock = CBCentralManagerMock()
+        let central = CentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        let retrievableIdentifier = Identifier(uuid: corePeripheral.identifier)
+
+        mock.genericDelegate = central
+        mock.discover(corePeripheral, advertisement: [:])
+    
+        onNextRunLoop {
+            let retrived = central.retrievePeripherals(withIdentifiers: [retrievableIdentifier])
+            XCTAssertTrue(retrived.contains(peripheral))
+        }
+    }
+    
+    func testRetrievePeripheralsByServiceUUIDs() {
+        let mock = CBCentralManagerMock()
+        let central = CentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        let service = CBServiceMock(peripheral: corePeripheral)
+        let retrievableIdentifier = Identifier(uuid: service.uuid)
+        corePeripheral.genericServices = [service]
+        
+        mock.genericDelegate = central
+        mock.discover(corePeripheral, advertisement: [:])
+        
+        onNextRunLoop {
+            let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
+            XCTAssertTrue(retrived.contains(peripheral))
+        }
+    }
+    
+    func onNextRunLoop(_ block: @escaping () -> Void) {
+        let expectation = XCTestExpectation()
+        DispatchQueue.main.async {
+            block()
+            expectation.fulfill()
+        }
+        self.wait(for: [expectation], timeout: 5)
     }
 }

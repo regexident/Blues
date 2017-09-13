@@ -10,13 +10,14 @@ import CoreBluetooth
 @testable import Blues
 
 class CBPeripheralMock: CorePeripheralProtocol {
+    
     var identifier: UUID = UUID()
     
     var delegate: CBPeripheralDelegate? = nil
     var name: String? = nil
     var rssi: NSNumber? = nil
     var state: CBPeripheralState = .disconnected
-    var services: [CBService]? = nil
+    var genericServices: [CoreServiceProtocol]? = nil
     var canSendWriteWithoutResponse: Bool = false
     
     func readRSSI() {

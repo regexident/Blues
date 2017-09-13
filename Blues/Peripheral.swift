@@ -72,6 +72,12 @@ open class Peripheral: NSObject, PeripheralProtocol {
         self.core = nil
         self.queue = centralManager.queue
     }
+    
+    internal init(core: CorePeripheralProtocol, queue: DispatchQueue) {
+        self.identifier = Identifier(uuid: core.identifier)
+        self.core = core
+        self.queue = queue
+    }
 
     /// The service associated with a given type if it has previously been discovered in this peripheral.
     public func service<S>(ofType type: S.Type) -> S?
@@ -225,6 +231,14 @@ open class Peripheral: NSObject, PeripheralProtocol {
 extension Peripheral {
     public static func == (lhs: Peripheral, rhs: Peripheral) -> Bool {
         return lhs.identifier == rhs.identifier
+    }
+    
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? Peripheral else {
+            return false
+        }
+        
+        return self == other
     }
 }
 
