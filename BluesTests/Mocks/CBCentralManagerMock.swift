@@ -27,6 +27,7 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
     }
     
     var peripherals: [CorePeripheralProtocol] = []
+    var shouldFailOnConnect: Bool = false
     
     required convenience init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?) {
         self.init(delegate: delegate, queue: queue, options: nil)
@@ -63,9 +64,16 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
     }
     
     func connect(_ peripheral: CorePeripheralProtocol, options: [String : Any]?) {
+        if shouldFailOnConnect {
+            self.genericDelegate?.coreCentralManager(self, didFailToConnect: peripheral, error: nil)
+        } else {
+            self.genericDelegate?.coreCentralManager(self, didConnect: peripheral)
+        }
     }
     
     func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol) {
+        self.peripherals = peripherals.filter { $0.identifier != peripheral.identifier }
+        self.genericDelegate?.coreCentralManager(self, didDisconnectPeripheral: peripheral, error: nil)
     }
     
     func discover(_ peripheral: CorePeripheralProtocol, advertisement: [String: Any]) {

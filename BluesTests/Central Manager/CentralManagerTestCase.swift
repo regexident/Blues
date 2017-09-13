@@ -11,6 +11,45 @@ import CoreBluetooth
 
 @testable import Blues
 
+private class FooPeripheral: Peripheral {
+    
+}
+
+private class CentralManagerStateDelegateCatcher: CentralManagerStateDelegate {
+    var closure: (() -> Void)? = nil
+
+    func didUpdateState(of manager: CentralManager) {
+        closure?()
+    }
+}
+
+private class SelfManagingCentralManager: CentralManager, CentralManagerStateDelegate, CentralManagerDataSource {
+    var catcher = CentralManagerStateDelegateCatcher()
+    var dataSource = FooPeripheralDataSource()
+    
+    func didUpdateState(of manager: CentralManager) {
+        catcher.closure?()
+    }
+    
+    convenience init(core: CoreCentralProtocol) {
+        self.init(core: core)
+    }
+    
+    required convenience init(options: CentralManagerOptions?, queue: DispatchQueue) {
+        fatalError("init(options:queue:) has not been implemented")
+    }
+    
+    func peripheral(with identifier: Identifier, advertisement: Advertisement?, for manager: CentralManager) -> Peripheral {
+        return dataSource.peripheral(with: identifier, advertisement: advertisement, for: manager)
+    }
+}
+
+private class FooPeripheralDataSource: CentralManagerDataSource {
+    func peripheral(with identifier: Identifier, advertisement: Advertisement?, for manager: CentralManager) -> Peripheral {
+        return FooPeripheral(identifier: identifier, centralManager: manager)
+    }
+}
+
 class CentralManagerTestCase: XCTestCase {
     
     func testCanStartScanning() {
@@ -89,6 +128,204 @@ class CentralManagerTestCase: XCTestCase {
         onNextRunLoop {
             let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
             XCTAssertTrue(retrived.contains(peripheral))
+        }
+    }
+    
+    func testConnectingToPeripheral() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let delegateCatcher = CentralManagerConnectionDelegateCatcher()
+        let expectation = XCTestExpectation()
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        
+        central.delegate = delegateCatcher
+        mock.genericDelegate = central
+        delegateCatcher.didConnectClosure = { peripheral, manager in
+            expectation.fulfill()
+        }
+        
+        mock.discover(corePeripheral, advertisement: [:])
+        onNextRunLoop {
+            central.connect(peripheral: peripheral)
+        }
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testConnectingToPeripheralShouldFail() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let delegateCatcher = CentralManagerConnectionDelegateCatcher()
+        let expectation = XCTestExpectation()
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        
+        central.delegate = delegateCatcher
+        mock.genericDelegate = central
+        mock.shouldFailOnConnect = true
+        
+        delegateCatcher.didFailToConnectClosure = { peripheral, error, manager in
+            expectation.fulfill()
+        }
+        
+        mock.discover(corePeripheral, advertisement: [:])
+        onNextRunLoop {
+            central.connect(peripheral: peripheral)
+        }
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testDisconnectPeripheral() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let delegateCatcher = CentralManagerConnectionDelegateCatcher()
+        let expectation = XCTestExpectation()
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        
+        central.delegate = delegateCatcher
+        mock.genericDelegate = central
+        mock.shouldFailOnConnect = true
+        
+        delegateCatcher.didDisconnectClosure = { _ in
+            expectation.fulfill()
+        }
+        
+        mock.discover(corePeripheral, advertisement: [:])
+        onNextRunLoop {
+            central.connect(peripheral: peripheral)
+            corePeripheral.state = .connected
+        }
+        
+        onNextRunLoop {
+            central.disconnect(peripheral: peripheral)
+        }
+        
+        onNextRunLoop {
+            XCTAssertEqual(mock.peripherals.count, 0)
+        }
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testDisconnectAllPeripheral() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let delegateCatcher = CentralManagerConnectionDelegateCatcher()
+        let expectation = XCTestExpectation()
+        let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
+        
+        central.delegate = delegateCatcher
+        mock.genericDelegate = central
+        mock.shouldFailOnConnect = true
+        
+        delegateCatcher.didDisconnectClosure = { _ in
+            expectation.fulfill()
+        }
+        
+        mock.discover(corePeripheral, advertisement: [:])
+        onNextRunLoop {
+            central.connect(peripheral: peripheral)
+            corePeripheral.state = .connected
+        }
+        
+        onNextRunLoop {
+            central.disconnect(peripheral: peripheral)
+        }
+        
+        onNextRunLoop {
+            XCTAssertEqual(mock.peripherals.count, 0)
+        }
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testCustomPeripheralWrapping() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let dataSource = FooPeripheralDataSource()
+        let service = CBServiceMock(peripheral: corePeripheral)
+        let retrievableIdentifier = Identifier(uuid: service.uuid)
+        corePeripheral.genericServices = [service]
+        
+        mock.genericDelegate = central
+        central.dataSource = dataSource
+        mock.discover(corePeripheral, advertisement: [:])
+        
+        onNextRunLoop {
+            let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
+            XCTAssert(retrived.first is FooPeripheral)
+        }
+    }
+    
+    func testSelfDelegatingManager() {
+        let mock = CBCentralManagerMock()
+        let central = SelfManagingCentralManager(core: mock)
+        
+        let expectation = XCTestExpectation()
+        central.catcher.closure = {
+            expectation.fulfill()
+        }
+        
+        mock.genericDelegate = central
+        mock.state = .unknown
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testSelfDataSourcingManager() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let service = CBServiceMock(peripheral: corePeripheral)
+        let retrievableIdentifier = Identifier(uuid: service.uuid)
+        corePeripheral.genericServices = [service]
+        
+        mock.genericDelegate = central
+        mock.discover(corePeripheral, advertisement: [:])
+        
+        onNextRunLoop {
+            let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
+            XCTAssert(retrived.first is DefaultPeripheral)
+        }
+    }
+    
+    func testDelegatedMananger() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let catcher = CentralManagerStateDelegateCatcher()
+        
+        central.delegate = catcher
+        mock.genericDelegate = central
+        
+        let expectation = XCTestExpectation()
+        catcher.closure = {
+            expectation.fulfill()
+        }
+        
+        mock.state = .unknown
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testDataSourcedManager() {
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        let corePeripheral = CBPeripheralMock()
+        let service = CBServiceMock(peripheral: corePeripheral)
+        let retrievableIdentifier = Identifier(uuid: service.uuid)
+        corePeripheral.genericServices = [service]
+        
+        mock.genericDelegate = central
+        mock.discover(corePeripheral, advertisement: [:])
+        
+        onNextRunLoop {
+            let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
+            XCTAssert(retrived.first is DefaultPeripheral)
         }
     }
     
