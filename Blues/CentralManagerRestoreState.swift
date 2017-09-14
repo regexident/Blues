@@ -73,7 +73,7 @@ public struct CentralManagerRestoreState {
         
         self.scanOptions = scanOptions
 
-        guard let peripherals = dictionary[Keys.peripherals] as? [CBPeripheral]? else {
+        guard let peripherals = dictionary[Keys.peripherals] as? [CorePeripheralProtocol]? else {
             return nil
         }
         self.peripherals = peripherals?.map { closure($0) }

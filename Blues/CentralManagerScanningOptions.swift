@@ -77,3 +77,20 @@ public struct CentralManagerScanningOptions {
         return dictionary
     }
 }
+
+extension CentralManagerScanningOptions: Equatable {
+    public static func ==(lhs: CentralManagerScanningOptions, rhs: CentralManagerScanningOptions) -> Bool {
+        
+        if lhs.allowDuplicates != rhs.allowDuplicates {
+            return false
+        }
+        
+        switch (lhs.solicitedServiceIdentifiers, rhs.solicitedServiceIdentifiers) {
+        case let (r?, l?):
+            return r == l
+        case (.none, .none):
+            return true
+        case _: return false
+        }
+    }
+}

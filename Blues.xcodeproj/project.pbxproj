@@ -26,6 +26,7 @@
 		2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
 		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
+		2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */; };
 		2EFE13761F68305900DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
 		2EFE13771F6830CC00DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
 		2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */; };
@@ -151,6 +152,7 @@
 		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
 		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerOptionsTestCase.swift; sourceTree = "<group>"; };
+		2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreStateTestCase.swift; sourceTree = "<group>"; };
 		2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCentralManager.swift; sourceTree = "<group>"; };
 		2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerTestCase.swift; sourceTree = "<group>"; };
 		2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBCentralManagerMock.swift; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 				2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */,
 				2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */,
 				2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */,
+				2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */,
 			);
 			path = Auxiliaries;
 			sourceTree = "<group>";
@@ -714,6 +717,7 @@
 				2EDF838F1F69447100AEEE00 /* CBPeripheralMock.swift in Sources */,
 				2EDF83931F696BB700AEEE00 /* CBServiceMock.swift in Sources */,
 				2EDF83961F69711500AEEE00 /* CentralManagerConnectionDelegateCatcher.swift in Sources */,
+				2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift in Sources */,
 				2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
