@@ -80,4 +80,8 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         self.peripherals.append(peripheral)
         self.genericDelegate?.coreCentralManager(self, didDiscover: peripheral, advertisementData: advertisement, rssi: 100)
     }
+    
+    func restore(state: [String: Any]) {
+        self.genericDelegate?.coreCentralManager(self, willRestoreState: state)
+    }
 }

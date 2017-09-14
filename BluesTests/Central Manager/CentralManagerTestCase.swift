@@ -23,6 +23,14 @@ private class CentralManagerStateDelegateCatcher: CentralManagerStateDelegate {
     }
 }
 
+private class CentralManagerRestorationDelegateCatcher: CentralManagerRestorationDelegate {
+    var closure: (() -> Void)? = nil
+    
+    func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {
+        closure?()
+    }
+}
+
 private class SelfManagingCentralManager: CentralManager, CentralManagerStateDelegate, CentralManagerDataSource {
     var catcher = CentralManagerStateDelegateCatcher()
     var dataSource = FooPeripheralDataSource()
@@ -215,15 +223,15 @@ class CentralManagerTestCase: XCTestCase {
         let central = DefaultCentralManager(core: mock)
         let corePeripheral = CBPeripheralMock()
         let delegateCatcher = CentralManagerConnectionDelegateCatcher()
-        let expectation = XCTestExpectation()
         let peripheral = Peripheral(core: corePeripheral, queue: central.queue)
         
         central.delegate = delegateCatcher
         mock.genericDelegate = central
         mock.shouldFailOnConnect = true
         
+        let peripheralDisconnectedExpectation = XCTestExpectation()
         delegateCatcher.didDisconnectClosure = { _ in
-            expectation.fulfill()
+            peripheralDisconnectedExpectation.fulfill()
         }
         
         mock.discover(corePeripheral, advertisement: [:])
@@ -232,15 +240,17 @@ class CentralManagerTestCase: XCTestCase {
             corePeripheral.state = .connected
         }
         
+        let allPeripheralsDisconnectedExpectation = XCTestExpectation()
         onNextRunLoop {
-            central.disconnect(peripheral: peripheral)
+            central.disconnectAll()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                XCTAssertEqual(mock.peripherals.count, 0)
+                allPeripheralsDisconnectedExpectation.fulfill()
+            }
         }
         
-        onNextRunLoop {
-            XCTAssertEqual(mock.peripherals.count, 0)
-        }
-        
-        wait(for: [expectation], timeout: 1)
+        wait(for: [allPeripheralsDisconnectedExpectation], timeout: 1)
     }
     
     func testCustomPeripheralWrapping() {
@@ -327,6 +337,42 @@ class CentralManagerTestCase: XCTestCase {
             let retrived = central.retrieveConnectedPeripherals(withServices: [retrievableIdentifier])
             XCTAssert(retrived.first is DefaultPeripheral)
         }
+    }
+    
+    func testStateRestoration() {
+        let serviceIdentifiers = [UUID()]
+        let peripheralIdentifiers = [UUID()]
+        let dictionary = CentralManagerRestoreStateTestCase.validInputDictionary(services: serviceIdentifiers, peripherals: peripheralIdentifiers)
+        
+        let services = serviceIdentifiers.map(Identifier.init)
+        let peripherals = peripheralIdentifiers.map { (uuid) -> Peripheral in
+            let core = CBPeripheralMock()
+            core.identifier = uuid
+            return Peripheral(core: core, queue: .main)
+        }
+        
+        let restorationState = CentralManagerRestoreState(dictionary: dictionary) { core in
+            return Peripheral(core: core, queue: .main)
+        }
+        
+        let mock = CBCentralManagerMock()
+        let central = DefaultCentralManager(core: mock)
+        mock.genericDelegate = central
+        let catcher = CentralManagerRestorationDelegateCatcher()
+        central.delegate = catcher
+        
+        let expectation = XCTestExpectation()
+        catcher.closure = {
+            expectation.fulfill()
+        }
+        
+        peripherals.forEach { central.connect(peripheral: $0) }
+        
+        onNextRunLoop {
+            mock.restore(state: dictionary)
+        }
+        
+        wait(for: [expectation], timeout: 1)
     }
     
     func onNextRunLoop(_ block: @escaping () -> Void) {
