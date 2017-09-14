@@ -16,13 +16,13 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     static private let SolicitedServiceIdentifiersStub = [CBUUID(), CBUUID()]
     static private let AllowDuplicatesStub = true
     
-    let dictionary: [String: Any] = [
+    static let dictionary: [String: Any] = [
         CBCentralManagerScanOptionAllowDuplicatesKey: AllowDuplicatesStub,
         CBCentralManagerScanOptionSolicitedServiceUUIDsKey: SolicitedServiceIdentifiersStub
     ]
     
     func testAllowDuplicatesTrue() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = true
         
         guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
@@ -33,7 +33,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testAllowDuplicatesFalse() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = false
         
         guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
@@ -44,7 +44,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testAllowDuplicatesWithNoKey() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = nil
         
         guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
@@ -56,7 +56,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testValidServiceIdentifier() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         let stub = CentralManagerScanningOptionsTestCase.SolicitedServiceIdentifiersStub
         dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = stub
         
@@ -76,7 +76,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testNoServiceIdentifiers() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         
         dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = nil
         
@@ -88,7 +88,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testDictionaryMarshalling() {
-        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: CentralManagerScanningOptionsTestCase.dictionary) else {
             return XCTFail()
         }
         
@@ -106,7 +106,7 @@ class CentralManagerScanningOptionsTestCase: XCTestCase {
     }
     
     func testInvalidDictionaryMarshalling() {
-        var dictionary = self.dictionary
+        var dictionary = CentralManagerScanningOptionsTestCase.dictionary
         
         dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = 123
         dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = "Test"
