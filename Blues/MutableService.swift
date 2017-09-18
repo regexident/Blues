@@ -17,7 +17,7 @@ import CoreBluetooth
 open class MutableService {
     open var includedServices: [Service]? {
         didSet {
-            self.core.includedServices = self.includedServices.map { includedServices in
+            self.core.genericIncludedServices = self.includedServices.map { includedServices in
                 includedServices.map { $0.core }
             }
         }
@@ -33,13 +33,13 @@ open class MutableService {
     ///   transmits heart rate measurement data.
     open var characteristics: [Characteristic]? {
         didSet {
-            self.core.characteristics = self.characteristics.map { characteristics in
+            self.core.genericCharacteristics = self.characteristics.map { characteristics in
                 characteristics.map { $0.core }
             }
         }
     }
 
-    internal var core: CBMutableService
+    internal var core: CoreMutableServiceProtocol
 
     /// Returns a service, initialized with a service type and UUID.
     ///

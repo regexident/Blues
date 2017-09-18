@@ -16,9 +16,10 @@ class CBServiceMock: CoreServiceProtocol {
     var isPrimary: Bool = true
     var includedServices: [CBService]? = nil
     var characteristics: [CBCharacteristic]? = nil
-    var uuid: CBUUID = CBUUID()
+    var uuid: CBUUID
     
-    init(peripheral: CorePeripheralProtocol) {
+    init(peripheral: CorePeripheralProtocol, uuid: CBUUID = CBUUID()) {
         self.genericPeripheral = peripheral
+        self.uuid = uuid
     }
 }

@@ -139,7 +139,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
         return peripheral.identifier == self.core.identifier
     }
 
-    internal func wrapperOf(service: CBService) -> Service? {
+    internal func wrapperOf(service: CoreServiceProtocol) -> Service? {
         return self.servicesByIdentifier?[Identifier(uuid: service.uuid)]
     }
 
@@ -155,7 +155,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
         }
     }
 
-    internal func wrapper(for core: CBService) -> Service {
+    internal func wrapper(for core: CoreServiceProtocol) -> Service {
         let identifier = Identifier(uuid: core.uuid)
         let service = self.dataSourced(from: PeripheralDataSource.self) { dataSource in
             return dataSource.service(with: identifier, for: self)
@@ -268,6 +268,98 @@ extension Peripheral: CBPeripheralDelegate {
     public func peripheralDidUpdateName(
         _ peripheral: CBPeripheral
     ) {
+        self.corePeripheralDidUpdateName(peripheral)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didModifyServices invalidatedServices: [CBService]
+    ) {
+        corePeripheral(peripheral, didModifyServices: invalidatedServices)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didReadRSSI rssi: NSNumber,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didReadRSSI: rssi, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverServices error: Swift.Error?
+    ) {
+        self.corePeripheral(peripheral, didDiscoverServices: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverIncludedServicesFor service: CBService,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didDiscoverIncludedServicesFor: service, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverCharacteristicsFor service: CBService,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didDiscoverCharacteristicsFor: service, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didUpdateValueFor: characteristic, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didWriteValueFor: characteristic, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateNotificationStateFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didUpdateNotificationStateFor: characteristic, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverDescriptorsFor characteristic: CBCharacteristic,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didDiscoverDescriptorsFor: characteristic, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didUpdateValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didUpdateValueFor: descriptor, error: error)
+    }
+
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didWriteValueFor descriptor: CBDescriptor,
+        error: Swift.Error?
+    ) {
+        corePeripheral(peripheral, didWriteValueFor: descriptor, error: nil)
+    }
+}
+
+extension Peripheral: CorePeripheralDelegateProtocol {
+    func corePeripheralDidUpdateName(_ peripheral: CorePeripheralProtocol) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
@@ -277,10 +369,10 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
-        didModifyServices invalidatedServices: [CBService]
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
+        didModifyServices invalidatedServices: [CoreServiceProtocol]
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -306,33 +398,39 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
-        didReadRSSI rssi: NSNumber,
-        error: Swift.Error?
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
+        didReadRSSI RSSI: NSNumber,
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let rssi = (rssi != 0) ? rssi as? Int : nil
-            let result = Result(success: rssi, failure: error)
+
+            let result: Result<Float, Error>
+            if let error = error {
+                result = Result(success: nil, failure: error)
+            } else {
+                result = Result(success: RSSI as? Float, failure: nil)
+            }
+            
             self.delegated(to: PeripheralStateDelegate.self) { delegate in
                 delegate.didRead(rssi: result, of: self)
             }
         }
     }
 
-    public func peripheral(
-        _ peripheral: CBPeripheral,
-        didDiscoverServices error: Swift.Error?
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
+        didDiscoverServices error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
             }
-            let result = Result(success: peripheral.services, failure: error)
+            let result = Result(success: peripheral.genericServices, failure: error)
             guard case let .ok(coreServices) = result else {
                 self.delegated(to: PeripheralDiscoveryDelegate.self) { delegate in
                     delegate.didDiscover(services: .err(error!), for: self)
@@ -357,11 +455,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didDiscoverIncludedServicesFor service: CBService,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -395,11 +493,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didDiscoverCharacteristicsFor service: CBService,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -436,11 +534,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didUpdateValueFor characteristic: CBCharacteristic,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -455,11 +553,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didWriteValueFor characteristic: CBCharacteristic,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -474,11 +572,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didUpdateNotificationStateFor characteristic: CBCharacteristic,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -493,11 +591,10 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
-        didDiscoverDescriptorsFor characteristic: CBCharacteristic,
-        error: Swift.Error?
+    
+    func corePeripheral(_ peripheral: CorePeripheralProtocol,
+                        didDiscoverDescriptorsFor characteristic: CBCharacteristic,
+                        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -520,11 +617,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didUpdateValueFor descriptor: CBDescriptor,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -539,11 +636,11 @@ extension Peripheral: CBPeripheralDelegate {
             }
         }
     }
-
-    public func peripheral(
-        _ peripheral: CBPeripheral,
+    
+    func corePeripheral(
+        _ peripheral: CorePeripheralProtocol,
         didWriteValueFor descriptor: CBDescriptor,
-        error: Swift.Error?
+        error: Error?
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {

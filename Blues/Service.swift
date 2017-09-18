@@ -64,7 +64,7 @@ open class Service: ServiceProtocol {
 
     internal var includedServicesByIdentifier: [Identifier: Service]? = nil
 
-    internal var core: CBService!
+    internal var core: CoreServiceProtocol!
 
     /// Which characteristics the service should discover automatically.
     /// Return `nil` to discover all available characteristics.

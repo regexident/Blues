@@ -16,7 +16,7 @@ class CorePeripheralManagerMock: CorePeripheralManagerProtocol {
     var delegate: CBPeripheralManagerDelegate? = nil
     var isAdvertising: Bool = false
     var desiredConnectionLatencyStore: CBPeripheralManagerConnectionLatency = .low
-    var serviceStore: Set<CBMutableService> = .init()
+    var serviceStore: [CoreMutableServiceProtocol] = []
     var lastATTRequestResponse: CBATTError.Code? = nil
     
     static var _authorizationStatus = CBPeripheralManagerAuthorizationStatus.authorized
@@ -43,12 +43,18 @@ class CorePeripheralManagerMock: CorePeripheralManagerProtocol {
         desiredConnectionLatencyStore = latency
     }
     
-    func add(_ service: CBMutableService) {
-        self.serviceStore.insert(service)
+    func add(_ service: CoreMutableServiceProtocol) {
+        self.serviceStore.append(service)
     }
     
-    func remove(_ service: CBMutableService) {
-        self.serviceStore.remove(service)
+    func remove(_ service: CoreMutableServiceProtocol) {
+        guard let index = serviceStore.index(where: { (knownService) -> Bool in
+            knownService.uuid == service.uuid
+        }) else {
+            return
+        }
+        
+        self.serviceStore.remove(at: index)
     }
     
     func removeAllServices() {

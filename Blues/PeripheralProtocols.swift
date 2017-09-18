@@ -63,7 +63,7 @@ public protocol PeripheralStateDelegate: PeripheralDelegate {
     /// - Parameters:
     ///   - rssi: The RSSI, in decibels, of the peripheral, or an error.
     ///   - peripheral: The peripheral providing this information.
-    func didRead(rssi: Result<Int, Error>, of peripheral: Peripheral)
+    func didRead(rssi: Result<Float, Error>, of peripheral: Peripheral)
 }
 
 public protocol PeripheralDiscoveryDelegate: PeripheralDelegate {

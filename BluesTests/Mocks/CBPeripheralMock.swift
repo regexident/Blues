@@ -10,29 +10,55 @@ import CoreBluetooth
 @testable import Blues
 
 class CBPeripheralMock: CorePeripheralProtocol {
+    enum Error: Swift.Error {
+        case unknown
+    }
     
     var identifier: UUID = UUID()
-    
+    var genericDelegate: CorePeripheralDelegateProtocol? = nil
     var delegate: CBPeripheralDelegate? = nil
     var name: String? = nil
-    var rssi: NSNumber? = nil
+    var rssi: NSNumber? = 0
     var state: CBPeripheralState = .disconnected
     var genericServices: [CoreServiceProtocol]? = nil
     var canSendWriteWithoutResponse: Bool = false
     
+    var discoverableServices: [CBUUID] = []
+    var disoverableIncludedServices: [CBUUID] = []
+
+    var discoverServicesWasCalled = false
+    var shouldFailReadingRSSI = false
+    
     func readRSSI() {
-        
+        if shouldFailReadingRSSI {
+            genericDelegate?.corePeripheral(self, didReadRSSI: 0, error: Error.unknown)
+        } else {
+            genericDelegate?.corePeripheral(self, didReadRSSI: rssi!, error: nil)
+        }
     }
     
     func discoverServices(_ serviceUUIDs: [CBUUID]?) {
+        discoverServicesWasCalled = true
+        if serviceUUIDs == nil {
+            genericServices = discoverableServices.map { CBServiceMock.init(peripheral: self, uuid: $0) }
+        } else {
+            genericServices = discoverableServices.filter {
+                serviceUUIDs!.contains($0)
+            }.map { CBServiceMock.init(peripheral: self, uuid: $0) }
+        }
+        
+        genericDelegate?.corePeripheral(self, didDiscoverServices: nil)
+    }
+    
+    func modify(service: CBUUID) {
+        genericDelegate?.corePeripheral(self, didModifyServices: [CBServiceMock.init(peripheral: self, uuid: service)])
+    }
+    
+    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
         
     }
     
-    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBService) {
-        
-    }
-    
-    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService) {
+    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
         
     }
     

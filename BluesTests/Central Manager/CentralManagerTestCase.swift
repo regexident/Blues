@@ -351,10 +351,6 @@ class CentralManagerTestCase: XCTestCase {
             return Peripheral(core: core, queue: .main)
         }
         
-        let restorationState = CentralManagerRestoreState(dictionary: dictionary) { core in
-            return Peripheral(core: core, queue: .main)
-        }
-        
         let mock = CBCentralManagerMock()
         let central = DefaultCentralManager(core: mock)
         mock.genericDelegate = central

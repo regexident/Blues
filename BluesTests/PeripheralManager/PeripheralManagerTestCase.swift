@@ -50,7 +50,9 @@ class PeripheralManagerTestCase: XCTestCase {
         let service = MutableServiceMock()
         
         manager.add(service)
-        XCTAssertTrue(core.serviceStore.contains(service.core))
+        XCTAssertTrue(core.serviceStore.contains(where: { (knownService) -> Bool in
+            return service.core.uuid == knownService.uuid
+        }))
     }
     
     func testServiceRemoving() {
@@ -61,7 +63,9 @@ class PeripheralManagerTestCase: XCTestCase {
         manager.add(service)
         manager.remove(service)
         
-        XCTAssertFalse(core.serviceStore.contains(service.core))
+        XCTAssertFalse(core.serviceStore.contains(where: { (knownService) -> Bool in
+            return service.core.uuid == knownService.uuid
+        }))
         XCTAssertEqual(core.serviceStore.count, 0)
     }
 }
