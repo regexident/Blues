@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E46679C1F6FFE0800E5B70E /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E46679B1F6FFE0800E5B70E /* Result.swift */; };
 		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
 		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
 		BF180BEA1EC35123008F7982 /* DefaultPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */; };
@@ -30,7 +31,6 @@
 		BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */; };
 		BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
-		BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; };
 		BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
 		BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD911EC3470300FAD246 /* DefaultService.swift */; };
 		BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
@@ -62,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E46679B1F6FFE0800E5B70E /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
 		BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultPeripheral.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -84,13 +85,11 @@
 		BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTRequest.swift; sourceTree = "<group>"; };
 		BF5CD53C1F1BED5800C2702A /* ATTError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTError.swift; sourceTree = "<group>"; };
 		BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributePermissions.swift; sourceTree = "<group>"; };
-		BF70B4E81F30E855005FCCD9 /* libResult.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libResult.a; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/libResult.a"; sourceTree = "<group>"; };
 		BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerState.swift; sourceTree = "<group>"; };
 		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerOptions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD911EC3470300FAD246 /* DefaultService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultDescriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFA1CC341E66DA42009B077C /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProtocols.swift; sourceTree = "<group>"; };
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
@@ -117,7 +116,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,8 +212,6 @@
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BF70B4E81F30E855005FCCD9 /* libResult.a */,
-				BFA1CC341E66DA42009B077C /* Result.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -276,16 +272,17 @@
 				BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */,
 				BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */,
 				BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */,
-				BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */,
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
 				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
 				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
+				BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */,
 				BF5CD5391F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift */,
 				BF5CD5371F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift */,
 				BF5CD5321F1BED5800C2702A /* PeripheralManagerRestoreState.swift */,
 				BF5CD5381F1BED5800C2702A /* PeripheralManagerState.swift */,
 				BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */,
+				2E46679B1F6FFE0800E5B70E /* Result.swift */,
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
 			);
 			name = Auxiliaries;
@@ -409,6 +406,7 @@
 				BF5CD5471F1BED5800C2702A /* PeripheralManagerRestoreState.swift in Sources */,
 				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
 				BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */,
+				2E46679C1F6FFE0800E5B70E /* Result.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
 				BF5CD5481F1BED5800C2702A /* MutableDescriptor.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */,

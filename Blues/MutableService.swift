@@ -9,8 +9,6 @@
 import Foundation
 import CoreBluetooth
 
-import Result
-
 #if os(iOS) || os(OSX)
 
 /// Used to create a local service or included service, which can be added to the local database

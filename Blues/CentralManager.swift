@@ -9,8 +9,6 @@
 import Foundation
 import CoreBluetooth
 
-import Result
-
 /// Abstraction layer around `CBCentralManager`.
 open class CentralManager: NSObject, CentralManagerProtocol {
     private struct Constants {
