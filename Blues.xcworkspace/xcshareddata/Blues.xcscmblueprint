@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "748AEB0BC620341FC88A557D0E086D763DAF230C" : 9223372036854775807,
+    "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "430A74C5-909D-4644-827A-23602E6EA449",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "748AEB0BC620341FC88A557D0E086D763DAF230C" : "Blues\/Carthage\/Checkouts\/Result\/",
+    "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB" : "Blues\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Blues",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Blues.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/nwtnberlin\/Blues.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6999EE11DF1DF1C68A237BB14B7F043D1C600BBB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/regexident\/Result.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "748AEB0BC620341FC88A557D0E086D763DAF230C"
+    }
+  ]
+}
