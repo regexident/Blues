@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 #if os(iOS) || os(OSX)
 
 open class MutableDescriptor : CBDescriptor {

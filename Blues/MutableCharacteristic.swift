@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 #if os(iOS) || os(OSX)
 
 public protocol MutableCharacteristicProtocol: class {

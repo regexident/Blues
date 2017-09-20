@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 
+import Result
+
 open class Peripheral: NSObject, PeripheralProtocol {
     /// The Bluetooth-specific identifier of the service.
     public let identifier: Identifier

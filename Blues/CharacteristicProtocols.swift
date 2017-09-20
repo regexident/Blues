@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 public protocol CharacteristicProtocol: class {
     var identifier: Identifier { get }
 

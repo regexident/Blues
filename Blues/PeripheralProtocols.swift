@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Result
+
 public protocol PeripheralProtocol: class {
     var identifier: Identifier { get }
 
