@@ -255,9 +255,9 @@ extension CentralManager: CBCentralManagerDelegate {
     @objc public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         let state = ManagerState(from: central.state)
         self.queue.async {
-            if central.state == .poweredOn {
+            if state == .poweredOn {
                 // nothing for now
-            } else if central.state == .poweredOff {
+            } else if state == .poweredOff {
                 for peripheral in self.peripherals where peripheral.state == .connected {
                     self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
                         delegate.didDisconnect(from: peripheral, error: nil, on: self)
