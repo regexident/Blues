@@ -113,6 +113,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
     public func discover(services: [Identifier]?) {
+        assert(self.state == .connected, self.apiMisuseErrorMessage())
         let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
         guard shouldDiscoverServices else {
             return
