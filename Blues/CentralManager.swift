@@ -242,7 +242,7 @@ extension CentralManager: CBCentralManagerDelegate {
             guard let peripherals = restoreState.peripherals else {
                 return
             }
-            for peripheral in peripherals {
+            for peripheral in peripherals where peripheral.state == .connected {
                 let services = peripheral.automaticallyDiscoveredServices
                 let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
                 if shouldDiscoverServices {
