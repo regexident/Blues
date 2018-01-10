@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 /// Default implementation of `Service` protocol.
 open class DefaultService:
     Service, DelegatedServiceProtocol, DataSourcedServiceProtocol {

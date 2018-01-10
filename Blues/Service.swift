@@ -9,8 +9,6 @@
 import Foundation
 import CoreBluetooth
 
-import Result
-
 open class Service: ServiceProtocol {
     /// The Bluetooth-specific identifier of the service.
     public let identifier: Identifier

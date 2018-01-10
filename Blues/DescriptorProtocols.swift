@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 public protocol DescriptorProtocol: class {
     var identifier: Identifier { get }
 

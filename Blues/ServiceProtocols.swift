@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 public protocol ServiceProtocol: class {
     var identifier: Identifier { get }
 
