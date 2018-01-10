@@ -67,10 +67,8 @@
 		BF70B4E51F30E744005FCCD9 /* PeripheralManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5381F1BED5800C2702A /* PeripheralManagerState.swift */; };
 		BF70B4E61F30E744005FCCD9 /* PeripheralState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */; };
 		BF70B4E71F30E744005FCCD9 /* WriteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE711DC3B4FB00870202 /* WriteType.swift */; };
-		BF70B4E91F30E855005FCCD9 /* libResult.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF70B4E81F30E855005FCCD9 /* libResult.a */; };
 		BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
-		BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA1CC341E66DA42009B077C /* Result.framework */; };
 		BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
 		BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD911EC3470300FAD246 /* DefaultService.swift */; };
 		BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
@@ -80,6 +78,8 @@
 		BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
 		BFB360581DE2FF0400B7931F /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */; };
 		BFB3605A1DE2FF8400B7931F /* PeripheralProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */; };
+		BFBFE3782006296200402ED7 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBFE3772006296200402ED7 /* Result.swift */; };
+		BFBFE37C20062A4E00402ED7 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBFE3772006296200402ED7 /* Result.swift */; };
 		BFC429011F0F923F006C1F8C /* AdvertisementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */; };
 		BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8DF01DC0E22200D5430D /* Blues.framework */; };
 		BFCB8DFF1DC0E22200D5430D /* BluesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8DFE1DC0E22200D5430D /* BluesTests.swift */; };
@@ -148,6 +148,7 @@
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
 		BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PeripheralProtocols.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BFBFE3772006296200402ED7 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisementPersistence.swift; sourceTree = "<group>"; };
 		BFCB8DF01DC0E22200D5430D /* Blues.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Blues.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
@@ -170,7 +171,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF70B4E91F30E855005FCCD9 /* libResult.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +178,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF84AD8E1EC33C9F00FAD246 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +341,7 @@
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
 				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
+				BFBFE3772006296200402ED7 /* Result.swift */,
 				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
 				BF5CD5391F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift */,
 				BF5CD5371F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift */,
@@ -503,6 +503,7 @@
 				BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */,
 				BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */,
 				BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */,
+				BFBFE37C20062A4E00402ED7 /* Result.swift in Sources */,
 				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
 				BF70B4D21F30E743005FCCD9 /* CentralManagerProtocols.swift in Sources */,
 				BF70B4D31F30E743005FCCD9 /* DefaultCentralManager.swift in Sources */,
@@ -539,6 +540,7 @@
 				BF5CD5471F1BED5800C2702A /* PeripheralManagerRestoreState.swift in Sources */,
 				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
 				BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */,
+				BFBFE3782006296200402ED7 /* Result.swift in Sources */,
 				BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */,
 				BF5CD5481F1BED5800C2702A /* MutableDescriptor.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */,
@@ -603,10 +605,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
-				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Blues;
 				SKIP_INSTALL = YES;
@@ -623,10 +621,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
-				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Blues;
 				SKIP_INSTALL = YES;

@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 /// Default implementation of `Descriptor` protocol.
 open class DefaultDescriptor: Descriptor, DelegatedDescriptorProtocol {
     public weak var delegate: DescriptorDelegate?

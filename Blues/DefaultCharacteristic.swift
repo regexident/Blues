@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 /// Default implementation of `Characteristic` protocol.
 open class DefaultCharacteristic:
     Characteristic, DelegatedCharacteristicProtocol, DataSourcedCharacteristicProtocol {

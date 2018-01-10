@@ -9,8 +9,6 @@
 import Foundation
 import CoreBluetooth
 
-import Result
-
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
 open class Characteristic: CharacteristicProtocol {

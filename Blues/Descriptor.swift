@@ -9,8 +9,6 @@
 import Foundation
 import CoreBluetooth
 
-import Result
-
 /// A descriptor of a peripheral’s characteristic,
 /// providing further information about its value.
 open class Descriptor: DescriptorProtocol {

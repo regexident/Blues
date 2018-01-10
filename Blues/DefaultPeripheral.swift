@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Result
-
 /// Default implementation of `Peripheral` protocol.
 open class DefaultPeripheral:
     Peripheral, DelegatedPeripheralProtocol, DataSourcedPeripheralProtocol {
