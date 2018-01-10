@@ -9,12 +9,6 @@ jobs:
     steps:
       - checkout
 
-      # Install Carthage:
-      - run: brew update
-      - run: brew upgrade
-      - run: brew install carthage
-      - run: carthage bootstrap --platform iOS --no-use-binaries
-
       # Build the app and run tests
       - run:
           name: Build and run tests
