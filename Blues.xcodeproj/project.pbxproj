@@ -17,7 +17,6 @@
 		2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */; };
 		2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */; };
 		2E9D01981F67E6B100E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
-		2EA02D6F1F6BE51000E46A35 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA02D701F6BE51000E46A35 /* Result.framework */; };
 		2EC6865F20078D45008D77FF /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EF1F6AB7C900AC3B26 /* CoreService.swift */; };
 		2EC6866020078D47008D77FF /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EF1F6AB7C900AC3B26 /* CoreService.swift */; };
 		2EC6866120078D4C008D77FF /* CorePeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F51F6ABA8100AC3B26 /* CorePeripheralManager.swift */; };
@@ -25,6 +24,7 @@
 		2EC6866320078D4E008D77FF /* CoreMutableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */; };
 		2EC6866420078D4F008D77FF /* CoreMutableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */; };
 		2EC6866520078D5E008D77FF /* PeripheralTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTestCase.swift */; };
+		2EC6866920078F8F008D77FF /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6866620078E87008D77FF /* CoreBluetooth.framework */; };
 		2EDF838C1F69430E00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
 		2EDF838D1F6943AD00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
 		2EDF838F1F69447100AEEE00 /* CBPeripheralMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */; };
@@ -151,6 +151,7 @@
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
 		2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptionsTestCase.swift; sourceTree = "<group>"; };
 		2EA02D701F6BE51000E46A35 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EC6866620078E87008D77FF /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePeripheral.swift; sourceTree = "<group>"; };
 		2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBPeripheralMock.swift; sourceTree = "<group>"; };
 		2EDF83901F6964BC00AEEE00 /* CBPeripheralManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBPeripheralManagerMock.swift; sourceTree = "<group>"; };
@@ -238,7 +239,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EA02D6F1F6BE51000E46A35 /* Result.framework in Frameworks */,
+				2EC6866920078F8F008D77FF /* CoreBluetooth.framework in Frameworks */,
 				BFCB8DFA1DC0E22200D5430D /* Blues.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,6 +405,7 @@
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2EC6866620078E87008D77FF /* CoreBluetooth.framework */,
 				2EA02D701F6BE51000E46A35 /* Result.framework */,
 				BF70B4E81F30E855005FCCD9 /* libResult.a */,
 				BFA1CC341E66DA42009B077C /* Result.framework */,
