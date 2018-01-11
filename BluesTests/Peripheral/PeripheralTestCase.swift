@@ -8,7 +8,6 @@
 
 import XCTest
 import CoreBluetooth
-import Result
 
 @testable import Blues
 
@@ -235,25 +234,6 @@ class PeripheralTestCase: XCTestCase {
         peripheral.readRSSI()
         
         wait(for: [expectation], timeout: 1)
-    }
-    
-    func testIncludedServiceDiscovery() {
-        let core = CBPeripheralMock()
-        core.identifier = UUID()
-        core.state = .connected
-        
-        let peripheral = Peripheral(core: core, queue: .main)
-        core.genericDelegate = peripheral
-        
-        let serviceUUIDs = [UUID()]
-        let serviceIdentifiers = serviceUUIDs.map(Identifier.init)
-        let servicesThatShouldBeDiscovered = serviceIdentifiers.map {
-            return Service(identifier: $0, peripheral: peripheral)
-        }
-        
-        core.discoverableIncludedServices = serviceIdentifiers.map { $0.core }
-        
-        peripheral.discover(includedServices: <#T##[Identifier]?#>, for: <#T##Service#>)
     }
 
     func onNextRunLoop(_ block: @escaping () -> Void) {
