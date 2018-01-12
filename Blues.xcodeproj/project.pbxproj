@@ -101,6 +101,7 @@
 		BF70B4E71F30E744005FCCD9 /* WriteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE711DC3B4FB00870202 /* WriteType.swift */; };
 		BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF77CF001DC3E494005E41FD /* CentralManagerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */; };
+		BF7A35F42008D71C00AA78F2 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBFE3772006296200402ED7 /* Result.swift */; };
 		BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */; };
 		BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD911EC3470300FAD246 /* DefaultService.swift */; };
 		BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
@@ -636,6 +637,7 @@
 				BF70B4C41F30E743005FCCD9 /* DefaultDescriptor.swift in Sources */,
 				BF70B4C51F30E743005FCCD9 /* Characteristic.swift in Sources */,
 				BF70B4C61F30E743005FCCD9 /* MutableCharacteristic.swift in Sources */,
+				BF7A35F42008D71C00AA78F2 /* Result.swift in Sources */,
 				BF70B4C71F30E743005FCCD9 /* CharacteristicProtocols.swift in Sources */,
 				BF70B4C81F30E743005FCCD9 /* DefaultCharacteristic.swift in Sources */,
 				BF70B4C91F30E743005FCCD9 /* Service.swift in Sources */,
