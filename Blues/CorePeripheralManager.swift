@@ -27,10 +27,10 @@ internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
     func respond(to request: CoreATTRequestProtocol, withResult result: CBATTError.Code)
     func updateValue(_ value: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals centrals: [CoreCentralProtocol]?) -> Bool
     
-    @available(iOS 11.0, *)
+    @available(iOS 11.0, watchOS 4.0, *)
     func publishL2CAPChannel(withEncryption encryptionRequired: Bool)
     
-    @available(iOS 11.0, *)
+    @available(iOS 11.0, watchOS 4.0, *)
     func unpublishL2CAPChannel(_ PSM: CBL2CAPPSM)
 }
 
