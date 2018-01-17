@@ -47,6 +47,14 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         )
     }
 
+    internal init(core: CoreCentralManagerProtocol) {
+        super.init()
+        self.core = core
+        if self.core.delegate !== self {
+            self.core.delegate = self
+        }
+    }
+
     public func startScanningForPeripherals(
         advertisingWithServices services: [Identifier]? = nil,
         options: CentralManagerScanningOptions? = nil,

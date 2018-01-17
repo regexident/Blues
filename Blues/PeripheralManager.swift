@@ -63,14 +63,19 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         options: [String : Any]? = nil
     ) {
         self.init()
-        self.core = CBPeripheralManager(delegate: self, queue: queue, options: options)
-        self.core.delegate = self
+        self.core = CBPeripheralManager(
+            delegate: self,
+            queue: queue,
+            options: options
+        )
     }
     
     internal convenience init(core: CorePeripheralManagerProtocol) {
         self.init()
         self.core = core
-        self.core.delegate = self
+        if self.core.delegate !== self {
+            self.core.delegate = self
+        }
     }
 
     /// Starts advertising. Supported advertising data types are `AdvertisementDataLocalNameKey`
