@@ -15,9 +15,9 @@ internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
     
     @available(iOS 7.0, *)
     static func authorizationStatus() -> CBPeripheralManagerAuthorizationStatus
-    
-    init(delegate: CBPeripheralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?)
-    
+
+//    init(delegate: CBPeripheralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?)
+
     func startAdvertising(_ advertisementData: [String : Any]?)
     func stopAdvertising()
     func setDesiredConnectionLatency(_ latency: CBPeripheralManagerConnectionLatency, for central: CoreCentralProtocol)
