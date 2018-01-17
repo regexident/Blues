@@ -35,18 +35,16 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
     internal var timer: Timer?
 
-    public required convenience init(
+    public required init(
         options: CentralManagerOptions? = nil,
         queue: DispatchQueue = .global()
     ) {
-        let core = CBCentralManager(delegate: nil, queue: queue, options: options?.dictionary)
-        self.init(core: core)
-    }
-    
-    internal init(core: CoreCentralManagerProtocol) {
         super.init()
-        self.core = core
-        self.core.delegate = self
+        self.core = CBCentralManager(
+            delegate: self,
+            queue: queue,
+            options: options?.dictionary
+        )
     }
 
     public func startScanningForPeripherals(
@@ -232,7 +230,7 @@ extension CentralManager: CBCentralManagerDelegate {
     @objc public func centralManager(
         _ central: CBCentralManager,
         willRestoreState dictionary: [String: Any]
-        ) {
+    ) {
         self.coreCentralManager(central, willRestoreState: dictionary)
     }
     
