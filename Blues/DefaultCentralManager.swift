@@ -16,12 +16,4 @@ open class DefaultCentralManager:
 
     public weak var delegate: CentralManagerDelegate?
     public weak var dataSource: CentralManagerDataSource?
-
-    public required convenience init(
-        options: CentralManagerOptions? = nil,
-        queue: DispatchQueue = .global()
-    ) {
-        let core = CBCentralManager(delegate: nil, queue: queue, options: options?.dictionary)
-        self.init(core: core)
-    }
 }

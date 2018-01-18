@@ -15,9 +15,7 @@ internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
     
     @available(iOS 7.0, *)
     static func authorizationStatus() -> CBPeripheralManagerAuthorizationStatus
-    
-    init(delegate: CBPeripheralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?)
-    
+
     func startAdvertising(_ advertisementData: [String : Any]?)
     func stopAdvertising()
     func setDesiredConnectionLatency(_ latency: CBPeripheralManagerConnectionLatency, for central: CoreCentralProtocol)
@@ -27,10 +25,10 @@ internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
     func respond(to request: CoreATTRequestProtocol, withResult result: CBATTError.Code)
     func updateValue(_ value: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals centrals: [CoreCentralProtocol]?) -> Bool
     
-    @available(iOS 11.0, *)
+    @available(iOS 11.0, watchOS 4.0, *)
     func publishL2CAPChannel(withEncryption encryptionRequired: Bool)
     
-    @available(iOS 11.0, *)
+    @available(iOS 11.0, watchOS 4.0, *)
     func unpublishL2CAPChannel(_ PSM: CBL2CAPPSM)
 }
 
