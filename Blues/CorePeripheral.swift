@@ -115,4 +115,3 @@ extension CBPeripheral: CorePeripheralProtocol {
         return services
     }
 }
-

@@ -15,5 +15,3 @@ FOUNDATION_EXPORT double BluesVersionNumber;
 FOUNDATION_EXPORT const unsigned char BluesVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Blues/PublicHeader.h>
-
-

@@ -334,7 +334,7 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
         _ central: CoreCentralManagerProtocol,
         didDiscover peripheral: CorePeripheralProtocol,
         advertisementData: [String: Any],
-        rssi RSSI: NSNumber
+        rssi: NSNumber
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
@@ -348,7 +348,11 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
                 self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             }
             self.delegated(to: CentralManagerDiscoveryDelegate.self) { delegate in
-                delegate.didDiscover(peripheral: wrapper, rssi: RSSI as! Int, with: self)
+                delegate.didDiscover(
+                    peripheral: wrapper,
+                    rssi: rssi.floatValue,
+                    with: self
+                )
             }
         }
     }
