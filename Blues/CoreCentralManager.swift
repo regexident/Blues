@@ -76,4 +76,3 @@ extension CBCentralManager: CoreCentralManagerProtocol {
         return cancelPeripheralConnection(peripheral)
     }
 }
-

@@ -77,4 +77,3 @@ extension CBPeripheralManager: CorePeripheralManagerProtocol {
         return self.updateValue(value, for: characteristic, onSubscribedCentrals: realCentrals)
     }
 }
-
