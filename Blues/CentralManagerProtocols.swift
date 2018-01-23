@@ -78,7 +78,7 @@ public protocol CentralManagerDiscoveryDelegate: CentralManagerDelegate {
     ///   - peripheral:    The discovered peripheral.
     ///   - rssi:          The rssi value.
     ///   - manager:       The central manager providing the update.
-    func didDiscover(peripheral: Peripheral, rssi: Int, with manager: CentralManager)
+    func didDiscover(peripheral: Peripheral, rssi: Float, with manager: CentralManager)
 }
 
 /// The `CentralManagerRestorationDelegate` protocol defines some of the additional optional
