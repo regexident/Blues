@@ -313,17 +313,7 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
     }
     
     func coreCentralManagerDidUpdateState(_ central: CoreCentralManagerProtocol) {
-        let state = ManagerState(from: central.state)
         self.queue.async {
-            if state == .poweredOn {
-                // nothing for now
-            } else if state == .poweredOff {
-                for peripheral in self.peripherals where peripheral.state == .connected {
-                    self.delegated(to: CentralManagerConnectionDelegate.self) { delegate in
-                        delegate.didDisconnect(from: peripheral, error: nil, on: self)
-                    }
-                }
-            }
             self.delegated(to: CentralManagerStateDelegate.self) { delegate in
                 delegate.didUpdateState(of: self)
             }
