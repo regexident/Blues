@@ -60,19 +60,21 @@ extension CBCentralManager: CoreCentralManagerProtocol {
         guard let corePeripheral = protocolCast(peripheral, to: CBPeripheral.self) else {
             return
         }
-        
-        connect(corePeripheral, options: options)
+        self.connect(corePeripheral, options: options)
     }
     
     func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CorePeripheralProtocol] {
-        return retrievePeripherals(withIdentifiers: identifiers)
+        return self.retrievePeripherals(withIdentifiers: identifiers) as [CBPeripheral]
     }
     
     func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CorePeripheralProtocol] {
-        return retrieveConnectedPeripherals(withServices: serviceUUIDs)
+        return self.retrieveConnectedPeripherals(withServices: serviceUUIDs) as [CBPeripheral]
     }
     
     func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol) {
-        return cancelPeripheralConnection(peripheral)
+        guard let corePeripheral = protocolCast(peripheral, to: CBPeripheral.self) else {
+            return
+        }
+        return self.cancelPeripheralConnection(corePeripheral)
     }
 }

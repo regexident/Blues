@@ -34,46 +34,46 @@ internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
 
 extension CBPeripheralManager: CorePeripheralManagerProtocol {
     func add(_ service: CoreMutableServiceProtocol) {
-        guard let service = protocolCast(service, to: CBMutableService.self) else {
+        guard let coreService = protocolCast(service, to: CBMutableService.self) else {
             return
         }
         
-        self.add(service)
+        self.add(coreService)
     }
     
     func remove(_ service: CoreMutableServiceProtocol) {
-        guard let service = protocolCast(service, to: CBMutableService.self) else {
+        guard let coreService = protocolCast(service, to: CBMutableService.self) else {
             return
         }
         
-        self.remove(service)
+        self.remove(coreService)
     }
     
     func respond(to request: CoreATTRequestProtocol, withResult result: CBATTError.Code) {
-        guard let request = protocolCast(request, to: CBATTRequest.self) else {
+        guard let coreRequest = protocolCast(request, to: CBATTRequest.self) else {
             return
         }
         
-        self.respond(to: request, withResult: result)
+        self.respond(to: coreRequest, withResult: result)
     }
     
     func setDesiredConnectionLatency(_ latency: CBPeripheralManagerConnectionLatency, for central: CoreCentralProtocol) {
-        guard let central = protocolCast(central, to: CBCentral.self) else {
+        guard let coreCentral = protocolCast(central, to: CBCentral.self) else {
             return
         }
         
-        self.setDesiredConnectionLatency(latency, for: central)
+        self.setDesiredConnectionLatency(latency, for: coreCentral)
     }
     
     func updateValue(_ value: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals centrals: [CoreCentralProtocol]?) -> Bool {
-        guard let coreCentrals = centrals else {
+        guard let centrals = centrals else {
             return self.updateValue(value, for: characteristic, onSubscribedCentrals: nil)
         }
         
-        let realCentrals = coreCentrals.map { (coreCentral) -> CBCentral in
+        let coreCentrals = centrals.map { (coreCentral) -> CBCentral in
             return coreCentral as! CBCentral
         }
         
-        return self.updateValue(value, for: characteristic, onSubscribedCentrals: realCentrals)
+        return self.updateValue(value, for: characteristic, onSubscribedCentrals: coreCentrals)
     }
 }

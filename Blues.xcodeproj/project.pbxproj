@@ -576,6 +576,7 @@
 					BF70B4B71F30E70F005FCCD9 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = RHSV5Y8MLD;
+						LastSwiftMigration = 0920;
 					};
 					BFCB8DEF1DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;

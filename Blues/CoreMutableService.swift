@@ -16,19 +16,19 @@ internal protocol CoreMutableServiceProtocol: CoreServiceProtocol {
 extension CBMutableService: CoreMutableServiceProtocol {
     var genericIncludedServices: [CoreServiceProtocol]? {
         get {
-            return includedServices
+            return self.includedServices
         }
         set {
-            includedServices = newValue as? [CBService]
+            self.includedServices = newValue as? [CBService]
         }
     }
     
     var genericCharacteristics: [CoreCharacteristicsProtocol]? {
         get {
-            return characteristics
+            return self.characteristics
         }
         set {
-            characteristics = newValue as? [CBCharacteristic]
+            self.characteristics = newValue as? [CBCharacteristic]
         }
     }
 }
