@@ -96,22 +96,22 @@ extension CorePeripheralProtocol {
 
 extension CBPeripheral: CorePeripheralProtocol {
     func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
-        guard let service = protocolCast(service, to: CBService.self) else {
+        guard let coreService = protocolCast(service, to: CBService.self) else {
             return
         }
         
-        discoverIncludedServices(includedServiceUUIDs, for: service)
+        self.discoverIncludedServices(includedServiceUUIDs, for: coreService)
     }
     
     func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
-        guard let service = protocolCast(service, to: CBService.self) else {
+        guard let coreService = protocolCast(service, to: CBService.self) else {
             return
         }
         
-        discoverCharacteristics(characteristicUUIDs, for: service)
+        self.discoverCharacteristics(characteristicUUIDs, for: coreService)
     }
     
     var genericServices: [CoreServiceProtocol]? {
-        return services
+        return self.services
     }
 }

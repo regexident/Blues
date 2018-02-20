@@ -17,6 +17,6 @@ internal protocol CoreServiceProtocol: CoreAttributeProtocol {
 
 extension CBService: CoreServiceProtocol {
     var genericPeripheral: CorePeripheralProtocol {
-        return peripheral
+        return self.peripheral
     }
 }

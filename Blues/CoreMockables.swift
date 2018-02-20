@@ -14,7 +14,6 @@ internal protocol CorePeerProtocol {
     var identifier: UUID { get }
 }
 
-
 internal protocol CoreAttributeProtocol {
     var uuid: CBUUID { get }
 }
@@ -35,13 +34,9 @@ internal protocol CoreCentralProtocol: CorePeerProtocol {
     var maximumUpdateValueLength: Int { get }
 }
 
-
-
 internal protocol CoreManagerProtocol {
     var state: CBManagerState { get }
 }
-
-
 
 protocol CoreATTRequestProtocol {
     var central: CBCentral { get }
