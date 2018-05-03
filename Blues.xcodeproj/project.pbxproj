@@ -282,7 +282,7 @@
 				2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */,
 				2EF8F2F51F6ABA8100AC3B26 /* CorePeripheralManager.swift */,
 			);
-			name = Mockables;
+			path = Mockables;
 			sourceTree = "<group>";
 		};
 		2EEFC3301F66AA0900BB7657 /* Auxiliaries */ = {
@@ -332,7 +332,7 @@
 				BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */,
 				BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */,
 			);
-			name = Descriptor;
+			path = Descriptor;
 			sourceTree = "<group>";
 		};
 		BF102D561F0D27710099D8AB /* Characteristic */ = {
@@ -343,7 +343,7 @@
 				BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */,
 				BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */,
 			);
-			name = Characteristic;
+			path = Characteristic;
 			sourceTree = "<group>";
 		};
 		BF102D571F0D27780099D8AB /* Service */ = {
@@ -354,7 +354,7 @@
 				BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */,
 				BF84AD911EC3470300FAD246 /* DefaultService.swift */,
 			);
-			name = Service;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		BF102D581F0D27810099D8AB /* Peripheral */ = {
@@ -364,7 +364,7 @@
 				BFB360591DE2FF8400B7931F /* PeripheralProtocols.swift */,
 				BF180BE91EC35123008F7982 /* DefaultPeripheral.swift */,
 			);
-			name = Peripheral;
+			path = Peripheral;
 			sourceTree = "<group>";
 		};
 		BF102D591F0D27890099D8AB /* CentralManager */ = {
@@ -374,7 +374,7 @@
 				BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */,
 				BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */,
 			);
-			name = CentralManager;
+			path = CentralManager;
 			sourceTree = "<group>";
 		};
 		BF3304201F372E020011FE87 /* Configs */ = {
@@ -392,7 +392,7 @@
 				BF5CD52B1F1BED5800C2702A /* PeripheralManager.swift */,
 				BF5CD52C1F1BED5800C2702A /* PeripheralManagerProtocols.swift */,
 			);
-			name = PeripheralManager;
+			path = PeripheralManager;
 			sourceTree = "<group>";
 		};
 		BF5CD5561F1BED8700C2702A /* Central */ = {
@@ -400,7 +400,7 @@
 			children = (
 				BF5CD53A1F1BED5800C2702A /* Central.swift */,
 			);
-			name = Central;
+			path = Central;
 			sourceTree = "<group>";
 		};
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
@@ -494,7 +494,7 @@
 				BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */,
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
 			);
-			name = Auxiliaries;
+			path = Auxiliaries;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
