@@ -104,10 +104,10 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         let cbuuids = identifiers.map {
             $0.core.uuidString
         }
-        let nsuuids = cbuuids.flatMap { UUID(uuidString: $0) }
+        let nsuuids = cbuuids.compactMap { UUID(uuidString: $0) }
         let innerPeripherals = self.core.retrievePeripherals(withIdentifiers: nsuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
-        return self.peripheralsByIdentifier.flatMap { uuid, peripheral in
+        return self.peripheralsByIdentifier.compactMap { uuid, peripheral in
             peripheralIdentifiers.contains(uuid.core) ? peripheral : nil
         }
     }
@@ -117,7 +117,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         let cbuuids = serviceUUIDs.map { $0.core }
         let innerPeripherals = self.core.retrieveConnectedPeripherals(withServices: cbuuids)
         let peripheralIdentifiers = innerPeripherals.map { CBUUID(nsuuid: $0.identifier) }
-        return self.peripheralsByIdentifier.flatMap { uuid, peripheral in
+        return self.peripheralsByIdentifier.compactMap { uuid, peripheral in
             peripheralIdentifiers.contains(uuid.core) ? peripheral : nil
         }
     }

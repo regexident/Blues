@@ -46,7 +46,7 @@ public struct CentralManagerRestoreState {
         }
 
         if let peripherals = self.peripherals {
-            let peripherals: [CorePeripheralProtocol] = peripherals.flatMap { $0.core }
+            let peripherals: [CorePeripheralProtocol] = peripherals.compactMap { $0.core }
             dictionary[Keys.peripherals] = peripherals
         }
 

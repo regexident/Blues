@@ -137,7 +137,7 @@ public struct Advertisement {
         }
         var dictionary: [String : Any] = [:]
         let mapUUIDs: (Any?) -> [CBUUID]? = {
-            ($0 as? [String]).map { $0.flatMap { CBUUID(string: $0) } }
+            ($0 as? [String]).map { $0.compactMap { CBUUID(string: $0) } }
         }
         let mapServiceData: (Any?) -> [CBUUID : Data]? = {
             ($0 as? [String : Data]).map {
