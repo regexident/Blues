@@ -31,7 +31,7 @@ protocol CoreCentralCentralManagerDelegateProtocol {
 
 protocol CoreCentralManagerProtocol: CoreManagerProtocol {
     
-    weak var delegate: CBCentralManagerDelegate? { get set }
+    var delegate: CBCentralManagerDelegate? { get set }
 
     @available(iOS 9.0, *)
     var isScanning: Bool { get }

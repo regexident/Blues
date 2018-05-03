@@ -9,7 +9,7 @@
 import CoreBluetooth
 
 internal protocol CorePeripheralManagerProtocol: CoreManagerProtocol {
-    weak var delegate: CBPeripheralManagerDelegate? { get set }
+    var delegate: CBPeripheralManagerDelegate? { get set }
     
     var isAdvertising: Bool { get }
     

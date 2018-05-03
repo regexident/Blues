@@ -16,7 +16,7 @@ public protocol PeripheralManagerProtocol: class {
     @available(iOSApplicationExtension 10.0, *)
     var state: ManagerState { get }
     
-    weak var delegate: PeripheralManagerDelegate? { get set }
+    var delegate: PeripheralManagerDelegate? { get set }
 
     var isAdvertising: Bool { get }
 
