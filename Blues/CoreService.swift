@@ -9,7 +9,7 @@
 import CoreBluetooth
 
 internal protocol CoreServiceProtocol: CoreAttributeProtocol {
-    unowned(unsafe) var genericPeripheral: CorePeripheralProtocol { get }
+    var genericPeripheral: CorePeripheralProtocol { get }
     var isPrimary: Bool { get }
     var includedServices: [CBService]? { get }
     var characteristics: [CBCharacteristic]? { get }
