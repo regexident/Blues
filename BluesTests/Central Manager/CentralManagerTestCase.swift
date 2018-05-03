@@ -197,7 +197,7 @@ class CentralManagerTestCase: XCTestCase {
         mock.genericDelegate = central
         mock.shouldFailOnConnect = true
         
-        delegateCatcher.didDisconnectClosure = { _ in
+        delegateCatcher.didDisconnectClosure = { _, _, _ in
             expectation.fulfill()
         }
         
@@ -230,7 +230,7 @@ class CentralManagerTestCase: XCTestCase {
         mock.shouldFailOnConnect = true
         
         let peripheralDisconnectedExpectation = XCTestExpectation()
-        delegateCatcher.didDisconnectClosure = { _ in
+        delegateCatcher.didDisconnectClosure = { _, _, _ in
             peripheralDisconnectedExpectation.fulfill()
         }
         
@@ -344,7 +344,6 @@ class CentralManagerTestCase: XCTestCase {
         let peripheralIdentifiers = [UUID()]
         let dictionary = CentralManagerRestoreStateTestCase.validInputDictionary(services: serviceIdentifiers, peripherals: peripheralIdentifiers)
         
-        let services = serviceIdentifiers.map(Identifier.init)
         let peripherals = peripheralIdentifiers.map { (uuid) -> Peripheral in
             let core = CBPeripheralMock()
             core.identifier = uuid
