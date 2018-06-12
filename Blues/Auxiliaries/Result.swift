@@ -91,12 +91,14 @@ public enum Result<T, E> {
     // Construct a `Result` from a pair of optional value and optional error.
     public init(success: T?, failure: E?) {
         switch (success, failure) {
-        case (let value?, nil):
+        case (let .some(value), .none):
             self = .ok(value)
-        case (nil, let error?):
+        case (.none, let .some(error)):
             self = .err(error)
-        case _:
-            fatalError("Result accepts either `success` or `failure` to be nil, exclusively")
+        case (.some(_), let .some(error)):
+            self = .err(error)
+        case (.none, .none):
+            fatalError("Expected at least one of `success` and `failure` to be non-nil.")
         }
     }
 
