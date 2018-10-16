@@ -438,11 +438,9 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             for coreService in coreServices {
                 let identifier = Identifier(uuid: coreService.uuid)
                 let service = self.wrapper(for: coreService)
-                if servicesByIdentifier[service.identifier] == nil {
-                    let characteristics = service.automaticallyDiscoveredCharacteristics
-                    service.discover(characteristics: characteristics)
-                    discoveredServices.append(service)
-                }
+                let characteristics = service.automaticallyDiscoveredCharacteristics
+                service.discover(characteristics: characteristics)
+                discoveredServices.append(service)
                 servicesByIdentifier[identifier] = service
             }
             self.servicesByIdentifier = servicesByIdentifier
