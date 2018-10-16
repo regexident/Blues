@@ -22,4 +22,13 @@ public enum PeripheralManagerAuthorizationStatus {
     case restricted
     case denied
     case authorized
+    
+    init(from coreStatus: CBPeripheralManagerAuthorizationStatus) {
+        switch coreStatus {
+        case .authorized: self = .authorized
+        case .denied: self = .denied
+        case .notDetermined: self = .notDetermined
+        case .restricted: self = .restricted
+        }
+    }
 }
