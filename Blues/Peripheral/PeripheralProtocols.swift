@@ -29,6 +29,8 @@ public protocol PeripheralProtocol: class {
     func discover(services: [Identifier]?)
     
     func readRSSI()
+    
+    func updateAdvertisement(_ advertisement: Advertisement)
 }
 
 public protocol DelegatedPeripheralProtocol: PeripheralProtocol {

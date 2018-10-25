@@ -30,7 +30,7 @@ public struct ConnectionOptions {
     //    @available(iOS 6, tvOS 6, *)
     public let notifyOnNotification: Bool?
 
-    init(
+    public init(
         notifyOnConnection: Bool? = nil,
         notifyOnDisconnection: Bool? = nil,
         notifyOnNotification: Bool? = nil

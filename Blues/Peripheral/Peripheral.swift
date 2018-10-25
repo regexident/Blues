@@ -78,6 +78,10 @@ open class Peripheral: NSObject, PeripheralProtocol {
         self.core = core
         self.queue = queue
     }
+    
+    open func updateAdvertisement(_ advertisement: Advertisement) {
+        
+    }
 
     /// The service associated with a given type if it has previously been discovered in this peripheral.
     public func service<S>(ofType type: S.Type) -> S?
