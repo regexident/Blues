@@ -325,11 +325,14 @@ extension CentralManager: CBCentralCentralManagerDelegateProtocol {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
             let existing = self.peripheralsByIdentifier[identifier]
+            let advertisement = Advertisement(dictionary: advertisementData)
+
             let wrapper: Peripheral
+            
             if let existingWrapper = existing {
                 wrapper = existingWrapper
+                wrapper.updateAdvertisement(advertisement)
             } else {
-                let advertisement = Advertisement(dictionary: advertisementData)
                 wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
                 self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             }
