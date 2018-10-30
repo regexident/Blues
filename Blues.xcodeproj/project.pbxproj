@@ -47,6 +47,8 @@
 		BF3FFE6E1DC3B07D00870202 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */; };
 		BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */; };
 		BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE711DC3B4FB00870202 /* WriteType.swift */; };
+		BF4203F221BEBED000C49F35 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4203F121BEBED000C49F35 /* Error.swift */; };
+		BF4203F321BEBED000C49F35 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4203F121BEBED000C49F35 /* Error.swift */; };
 		BF5CD5401F1BED5800C2702A /* PeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD52B1F1BED5800C2702A /* PeripheralManager.swift */; };
 		BF5CD5411F1BED5800C2702A /* PeripheralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD52C1F1BED5800C2702A /* PeripheralManagerProtocols.swift */; };
 		BF5CD5471F1BED5800C2702A /* PeripheralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5321F1BED5800C2702A /* PeripheralManagerRestoreState.swift */; };
@@ -187,6 +189,7 @@
 		BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionOptions.swift; sourceTree = "<group>"; };
 		BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralState.swift; sourceTree = "<group>"; };
 		BF3FFE711DC3B4FB00870202 /* WriteType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WriteType.swift; sourceTree = "<group>"; };
+		BF4203F121BEBED000C49F35 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		BF5CD52B1F1BED5800C2702A /* PeripheralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralManager.swift; sourceTree = "<group>"; };
 		BF5CD52C1F1BED5800C2702A /* PeripheralManagerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralManagerProtocols.swift; sourceTree = "<group>"; };
 		BF5CD5321F1BED5800C2702A /* PeripheralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralManagerRestoreState.swift; sourceTree = "<group>"; };
@@ -523,6 +526,7 @@
 				BF5CD5381F1BED5800C2702A /* PeripheralManagerState.swift */,
 				BF3FFE6F1DC3B09900870202 /* PeripheralState.swift */,
 				BF3FFE711DC3B4FB00870202 /* WriteType.swift */,
+				BF4203F121BEBED000C49F35 /* Error.swift */,
 			);
 			path = Auxiliaries;
 			sourceTree = "<group>";
@@ -699,6 +703,7 @@
 				2EC6866420078D4F008D77FF /* CoreMutableService.swift in Sources */,
 				BF70B4D81F30E743005FCCD9 /* ATTError.swift in Sources */,
 				BF70B4D91F30E743005FCCD9 /* ATTRequest.swift in Sources */,
+				BF4203F321BEBED000C49F35 /* Error.swift in Sources */,
 				BF70B4DA1F30E743005FCCD9 /* AttributePermissions.swift in Sources */,
 				BF70B4DB1F30E744005FCCD9 /* CentralManagerOptions.swift in Sources */,
 				BF70B4DC1F30E744005FCCD9 /* CentralManagerRestoreState.swift in Sources */,
@@ -758,6 +763,7 @@
 				BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */,
 				BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */,
 				BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */,
+				BF4203F221BEBED000C49F35 /* Error.swift in Sources */,
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
 				BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */,
 				BF6741E12197981F0048C593 /* PrimitiveCharacteristicValueTransformer.swift in Sources */,
