@@ -11,9 +11,9 @@ import Foundation
 /// Errors related to a descriptor.
 public enum TypedDescriptorError: Swift.Error {
     /// The descriptor failed to encode its value.
-    case encodingFailed(message: String)
+    case encodingFailed(error: Swift.Error)
     /// The descriptor failed to decode its value.
-    case decodingFailed(message: String)
+    case decodingFailed(error: Swift.Error)
     /// The descriptor does not implement the given transform
     ///
     /// For example a read-only characteristic might choose to not implement the
@@ -26,9 +26,9 @@ public enum TypedDescriptorError: Swift.Error {
 /// Errors related to a characteristic.
 public enum TypedCharacteristicError: Swift.Error {
     /// The characteristic failed to encode its value.
-    case encodingFailed(message: String)
+    case encodingFailed(error: Swift.Error)
     /// The characteristic failed to decode its value.
-    case decodingFailed(message: String)
+    case decodingFailed(error: Swift.Error)
     /// The characteristic does not implement the given transform
     ///
     /// For example a read-only characteristic might choose to not implement the
