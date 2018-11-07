@@ -1,10 +1,6 @@
-//
-//  Result.swift
-//  Blues
-//
-//  Created by Vincent Esche on 27/02/2017.
-//  Copyright © 2017 Vincent Esche. All rights reserved.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// Result is a type that represents either success (`ok`) or failure (`err`).
 public enum Result<T, E> {
