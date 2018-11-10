@@ -48,7 +48,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     /// - Returns: The current authorization status for sharing data while backgrounded.
     ///   For the constants returned, see {@link PeripheralManagerAuthorizationStatus}.
     public class func authorizationStatus() -> PeripheralManagerAuthorizationStatus {
-        return PeripheralManager.authorizationStatus()
+        return .init(from: CBPeripheralManager.authorizationStatus())
     }
 
     /// The initialization call. The events of the peripheral role will be dispatched
