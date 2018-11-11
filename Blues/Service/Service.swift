@@ -80,7 +80,7 @@ open class Service: ServiceProtocol {
         return self.core.isPrimary
     }
 
-    public required init(identifier: Identifier, peripheral: Peripheral) {
+    public init(identifier: Identifier, peripheral: Peripheral) {
         self.identifier = identifier
         self.core = nil
         self._peripheral = peripheral

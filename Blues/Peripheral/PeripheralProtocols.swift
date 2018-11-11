@@ -17,8 +17,6 @@ public protocol PeripheralProtocol: class {
 
     var connectionOptions: ConnectionOptions? { get }
 
-    init(identifier: Identifier, centralManager: CentralManager)
-
     func service<S>(ofType type: S.Type) -> S?
     where S: Service, S: TypeIdentifiable
 

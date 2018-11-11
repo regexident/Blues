@@ -63,7 +63,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
 
     internal var queue: DispatchQueue
 
-    public required init(identifier: Identifier, centralManager: CentralManager) {
+    public init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
         self.core = nil
         self.queue = centralManager.queue
@@ -514,8 +514,10 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             for coreCharacteristic in coreCharacteristics {
                 let characteristic = wrapper.wrapper(for: coreCharacteristic)
                 if characteristicsByIdentifier[characteristic.identifier] == nil {
-                    if characteristic.shouldSubscribeToNotificationsAutomatically {
-                        characteristic.set(notifyValue: true)
+                    if let characteristic = characteristic as? ReadableCharacteristicProtocol {
+                        if characteristic.shouldSubscribeToNotificationsAutomatically {
+                            characteristic.set(notifyValue: true)
+                        }
                     }
                     if characteristic.shouldDiscoverDescriptorsAutomatically {
                         characteristic.discoverDescriptors()

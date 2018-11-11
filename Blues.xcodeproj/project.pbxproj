@@ -60,6 +60,16 @@
 		BF5CD5501F1BED5800C2702A /* ATTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */; };
 		BF5CD5511F1BED5800C2702A /* ATTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53C1F1BED5800C2702A /* ATTError.swift */; };
 		BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */; };
+		BF6741DA2197723A0048C593 /* DataCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741CE219702060048C593 /* DataCharacteristicValueTransformer.swift */; };
+		BF6741DB2197723A0048C593 /* DataCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741CE219702060048C593 /* DataCharacteristicValueTransformer.swift */; };
+		BF6741DD21977BC20048C593 /* ValueCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741DC21977BC20048C593 /* ValueCoder.swift */; };
+		BF6741DF219796600048C593 /* StringCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D02197026B0048C593 /* StringCharacteristicValueTransformer.swift */; };
+		BF6741E0219796610048C593 /* StringCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D02197026B0048C593 /* StringCharacteristicValueTransformer.swift */; };
+		BF6741E12197981F0048C593 /* PrimitiveCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D4219704390048C593 /* PrimitiveCharacteristicValueTransformer.swift */; };
+		BF6741E22197981F0048C593 /* PrimitiveCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D4219704390048C593 /* PrimitiveCharacteristicValueTransformer.swift */; };
+		BF6741E3219798B70048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D7219763B50048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift */; };
+		BF6741E4219798B70048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741D7219763B50048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift */; };
+		BF6741E5219845090048C593 /* ValueCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6741DC21977BC20048C593 /* ValueCoder.swift */; };
 		BF70B4C11F30E743005FCCD9 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6B1DC3A7A300870202 /* Descriptor.swift */; };
 		BF70B4C21F30E743005FCCD9 /* MutableDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5331F1BED5800C2702A /* MutableDescriptor.swift */; };
 		BF70B4C31F30E743005FCCD9 /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
@@ -91,7 +101,6 @@
 		BF70B4DD1F30E744005FCCD9 /* ManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */; };
 		BF70B4DE1F30E744005FCCD9 /* CharacteristicProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */; };
 		BF70B4DF1F30E744005FCCD9 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */; };
-		BF70B4E01F30E744005FCCD9 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB51DC6BC0000F94D20 /* Error.swift */; };
 		BF70B4E11F30E744005FCCD9 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB11DC694FC00F94D20 /* Identifier.swift */; };
 		BF70B4E21F30E744005FCCD9 /* PeripheralManagerAuthorizationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5391F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift */; };
 		BF70B4E31F30E744005FCCD9 /* PeripheralManagerConnectionLatency.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CD5371F1BED5800C2702A /* PeripheralManagerConnectionLatency.swift */; };
@@ -119,7 +128,6 @@
 		BFCB8E131DC1104400D5430D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E121DC1104400D5430D /* Service.swift */; };
 		BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */; };
 		BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB11DC694FC00F94D20 /* Identifier.swift */; };
-		BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE23EB51DC6BC0000F94D20 /* Error.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,6 +200,11 @@
 		BF5CD53B1F1BED5800C2702A /* ATTRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTRequest.swift; sourceTree = "<group>"; };
 		BF5CD53C1F1BED5800C2702A /* ATTError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATTError.swift; sourceTree = "<group>"; };
 		BF5CD53D1F1BED5800C2702A /* AttributePermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributePermissions.swift; sourceTree = "<group>"; };
+		BF6741CE219702060048C593 /* DataCharacteristicValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCharacteristicValueTransformer.swift; sourceTree = "<group>"; };
+		BF6741D02197026B0048C593 /* StringCharacteristicValueTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringCharacteristicValueTransformer.swift; sourceTree = "<group>"; };
+		BF6741D4219704390048C593 /* PrimitiveCharacteristicValueTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrimitiveCharacteristicValueTransformer.swift; sourceTree = "<group>"; };
+		BF6741D7219763B50048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixedWidthIntegerCharacteristicValueTransformer.swift; sourceTree = "<group>"; };
+		BF6741DC21977BC20048C593 /* ValueCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueCoder.swift; sourceTree = "<group>"; };
 		BF70B4B81F30E70F005FCCD9 /* libBlues.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlues.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF70B4E81F30E855005FCCD9 /* libResult.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libResult.a; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/libResult.a"; sourceTree = "<group>"; };
 		BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerState.swift; sourceTree = "<group>"; };
@@ -218,7 +231,6 @@
 		BFCB8E121DC1104400D5430D /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Service.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProperties.swift; sourceTree = "<group>"; };
 		BFE23EB11DC694FC00F94D20 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
-		BFE23EB51DC6BC0000F94D20 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -403,6 +415,25 @@
 			path = Central;
 			sourceTree = "<group>";
 		};
+		BF6741CD219701E50048C593 /* Coder */ = {
+			isa = PBXGroup;
+			children = (
+				BF6741CE219702060048C593 /* DataCharacteristicValueTransformer.swift */,
+				BF6741D02197026B0048C593 /* StringCharacteristicValueTransformer.swift */,
+				BF6741D4219704390048C593 /* PrimitiveCharacteristicValueTransformer.swift */,
+				BF6741D7219763B50048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift */,
+			);
+			path = Coder;
+			sourceTree = "<group>";
+		};
+		BF6741DE21977C330048C593 /* ValueCoder */ = {
+			isa = PBXGroup;
+			children = (
+				BF6741DC21977BC20048C593 /* ValueCoder.swift */,
+			);
+			path = ValueCoder;
+			sourceTree = "<group>";
+		};
 		BFA1CC2D1E66D9E8009B077C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -446,6 +477,8 @@
 				BF5CD5561F1BED8700C2702A /* Central */,
 				BF102D591F0D27890099D8AB /* CentralManager */,
 				BF5CD5551F1BED5E00C2702A /* PeripheralManager */,
+				BF6741CD219701E50048C593 /* Coder */,
+				BF6741DE21977C330048C593 /* ValueCoder */,
 				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
 				2EEFC32A1F669B6800BB7657 /* Mockables */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
@@ -482,7 +515,6 @@
 				2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */,
 				BFE23EAF1DC65B2700F94D20 /* CharacteristicProperties.swift */,
 				BF3FFE6D1DC3B07D00870202 /* ConnectionOptions.swift */,
-				BFE23EB51DC6BC0000F94D20 /* Error.swift */,
 				BFBFE3772006296200402ED7 /* Result.swift */,
 				BFE23EB11DC694FC00F94D20 /* Identifier.swift */,
 				2E9D01901F66EE2500E50A08 /* Log.swift */,
@@ -637,6 +669,7 @@
 				BF70B4C31F30E743005FCCD9 /* DescriptorProtocols.swift in Sources */,
 				BF70B4C41F30E743005FCCD9 /* DefaultDescriptor.swift in Sources */,
 				BF70B4C51F30E743005FCCD9 /* Characteristic.swift in Sources */,
+				BF6741DB2197723A0048C593 /* DataCharacteristicValueTransformer.swift in Sources */,
 				BF70B4C61F30E743005FCCD9 /* MutableCharacteristic.swift in Sources */,
 				BF7A35F42008D71C00AA78F2 /* Result.swift in Sources */,
 				BF70B4C71F30E743005FCCD9 /* CharacteristicProtocols.swift in Sources */,
@@ -644,12 +677,15 @@
 				BF70B4C91F30E743005FCCD9 /* Service.swift in Sources */,
 				BF70B4CA1F30E743005FCCD9 /* MutableService.swift in Sources */,
 				BF70B4CB1F30E743005FCCD9 /* ServiceProtocols.swift in Sources */,
+				BF6741E5219845090048C593 /* ValueCoder.swift in Sources */,
 				BF70B4CC1F30E743005FCCD9 /* DefaultService.swift in Sources */,
 				BF70B4CD1F30E743005FCCD9 /* Peripheral.swift in Sources */,
 				BF70B4CE1F30E743005FCCD9 /* PeripheralProtocols.swift in Sources */,
 				BF70B4CF1F30E743005FCCD9 /* DefaultPeripheral.swift in Sources */,
 				BF70B4D01F30E743005FCCD9 /* Central.swift in Sources */,
 				2EC6866220078D4C008D77FF /* CorePeripheralManager.swift in Sources */,
+				BF6741E0219796610048C593 /* StringCharacteristicValueTransformer.swift in Sources */,
+				BF6741E22197981F0048C593 /* PrimitiveCharacteristicValueTransformer.swift in Sources */,
 				2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */,
 				2EC6866020078D47008D77FF /* CoreService.swift in Sources */,
 				BF70B4D11F30E743005FCCD9 /* CentralManager.swift in Sources */,
@@ -671,7 +707,7 @@
 				BF70B4DD1F30E744005FCCD9 /* ManagerState.swift in Sources */,
 				BF70B4DE1F30E744005FCCD9 /* CharacteristicProperties.swift in Sources */,
 				BF70B4DF1F30E744005FCCD9 /* ConnectionOptions.swift in Sources */,
-				BF70B4E01F30E744005FCCD9 /* Error.swift in Sources */,
+				BF6741E4219798B70048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift in Sources */,
 				BF70B4E11F30E744005FCCD9 /* Identifier.swift in Sources */,
 				BF70B4E21F30E744005FCCD9 /* PeripheralManagerAuthorizationStatus.swift in Sources */,
 				BF70B4E31F30E744005FCCD9 /* PeripheralManagerConnectionLatency.swift in Sources */,
@@ -692,6 +728,7 @@
 				BF3FFE671DC2D99200870202 /* Characteristic.swift in Sources */,
 				BF5CD5471F1BED5800C2702A /* PeripheralManagerRestoreState.swift in Sources */,
 				BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */,
+				BF6741DA2197723A0048C593 /* DataCharacteristicValueTransformer.swift in Sources */,
 				BF84AD901EC3411700FAD246 /* DefaultCharacteristic.swift in Sources */,
 				BFBFE3782006296200402ED7 /* Result.swift in Sources */,
 				2EC6866320078D4E008D77FF /* CoreMutableService.swift in Sources */,
@@ -707,9 +744,11 @@
 				BF3FFE6C1DC3A7A300870202 /* Descriptor.swift in Sources */,
 				2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */,
 				BF5CD54E1F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift in Sources */,
+				BF6741DF219796600048C593 /* StringCharacteristicValueTransformer.swift in Sources */,
 				BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */,
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
 				BF5CD5491F1BED5800C2702A /* MutableCharacteristic.swift in Sources */,
+				BF6741DD21977BC20048C593 /* ValueCoder.swift in Sources */,
 				2EDF838C1F69430E00AEEE00 /* CorePeripheral.swift in Sources */,
 				2EFE13761F68305900DAE7E7 /* CoreCentralManager.swift in Sources */,
 				2E9D01911F66EE2500E50A08 /* Log.swift in Sources */,
@@ -720,10 +759,10 @@
 				BF5CD54D1F1BED5800C2702A /* PeripheralManagerState.swift in Sources */,
 				BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */,
 				BF5CD5521F1BED5800C2702A /* AttributePermissions.swift in Sources */,
-				BFE23EB61DC6BC0000F94D20 /* Error.swift in Sources */,
 				BF3FFE721DC3B4FB00870202 /* WriteType.swift in Sources */,
 				BFCB8E0D1DC0E5EF00D5430D /* Advertisement.swift in Sources */,
 				BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */,
+				BF6741E12197981F0048C593 /* PrimitiveCharacteristicValueTransformer.swift in Sources */,
 				BF5CD5401F1BED5800C2702A /* PeripheralManager.swift in Sources */,
 				2EC6865F20078D45008D77FF /* CoreService.swift in Sources */,
 				BFC429011F0F923F006C1F8C /* AdvertisementPersistence.swift in Sources */,
@@ -735,6 +774,7 @@
 				BF84AD921EC3470300FAD246 /* DefaultService.swift in Sources */,
 				BF3FFE701DC3B09900870202 /* PeripheralState.swift in Sources */,
 				BFB3605A1DE2FF8400B7931F /* PeripheralProtocols.swift in Sources */,
+				BF6741E3219798B70048C593 /* FixedWidthIntegerCharacteristicValueTransformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
