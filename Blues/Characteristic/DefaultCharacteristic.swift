@@ -5,8 +5,12 @@
 import Foundation
 
 /// Default implementation of `Characteristic` protocol.
-open class DefaultCharacteristic:
-    Characteristic, DelegatedCharacteristicProtocol, DataSourcedCharacteristicProtocol {
+open class DefaultCharacteristic: Characteristic {
     public weak var delegate: CharacteristicDelegate?
     public weak var dataSource: CharacteristicDataSource?
 }
+
+extension DefaultCharacteristic: DelegatedCharacteristicProtocol {}
+extension DefaultCharacteristic: DataSourcedCharacteristicProtocol {}
+extension DefaultCharacteristic: ReadableCharacteristicProtocol {}
+extension DefaultCharacteristic: WritableCharacteristicProtocol {}

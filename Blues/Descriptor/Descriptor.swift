@@ -66,58 +66,13 @@ open class Descriptor: DescriptorProtocol {
     open var peripheral: Peripheral {
         return self.service.peripheral
     }
-
-    /// The value of the descriptor, or an error.
-    public var any: Any? {
-        return self.core.value
-    }
-
+    
     internal var core: CBDescriptor!
 
-    public required init(identifier: Identifier, characteristic: Characteristic) {
+    public init(identifier: Identifier, characteristic: Characteristic) {
         self.identifier = identifier
         self.core = nil
         self._characteristic = characteristic
-    }
-
-    /// Retrieves the value of the characteristic descriptor, or an error.
-    ///
-    /// - Note:
-    ///   When you call this method to read the value of a characteristic
-    ///   descriptor, the descriptor calls the `didUpdate(any:for:)`
-    ///   method of its delegate object with the retrieved value, or an error.
-    ///
-    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
-    public func read() {
-        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
-        self.peripheral.readData(for: self)
-    }
-
-    /// Writes the value of a characteristic descriptor.
-    ///
-    /// - Note:
-    ///   When you call this method to write the value of a characteristic
-    ///   descriptor, the peripheral calls the `didWrite(any:for:)`
-    ///   method of its delegate object. The data passed into the data
-    ///   parameter is copied, and you can dispose of it after the method returns.
-    ///
-    /// - Important:
-    ///   You cannot use this method to write the value of a client
-    ///   configuration descriptor (represented by the
-    ///   `CBUUIDClientCharacteristicConfigurationString` constant),
-    ///   which describes how notification or indications are configured
-    ///   for a characteristic’s value with respect to a client.
-    ///   If you want to manage notifications or indications for a
-    ///   characteristic’s value, you must use the `set(notifyValue:)`
-    ///   method of `Characteristic` instead.
-    ///
-    /// Parameters:
-    /// - data: The value to be written.
-    ///
-    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
-    public func write(data: Data) {
-        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
-        self.peripheral.write(data: data, for: self)
     }
 
     fileprivate func apiMisuseErrorMessage() -> String {
@@ -162,8 +117,66 @@ extension Descriptor: CustomStringConvertible {
     }
 }
 
+extension ReadableDescriptorProtocol
+where
+    Self: Descriptor
+{
+    /// The value of the descriptor, or an error.
+    public var any: Any? {
+        return self.core.value
+    }
+    
+    /// Retrieves the value of the characteristic descriptor, or an error.
+    ///
+    /// - Note:
+    ///   When you call this method to read the value of a characteristic
+    ///   descriptor, the descriptor calls the `didUpdate(any:for:)`
+    ///   method of its delegate object with the retrieved value, or an error.
+    ///
+    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    public func read() {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
+        self.peripheral.readData(for: self)
+    }
+}
+
+extension WritableDescriptorProtocol
+where
+    Self: Descriptor
+{
+    /// Writes the value of a characteristic descriptor.
+    ///
+    /// - Note:
+    ///   When you call this method to write the value of a characteristic
+    ///   descriptor, the peripheral calls the `didWrite(any:for:)`
+    ///   method of its delegate object. The data passed into the data
+    ///   parameter is copied, and you can dispose of it after the method returns.
+    ///
+    /// - Important:
+    ///   You cannot use this method to write the value of a client
+    ///   configuration descriptor (represented by the
+    ///   `CBUUIDClientCharacteristicConfigurationString` constant),
+    ///   which describes how notification or indications are configured
+    ///   for a characteristic’s value with respect to a client.
+    ///   If you want to manage notifications or indications for a
+    ///   characteristic’s value, you must use the `set(notifyValue:)`
+    ///   method of `Characteristic` instead.
+    ///
+    /// Parameters:
+    /// - data: The value to be written.
+    ///
+    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    public func write(data: Data) {
+        assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
+        self.peripheral.write(data: data, for: self)
+    }
+}
+
 // MARK: - TypedDescriptorProtocol
-extension TypedDescriptorProtocol {
+extension ReadableDescriptorProtocol
+where
+    Self: Descriptor & TypedDescriptorProtocol
+{
     /// A type-safe value representation of the descriptor.
     ///
     /// - Note:
@@ -171,13 +184,18 @@ extension TypedDescriptorProtocol {
     ///   See its documentation for more information. All this wrapper basically
     ///   does is transforming `self.data` into an `Value` object by calling
     ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Transformer.Value?, TypedDescriptorError> {
+    public var value: Result<Decoder.Value?, DecodingError> {
         guard let any = self.any else {
             return .ok(nil)
         }
-        return self.transformer.transform(any: any).map { .some($0) }
+        return self.decoder.decode(any).map { .some($0) }
     }
+}
 
+extension WritableDescriptorProtocol
+where
+    Self: Descriptor & TypedDescriptorProtocol
+{
     /// Writes the value of a descriptor.
     ///
     /// - Note:
@@ -193,21 +211,19 @@ extension TypedDescriptorProtocol {
     ///   - type: The type of write to be executed.
     ///
     /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Transformer.Value, type: WriteType) -> Result<(), TypedDescriptorError> {
-        return self.transformer.transform(value: value).flatMap { data in
+    public func write(value: Encoder.Value, type: WriteType) -> Result<(), EncodingError> {
+        return self.encoder.encode(value).flatMap { data in
             return .ok(self.write(data: data))
         }
     }
-
-    public func transform(any: Result<Any, Error>) -> Result<Transformer.Value, TypedDescriptorError> {
-        return any.mapErr { .other($0) }.flatMap { self.transformer.transform(any: $0) }
-    }
 }
 
-extension TypedDescriptorProtocol
-    where Self: StringConvertibleDescriptorProtocol,
-          Self.Transformer.Value: CustomStringConvertible {
-    public var stringValue: Result<String?, TypedDescriptorError> {
+extension StringConvertibleDescriptorProtocol
+where
+    Self: Descriptor & TypedDescriptorProtocol & ReadableDescriptorProtocol,
+    Self.Decoder.Value: CustomStringConvertible
+{
+    public var stringValue: Result<String?, DecodingError> {
         return self.value.map { $0?.description }
     }
 }

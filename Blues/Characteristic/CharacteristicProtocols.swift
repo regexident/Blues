@@ -6,44 +6,56 @@ import Foundation
 
 public protocol CharacteristicProtocol: class {
     var identifier: Identifier { get }
-
     var name: String? { get }
 
+    var descriptors: [Descriptor]? { get }
     var service: ServiceProtocol { get }
     var peripheral: Peripheral { get }
 
-    var descriptors: [Descriptor]? { get }
-
-    init(identifier: Identifier, service: ServiceProtocol)
-
     var shouldDiscoverDescriptorsAutomatically: Bool { get }
-
-    var shouldSubscribeToNotificationsAutomatically: Bool { get }
-
-    var data: Data? { get }
-
-    func descriptor<D>(ofType type: D.Type) -> D?
-    where D: Descriptor, D: TypeIdentifiable
-
+    
     var properties: CharacteristicProperties { get }
-
-    var isNotifying: Bool { get }
 
     func discoverDescriptors()
 
+    func descriptor<D>(ofType type: D.Type) -> D?
+        where D: Descriptor, D: TypeIdentifiable
+}
+
+public protocol ReadableCharacteristicProtocol: CharacteristicProtocol {
+    var data: Data? { get }
+    
+    var shouldSubscribeToNotificationsAutomatically: Bool { get }
+    var isNotifying: Bool { get }
+    
     func read()
-    func write(data: Data, type: WriteType)
     func set(notifyValue: Bool)
 }
 
-public protocol TypedCharacteristicProtocol: CharacteristicProtocol {
-    associatedtype Transformer: CharacteristicValueTransformer
+public protocol WritableCharacteristicProtocol: CharacteristicProtocol {
+    func write(data: Data, type: WriteType)
+}
 
-    var transformer: Transformer { get }
+public protocol MutableCharacteristicProtocol: class {
+    var permissions: AttributePermissions { get set }
+    var subscribedCentrals: [Central]? { get }
+    var data: Data? { get set }
+}
+
+public protocol TypedReadableCharacteristicProtocol: ReadableCharacteristicProtocol {
+    associatedtype Decoder: ValueDecoder where Self.Decoder.Input == Data
+    
+    var decoder: Decoder { get }
+}
+
+public protocol TypedWritableCharacteristicProtocol: WritableCharacteristicProtocol {
+    associatedtype Encoder: ValueEncoder where Self.Encoder.Output == Data
+
+    var encoder: Encoder { get }
 }
 
 public protocol StringConvertibleCharacteristicProtocol: CharacteristicProtocol {
-    var stringValue: Result<String?, TypedCharacteristicError> { get }
+    var stringValue: Result<String?, DecodingError> { get }
 }
 
 public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
@@ -132,19 +144,4 @@ public protocol CharacteristicDataSource: class {
     ///
     /// - Returns: A new descriptor object.
     func descriptor(with identifier: Identifier, for characteristic: Characteristic) -> Descriptor
-}
-
-/// A characteristic of a peripheral’s service,
-/// providing further information about one of its value.
-public protocol CharacteristicValueTransformer {
-    /// The characteristic's value type.
-    associatedtype Value
-
-    /// The transformation logic for decoding the characteristic's
-    /// data value into type-safe value representation
-    func transform(data: Data) -> Result<Value, TypedCharacteristicError>
-
-    /// The transformation logic for encoding the characteristic's
-    /// type-safe value into a data representation
-    func transform(value: Value) -> Result<Data, TypedCharacteristicError>
 }

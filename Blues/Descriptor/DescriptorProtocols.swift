@@ -12,24 +12,28 @@ public protocol DescriptorProtocol: class {
     var characteristic: Characteristic { get }
     var service: ServiceProtocol { get }
     var peripheral: Peripheral { get }
+}
 
+public protocol ReadableDescriptorProtocol: DescriptorProtocol {
     var any: Any? { get }
-
-    init(identifier: Identifier, characteristic: Characteristic)
-
+    
     func read()
+}
 
+public protocol WritableDescriptorProtocol: DescriptorProtocol {
     func write(data: Data)
 }
 
 public protocol TypedDescriptorProtocol: DescriptorProtocol {
-    associatedtype Transformer: DescriptorValueTransformer
-
-    var transformer: Transformer { get }
+    associatedtype Decoder: ValueDecoder where Decoder.Input == Any
+    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
+    
+    var decoder: Decoder { get }
+    var encoder: Encoder { get }
 }
 
 public protocol StringConvertibleDescriptorProtocol: DescriptorProtocol {
-    var stringValue: Result<String?, TypedDescriptorError> { get }
+    var stringValue: Result<String?, DecodingError> { get }
 }
 
 public protocol DelegatedDescriptorProtocol: DescriptorProtocol {
@@ -55,18 +59,4 @@ public protocol DescriptorWritingDelegate: DescriptorDelegate {
     ///   - any: `.ok(any)` with the written value iff successful, otherwise `.err(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
-}
-
-/// A descriptor of a peripheral’s characteristic, providing further information about its value.
-public protocol DescriptorValueTransformer {
-    /// The descriptor's value type.
-    associatedtype Value
-
-    /// The transformation logic for decoding the descriptor's
-    /// data value into type-safe value representation
-    func transform(any: Any) -> Result<Value, TypedDescriptorError>
-
-    /// The transformation logic for encoding the descriptor's
-    /// type-safe value into a data representation
-    func transform(value: Value) -> Result<Data, TypedDescriptorError>
 }

@@ -7,12 +7,6 @@ import CoreBluetooth
 
 #if os(iOS) || os(OSX)
 
-public protocol MutableCharacteristicProtocol: class {
-    var permissions: AttributePermissions { get set }
-    var subscribedCentrals: [Central]? { get }
-    var data: Data? { get set }
-}
-
 /// Used to create a local characteristic, which can be added to the local database via
 /// `CBPeripheralManager`. Once a characteristic is published, it is cached and can no longer
 /// be changed. If a characteristic value is specified, it will be cached and marked
@@ -90,42 +84,28 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
     public init(core: CBMutableCharacteristic) {
         self.core = core
     }
-
 }
 
-// MARK: - TypedCharacteristicProtocol
-extension TypedCharacteristicProtocol where Self: MutableCharacteristicProtocol {
-    /// A type-safe value representation of the characteristic.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Characteristic.data`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Transformer.Value?, TypedCharacteristicError> {
-        guard let data = self.data else {
-            return .ok(nil)
-        }
-        return self.transformer.transform(data: data).map { .some($0) }
-    }
-
-    func set(value: Transformer.Value?) -> Result<(), TypedCharacteristicError> {
-        guard let value = value else {
-            self.data = nil
-            return .ok(())
-        }
-        switch self.transformer.transform(value: value) {
-        case let .ok(data):
-            self.data = data
-            return .ok(())
-        case let .err(error):
-            return .err(error)
-        }
-    }
-
-    public func transform(data: Result<Data, Error>) -> Result<Transformer.Value, TypedCharacteristicError> {
-        return data.mapErr { .other($0) }.flatMap { self.transformer.transform(data: $0) }
-    }
-}
+//// MARK: - TypedCharacteristicProtocol
+//extension TypedWritableCharacteristicProtocol
+//where
+//    Self: MutableCharacteristicProtocol,
+//    Encoder.Output == Data,
+//    Decoder.Input == Data
+//{
+//    func set(value: Encoder.Value?) -> Result<(), EncodingError> {
+//        guard let value = value else {
+//            self.data = nil
+//            return .ok(())
+//        }
+//        switch self.encoder.encode(value) {
+//        case let .ok(data):
+//            self.data = data
+//            return .ok(())
+//        case let .err(error):
+//            return .err(error)
+//        }
+//    }
+//}
 
 #endif

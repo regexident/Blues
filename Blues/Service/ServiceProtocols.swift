@@ -18,8 +18,6 @@ public protocol ServiceProtocol: class {
 
     var isPrimary: Bool { get }
 
-    init(identifier: Identifier, peripheral: Peripheral)
-
     func characteristic<C>(ofType type: C.Type) -> C?
     where C: Characteristic, C: TypeIdentifiable
 
