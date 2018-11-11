@@ -9,7 +9,7 @@ public protocol CharacteristicProtocol: class {
     var name: String? { get }
 
     var descriptors: [Descriptor]? { get }
-    var service: Service { get }
+    var service: ServiceProtocol { get }
     var peripheral: Peripheral { get }
 
     var shouldDiscoverDescriptorsAutomatically: Bool { get }
