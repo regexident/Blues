@@ -46,6 +46,14 @@ public protocol TypedWritableDescriptorProtocol: EncodableDescriptorProtocol {
     func write(value: Encoder.Value) -> Result<(), EncodingError>
 }
 
+public protocol TypedDescriptorProtocol: DescriptorProtocol {
+    associatedtype Decoder: ValueDecoder where Decoder.Input == Any
+    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
+    
+    var decoder: Decoder { get }
+    var encoder: Encoder { get }
+}
+
 public protocol StringConvertibleDescriptorProtocol: DescriptorProtocol {
     var stringValue: Result<String?, DecodingError> { get }
 }

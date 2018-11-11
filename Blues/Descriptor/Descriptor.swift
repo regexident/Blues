@@ -150,3 +150,93 @@ where
         peripheral.write(data: data, for: self)
     }
 }
+
+//public protocol DecodableDescriptorProtocol: DescriptorProtocol {
+//    associatedtype Decoder: ValueDecoder where Decoder.Input == Any
+//
+//    var decoder: Decoder { get }
+//}
+//
+//public protocol EncodableDescriptorProtocol: DescriptorProtocol {
+//    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
+//
+//    var encoder: Encoder { get }
+//}
+
+extension TypedReadableDescriptorProtocol
+where
+    Self: Descriptor & ReadableDescriptorProtocol
+{
+    /// A type-safe value representation of the descriptor.
+    ///
+    /// - Note:
+    ///   This is a thin type-safe wrapper around `Descriptor.data`.
+    ///   See its documentation for more information. All this wrapper basically
+    ///   does is transforming `self.data` into an `Value` object by calling
+    ///   `self.transform(data: self.data)` and then returning the result.
+    public var value: Result<Decoder.Value?, DecodingError> {
+        guard let any = self.any else {
+            return .ok(nil)
+        }
+        return self.decoder.decode(any).map { .some($0) }
+    }
+}
+
+extension TypedWritableDescriptorProtocol
+where
+    Self: Descriptor & WritableDescriptorProtocol
+{
+    /// Writes the value of a characteristic descriptor.
+    ///
+    /// - Note:
+    ///   When you call this method to write the value of a characteristic
+    ///   descriptor, the peripheral calls the `didWrite(any:for:)`
+    ///   method of its delegate object. The data passed into the data
+    ///   parameter is copied, and you can dispose of it after the method returns.
+    ///
+    /// - Important:
+    ///   You cannot use this method to write the value of a client
+    ///   configuration descriptor (represented by the
+    ///   `CBUUIDClientCharacteristicConfigurationString` constant),
+    ///   which describes how notification or indications are configured
+    ///   for a characteristic’s value with respect to a client.
+    ///   If you want to manage notifications or indications for a
+    ///   characteristic’s value, you must use the `set(notifyValue:)`
+    ///   method of `Characteristic` instead.
+    ///
+    /// Parameters:
+    /// - data: The value to be written.
+    ///
+    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    public func write(value: Encoder.Value) -> Result<(), EncodingError> {
+        return self.encoder.encode(value).flatMap { data in
+            return .ok(self.write(data: data))
+        }
+    }
+}
+
+extension StringConvertibleDescriptorProtocol
+where
+    Self: Descriptor & ReadableDescriptorProtocol
+{
+    public var stringValue: Result<String?, DecodingError> {
+        guard let any = self.any else {
+            return .ok("")
+        }
+        return .ok("\(any)")
+    }
+}
+
+extension StringConvertibleDescriptorProtocol
+    where
+    Self: Descriptor & TypedReadableDescriptorProtocol
+{
+    public var stringValue: Result<String?, DecodingError> {
+        return self.value.map { value in
+            guard let value = value else {
+                return ""
+            }
+            return "\(value)"
+        }
+    }
+}

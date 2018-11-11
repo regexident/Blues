@@ -12,3 +12,5 @@ open class DefaultCharacteristic: Characteristic {
 
 extension DefaultCharacteristic: DelegatedCharacteristicProtocol {}
 extension DefaultCharacteristic: DataSourcedCharacteristicProtocol {}
+extension DefaultCharacteristic: ReadableCharacteristicProtocol {}
+extension DefaultCharacteristic: WritableCharacteristicProtocol {}

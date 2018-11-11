@@ -30,14 +30,14 @@ open class Characteristic: CharacteristicProtocol {
     ///       return super.service as! CustomService
     ///   }
     ///   ```
-    public var service: Service {
+    public var service: ServiceProtocol {
         guard let service = self._service else {
             fatalError("Expected `Service`, found `nil` in `self.service`.")
         }
         return service
     }
 
-    private weak var _service: Service?
+    private weak var _service: ServiceProtocol?
     
     /// The peripheral that this characteristic belongs to.
     ///
@@ -83,7 +83,7 @@ open class Characteristic: CharacteristicProtocol {
 
     internal var core: CBCharacteristic!
 
-    public init(identifier: Identifier, service: Service) {
+    public init(identifier: Identifier, service: ServiceProtocol) {
         self.identifier = identifier
         self.core = nil
         self._service = service
