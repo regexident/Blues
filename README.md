@@ -1,9 +1,6 @@
-![jumbotron](jumbotron.png)
 # Blues
 
 **Blues** is a type-safe object-oriented high-level wrapper around Core Bluetooth for iOS.
-
-![screencast](screencast.gif)
 
 ## Example Usage
 
