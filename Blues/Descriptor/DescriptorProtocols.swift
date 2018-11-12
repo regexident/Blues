@@ -9,9 +9,9 @@ public protocol DescriptorProtocol: class {
 
     var name: String? { get }
 
-    var characteristic: Characteristic { get }
-    var service: Service { get }
-    var peripheral: Peripheral { get }
+    var characteristic: CharacteristicProtocol { get }
+    var service: ServiceProtocol { get }
+    var peripheral: PeripheralProtocol { get }
 }
 
 public protocol ReadableDescriptorProtocol: DescriptorProtocol {
@@ -24,12 +24,26 @@ public protocol WritableDescriptorProtocol: DescriptorProtocol {
     func write(data: Data)
 }
 
-public protocol TypedDescriptorProtocol: DescriptorProtocol {
+public protocol DecodableDescriptorProtocol: DescriptorProtocol {
     associatedtype Decoder: ValueDecoder where Decoder.Input == Any
-    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
     
     var decoder: Decoder { get }
+}
+
+public protocol EncodableDescriptorProtocol: DescriptorProtocol {
+    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
+    
     var encoder: Encoder { get }
+}
+
+public protocol TypedReadableDescriptorProtocol: DecodableDescriptorProtocol {
+    var value: Result<Decoder.Value?, DecodingError> { get }
+    
+    func read()
+}
+
+public protocol TypedWritableDescriptorProtocol: EncodableDescriptorProtocol {
+    func write(value: Encoder.Value) -> Result<(), EncodingError>
 }
 
 public protocol StringConvertibleDescriptorProtocol: DescriptorProtocol {

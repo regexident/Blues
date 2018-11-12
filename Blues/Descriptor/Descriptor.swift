@@ -16,54 +16,25 @@ open class Descriptor: DescriptorProtocol {
     /// - Note:
     ///   Default implementation returns the identifier.
     ///   Override this property to provide a name for your custom type.
-    open var name: String? {
-        return nil
-    }
+    open var name: String?
 
     /// The characteristic that this descriptor belongs to.
-    ///
-    /// - Note:
-    ///   This property is made `open` to allow for subclasses
-    ///   to override getters to return a specialized characteristic:
-    ///   ```
-    ///   open var characteristic: CustomCharacteristic {
-    ///       return super.characteristic as! CustomCharacteristic
-    ///   }
-    ///   ```
-    public var characteristic: Characteristic {
+    public var characteristic: CharacteristicProtocol {
         guard let characteristic = self._characteristic else {
             fatalError("Expected `Characteristic`, found `nil` in `self.characteristic`.")
         }
         return characteristic
     }
 
-    private weak var _characteristic: Characteristic?
+    private weak var _characteristic: CharacteristicProtocol?
 
     /// The service that this characteristic belongs to.
-    ///
-    /// - Note:
-    ///   This property is made `open` to allow for subclasses
-    ///   to override getters to return a specialized service:
-    ///   ```
-    ///   open var service: CustomService {
-    ///       return super.service as! CustomService
-    ///   }
-    ///   ```
-    open var service: Service {
+    public var service: ServiceProtocol {
         return self.characteristic.service
     }
 
     /// The peripheral that this descriptor belongs to.
-    ///
-    /// - Note:
-    ///   This property is made `open` to allow for subclasses
-    ///   to override getters to return a specialized peripheral:
-    ///   ```
-    ///   open var peripheral: CustomPeripheral {
-    ///       return super.peripheral as! CustomPeripheral
-    ///   }
-    ///   ```
-    open var peripheral: Peripheral {
+    public var peripheral: PeripheralProtocol {
         return self.service.peripheral
     }
     
@@ -78,7 +49,7 @@ open class Descriptor: DescriptorProtocol {
     fileprivate func apiMisuseErrorMessage() -> String {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
-
+    
     internal func delegated<T, U>(to type: T.Type, closure: (T) -> (U)) -> U? {
         if let delegate = self as? T {
             return closure(delegate)
@@ -107,7 +78,7 @@ extension Descriptor: Hashable {
 
 // MARK: - CustomStringConvertible
 extension Descriptor: CustomStringConvertible {
-    open var description: String {
+    public var description: String {
         let className = type(of: self)
         let attributes = [
             "identifier = \(self.identifier)",
@@ -136,7 +107,11 @@ where
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func read() {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
-        self.peripheral.readData(for: self)
+        guard let peripheral = self.peripheral as? Peripheral else {
+            let typeName = String(describing: type(of: self.peripheral))
+            fatalError("Expected `Peripheral`, found `\(typeName)`")
+        }
+        peripheral.readData(for: self)
     }
 }
 
@@ -168,62 +143,10 @@ where
     /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
     public func write(data: Data) {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
-        self.peripheral.write(data: data, for: self)
-    }
-}
-
-// MARK: - TypedDescriptorProtocol
-extension ReadableDescriptorProtocol
-where
-    Self: Descriptor & TypedDescriptorProtocol
-{
-    /// A type-safe value representation of the descriptor.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Descriptor.data`.
-    ///   See its documentation for more information. All this wrapper basically
-    ///   does is transforming `self.data` into an `Value` object by calling
-    ///   `self.transform(data: self.data)` and then returning the result.
-    public var value: Result<Decoder.Value?, DecodingError> {
-        guard let any = self.any else {
-            return .ok(nil)
+        guard let peripheral = self.peripheral as? Peripheral else {
+            let typeName = String(describing: type(of: self.peripheral))
+            fatalError("Expected `Peripheral`, found `\(typeName)`")
         }
-        return self.decoder.decode(any).map { .some($0) }
-    }
-}
-
-extension WritableDescriptorProtocol
-where
-    Self: Descriptor & TypedDescriptorProtocol
-{
-    /// Writes the value of a descriptor.
-    ///
-    /// - Note:
-    ///   This is a thin type-safe wrapper around `Descriptor.write(data:type:)`.
-    ///   See its documentation for more information. All this wrapper basically does
-    ///   is transforming `any` into an `Data` object by calling `self.transform(any: any)`
-    ///   and then passing the result to `Descriptor.write(data:type:)`.
-    ///
-    /// - SeeAlso: `Descriptor.write(data:type:)`
-    ///
-    /// - Parameters:
-    ///   - value: The value to be written.
-    ///   - type: The type of write to be executed.
-    ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
-    public func write(value: Encoder.Value, type: WriteType) -> Result<(), EncodingError> {
-        return self.encoder.encode(value).flatMap { data in
-            return .ok(self.write(data: data))
-        }
-    }
-}
-
-extension StringConvertibleDescriptorProtocol
-where
-    Self: Descriptor & TypedDescriptorProtocol & ReadableDescriptorProtocol,
-    Self.Decoder.Value: CustomStringConvertible
-{
-    public var stringValue: Result<String?, DecodingError> {
-        return self.value.map { $0?.description }
+        peripheral.write(data: data, for: self)
     }
 }

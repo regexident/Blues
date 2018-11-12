@@ -5,6 +5,10 @@
 import Foundation
 
 /// Default implementation of `Descriptor` protocol.
-open class DefaultDescriptor: Descriptor, DelegatedDescriptorProtocol {
+open class DefaultDescriptor: Descriptor {
     public weak var delegate: DescriptorDelegate?
 }
+
+extension DefaultDescriptor: DelegatedDescriptorProtocol {}
+extension DefaultDescriptor: ReadableDescriptorProtocol {}
+extension DefaultDescriptor: WritableDescriptorProtocol {}
