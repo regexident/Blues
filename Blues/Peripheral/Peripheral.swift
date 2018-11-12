@@ -59,7 +59,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     /// Options customizing the behavior of the connection.
     public var connectionOptions: ConnectionOptions?
 
-    internal var core: CorePeripheralProtocol!
+    internal var core: CBPeripheralProtocol!
 
     internal var queue: DispatchQueue
 
@@ -69,7 +69,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
         self.queue = centralManager.queue
     }
     
-    internal init(core: CorePeripheralProtocol, queue: DispatchQueue) {
+    internal init(core: CBPeripheralProtocol, queue: DispatchQueue) {
         self.identifier = Identifier(uuid: core.identifier)
         self.core = core
         self.queue = queue
@@ -131,11 +131,11 @@ open class Peripheral: NSObject, PeripheralProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func isValid(core peripheral: CorePeripheralProtocol) -> Bool {
+    internal func isValid(core peripheral: CBPeripheralProtocol) -> Bool {
         return peripheral.identifier == self.core.identifier
     }
 
-    internal func wrapperOf(service: CoreServiceProtocol) -> Service? {
+    internal func wrapperOf(service: CBServiceProtocol) -> Service? {
         return self.servicesByIdentifier?[Identifier(uuid: service.uuid)]
     }
 
@@ -151,7 +151,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
         }
     }
 
-    internal func wrapper(for core: CoreServiceProtocol) -> Service {
+    internal func wrapper(for core: CBServiceProtocol) -> Service {
         let identifier = Identifier(uuid: core.uuid)
         let service = self.dataSourced(from: PeripheralDataSource.self) { dataSource in
             return dataSource.service(with: identifier, for: self)
@@ -354,8 +354,8 @@ extension Peripheral: CBPeripheralDelegate {
     }
 }
 
-extension Peripheral: CorePeripheralDelegateProtocol {
-    func corePeripheralDidUpdateName(_ peripheral: CorePeripheralProtocol) {
+extension Peripheral: CBPeripheralDelegateProtocol {
+    func corePeripheralDidUpdateName(_ peripheral: CBPeripheralProtocol) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
                 fatalError("Method called on wrong peripheral")
@@ -367,8 +367,8 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
-        didModifyServices invalidatedServices: [CoreServiceProtocol]
+        _ peripheral: CBPeripheralProtocol,
+        didModifyServices invalidatedServices: [CBServiceProtocol]
     ) {
         self.queue.async {
             guard self.isValid(core: peripheral) else {
@@ -396,7 +396,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didReadRSSI RSSI: NSNumber,
         error: Error?
     ) {
@@ -419,7 +419,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
 
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didDiscoverServices error: Error?
     ) {
         self.queue.async {
@@ -453,7 +453,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didDiscoverIncludedServicesFor service: CBService,
         error: Error?
     ) {
@@ -491,7 +491,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didDiscoverCharacteristicsFor service: CBService,
         error: Error?
     ) {
@@ -532,7 +532,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didUpdateValueFor characteristic: CBCharacteristic,
         error: Error?
     ) {
@@ -551,7 +551,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didWriteValueFor characteristic: CBCharacteristic,
         error: Error?
     ) {
@@ -570,7 +570,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didUpdateNotificationStateFor characteristic: CBCharacteristic,
         error: Error?
     ) {
@@ -588,7 +588,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
         }
     }
     
-    func corePeripheral(_ peripheral: CorePeripheralProtocol,
+    func corePeripheral(_ peripheral: CBPeripheralProtocol,
                         didDiscoverDescriptorsFor characteristic: CBCharacteristic,
                         error: Error?
     ) {
@@ -615,7 +615,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didUpdateValueFor descriptor: CBDescriptor,
         error: Error?
     ) {
@@ -634,7 +634,7 @@ extension Peripheral: CorePeripheralDelegateProtocol {
     }
     
     func corePeripheral(
-        _ peripheral: CorePeripheralProtocol,
+        _ peripheral: CBPeripheralProtocol,
         didWriteValueFor descriptor: CBDescriptor,
         error: Error?
     ) {

@@ -7,13 +7,13 @@ import CoreBluetooth
 
 @testable import Blues
 
-class CBCentralManagerMock: CoreCentralManagerProtocol {
+class CBCentralManagerMock: CBCentralManagerProtocol {
     required convenience init() {
         self.init(delegate: nil, queue: nil, options: nil)
     }
     
     var delegate: CBCentralManagerDelegate? = nil
-    var genericDelegate: CoreCentralCentralManagerDelegateProtocol? = nil
+    var genericDelegate: CBCentralCentralManagerDelegateProtocol? = nil
     
     var isScanning: Bool = false
     var state: CBManagerState = .poweredOn {
@@ -22,7 +22,7 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         }
     }
     
-    var peripherals: [CorePeripheralProtocol] = []
+    var peripherals: [CBPeripheralProtocol] = []
     var shouldFailOnConnect: Bool = false
     
     required convenience init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?) {
@@ -31,12 +31,12 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
     
     required init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {}
     
-    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CorePeripheralProtocol] {
+    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CBPeripheralProtocol] {
         return peripherals
             .filter { identifiers.contains($0.identifier) }
     }
     
-    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CorePeripheralProtocol] {
+    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CBPeripheralProtocol] {
         let uuids = Set(serviceUUIDs)
         return peripherals
             .filter {
@@ -59,7 +59,7 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         self.isScanning = false
     }
     
-    func connect(_ peripheral: CorePeripheralProtocol, options: [String : Any]?) {
+    func connect(_ peripheral: CBPeripheralProtocol, options: [String : Any]?) {
         if shouldFailOnConnect {
             self.genericDelegate?.coreCentralManager(self, didFailToConnect: peripheral, error: nil)
         } else {
@@ -67,12 +67,12 @@ class CBCentralManagerMock: CoreCentralManagerProtocol {
         }
     }
     
-    func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol) {
+    func cancelPeripheralConnection(_ peripheral: CBPeripheralProtocol) {
         self.peripherals = peripherals.filter { $0.identifier != peripheral.identifier }
         self.genericDelegate?.coreCentralManager(self, didDisconnectPeripheral: peripheral, error: nil)
     }
     
-    func discover(_ peripheral: CorePeripheralProtocol, advertisement: [String: Any]) {
+    func discover(_ peripheral: CBPeripheralProtocol, advertisement: [String: Any]) {
         self.peripherals.append(peripheral)
         self.genericDelegate?.coreCentralManager(self, didDiscover: peripheral, advertisementData: advertisement, rssi: 100)
     }

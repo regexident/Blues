@@ -4,15 +4,15 @@
 
 import CoreBluetooth
 
-internal protocol CoreServiceProtocol: CoreAttributeProtocol {
-    var genericPeripheral: CorePeripheralProtocol { get }
+internal protocol CBServiceProtocol: CBAttributeProtocol {
+    var genericPeripheral: CBPeripheralProtocol { get }
     var isPrimary: Bool { get }
     var includedServices: [CBService]? { get }
     var characteristics: [CBCharacteristic]? { get }
 }
 
-extension CBService: CoreServiceProtocol {
-    var genericPeripheral: CorePeripheralProtocol {
+extension CBService: CBServiceProtocol {
+    var genericPeripheral: CBPeripheralProtocol {
         return self.peripheral
     }
 }

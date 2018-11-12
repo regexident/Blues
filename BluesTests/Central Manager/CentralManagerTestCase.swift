@@ -35,7 +35,7 @@ private class SelfManagingCentralManager: CentralManager, CentralManagerStateDel
         catcher.closure?()
     }
     
-    convenience init(core: CoreCentralProtocol) {
+    convenience init(core: CBCentralProtocol) {
         self.init(core: core)
     }
     

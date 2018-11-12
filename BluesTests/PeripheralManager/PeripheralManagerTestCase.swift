@@ -17,7 +17,7 @@ private class MutableServiceMock: MutableService {
 
 class PeripheralManagerTestCase: XCTestCase {
     func testIsAdvertisingProperty() {
-        let core = CorePeripheralManagerMock.default
+        let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         
         manager.startAdvertising(nil)
@@ -31,9 +31,9 @@ class PeripheralManagerTestCase: XCTestCase {
     }
     
     func testDesiredConnectionLatency() {
-        let core = CorePeripheralManagerMock.default
+        let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
-        let central = Central(core: CoreCentralMock(identifier: UUID(), maximumUpdateValueLength: 0))
+        let central = Central(core: CBCentralMock(identifier: UUID(), maximumUpdateValueLength: 0))
         let desiredLatency = PeripheralManagerConnectionLatency.high
         manager.setDesiredConnectionLatency(desiredLatency, for: central)
         
@@ -41,7 +41,7 @@ class PeripheralManagerTestCase: XCTestCase {
     }
     
     func testServiceAdding() {
-        let core = CorePeripheralManagerMock.default
+        let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()
         
@@ -52,7 +52,7 @@ class PeripheralManagerTestCase: XCTestCase {
     }
     
     func testServiceRemoving() {
-        let core = CorePeripheralManagerMock.default
+        let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()
         

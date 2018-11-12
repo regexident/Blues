@@ -6,15 +6,15 @@ import CoreBluetooth
 
 @testable import Blues
 
-class CBServiceMock: CoreServiceProtocol {
-    unowned(unsafe) var genericPeripheral: CorePeripheralProtocol
+class CBServiceMock: CBServiceProtocol {
+    unowned(unsafe) var genericPeripheral: CBPeripheralProtocol
     
     var isPrimary: Bool = true
     var includedServices: [CBService]? = nil
     var characteristics: [CBCharacteristic]? = nil
     var uuid: CBUUID
     
-    init(peripheral: CorePeripheralProtocol, uuid: CBUUID = CBUUID()) {
+    init(peripheral: CBPeripheralProtocol, uuid: CBUUID = CBUUID()) {
         self.genericPeripheral = peripheral
         self.uuid = uuid
     }

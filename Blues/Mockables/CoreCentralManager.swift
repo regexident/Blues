@@ -5,27 +5,27 @@
 import Foundation
 import CoreBluetooth
 
-protocol CoreCentralCentralManagerDelegateProtocol {
+protocol CBCentralCentralManagerDelegateProtocol {
     @available(iOS 5.0, *)
-    func coreCentralManagerDidUpdateState(_ central: CoreCentralManagerProtocol)
+    func coreCentralManagerDidUpdateState(_ central: CBCentralManagerProtocol)
     
     @available(iOS 5.0, *)
-    func coreCentralManager(_ central: CoreCentralManagerProtocol, willRestoreState dict: [String : Any])
+    func coreCentralManager(_ central: CBCentralManagerProtocol, willRestoreState dict: [String : Any])
     
     @available(iOS 5.0, *)
-    func coreCentralManager(_ central: CoreCentralManagerProtocol, didDiscover peripheral: CorePeripheralProtocol, advertisementData: [String : Any], rssi RSSI: NSNumber)
+    func coreCentralManager(_ central: CBCentralManagerProtocol, didDiscover peripheral: CBPeripheralProtocol, advertisementData: [String : Any], rssi RSSI: NSNumber)
     
     @available(iOS 5.0, *)
-    func coreCentralManager(_ central: CoreCentralManagerProtocol, didConnect peripheral: CorePeripheralProtocol)
+    func coreCentralManager(_ central: CBCentralManagerProtocol, didConnect peripheral: CBPeripheralProtocol)
     
     @available(iOS 5.0, *)
-    func coreCentralManager(_ central: CoreCentralManagerProtocol, didFailToConnect peripheral: CorePeripheralProtocol, error: Error?)
+    func coreCentralManager(_ central: CBCentralManagerProtocol, didFailToConnect peripheral: CBPeripheralProtocol, error: Error?)
 
     @available(iOS 5.0, *)
-    func coreCentralManager(_ central: CoreCentralManagerProtocol, didDisconnectPeripheral peripheral: CorePeripheralProtocol, error: Error?)
+    func coreCentralManager(_ central: CBCentralManagerProtocol, didDisconnectPeripheral peripheral: CBPeripheralProtocol, error: Error?)
 }
 
-protocol CoreCentralManagerProtocol: CoreManagerProtocol {
+protocol CBCentralManagerProtocol: CBManagerProtocol {
     
     var delegate: CBCentralManagerDelegate? { get set }
 
@@ -39,35 +39,35 @@ protocol CoreCentralManagerProtocol: CoreManagerProtocol {
     init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?)
     
     @available(iOS 7.0, *)
-    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CorePeripheralProtocol]
+    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CBPeripheralProtocol]
     
     @available(iOS 7.0, *)
-    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CorePeripheralProtocol]
+    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CBPeripheralProtocol]
     
     func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?)
     func stopScan()
     
-    func connect(_ peripheral: CorePeripheralProtocol, options: [String : Any]?)
-    func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol)
+    func connect(_ peripheral: CBPeripheralProtocol, options: [String : Any]?)
+    func cancelPeripheralConnection(_ peripheral: CBPeripheralProtocol)
 }
 
-extension CBCentralManager: CoreCentralManagerProtocol {
-    func connect(_ peripheral: CorePeripheralProtocol, options: [String : Any]?) {
+extension CBCentralManager: CBCentralManagerProtocol {
+    func connect(_ peripheral: CBPeripheralProtocol, options: [String : Any]?) {
         guard let corePeripheral = protocolCast(peripheral, to: CBPeripheral.self) else {
             return
         }
         self.connect(corePeripheral, options: options)
     }
     
-    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CorePeripheralProtocol] {
+    func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CBPeripheralProtocol] {
         return self.retrievePeripherals(withIdentifiers: identifiers) as [CBPeripheral]
     }
     
-    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CorePeripheralProtocol] {
+    func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CBPeripheralProtocol] {
         return self.retrieveConnectedPeripherals(withServices: serviceUUIDs) as [CBPeripheral]
     }
     
-    func cancelPeripheralConnection(_ peripheral: CorePeripheralProtocol) {
+    func cancelPeripheralConnection(_ peripheral: CBPeripheralProtocol) {
         guard let corePeripheral = protocolCast(peripheral, to: CBPeripheral.self) else {
             return
         }

@@ -4,13 +4,13 @@
 
 import CoreBluetooth
 
-internal protocol CoreMutableServiceProtocol: CoreServiceProtocol {
-    var genericIncludedServices: [CoreServiceProtocol]? { get set }
-    var genericCharacteristics: [CoreCharacteristicsProtocol]? { get set }
+internal protocol CBMutableServiceProtocol: CBServiceProtocol {
+    var genericIncludedServices: [CBServiceProtocol]? { get set }
+    var genericCharacteristics: [CBCharacteristicsProtocol]? { get set }
 }
 
-extension CBMutableService: CoreMutableServiceProtocol {
-    var genericIncludedServices: [CoreServiceProtocol]? {
+extension CBMutableService: CBMutableServiceProtocol {
+    var genericIncludedServices: [CBServiceProtocol]? {
         get {
             return self.includedServices
         }
@@ -19,7 +19,7 @@ extension CBMutableService: CoreMutableServiceProtocol {
         }
     }
     
-    var genericCharacteristics: [CoreCharacteristicsProtocol]? {
+    var genericCharacteristics: [CBCharacteristicsProtocol]? {
         get {
             return self.characteristics
         }
