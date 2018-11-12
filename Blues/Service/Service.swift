@@ -27,11 +27,14 @@ open class Service: ServiceProtocol {
     ///       return super.peripheral as! CustomPeripheral
     ///   }
     ///   ```
-    open var peripheral: Peripheral {
-        return self._peripheral
+    public var peripheral: Peripheral {
+        guard let peripheral = self._peripheral else {
+            fatalError("Expected `Peripheral`, found `nil` in `self.peripheral`.")
+        }
+        return peripheral
     }
 
-    private var _peripheral: Peripheral
+    private weak var _peripheral: Peripheral?
 
     /// A list of characteristics that have been discovered in this service.
     ///

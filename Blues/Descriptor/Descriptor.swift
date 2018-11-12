@@ -30,11 +30,14 @@ open class Descriptor: DescriptorProtocol {
     ///       return super.characteristic as! CustomCharacteristic
     ///   }
     ///   ```
-    open var characteristic: Characteristic {
-        return self._characteristic
+    public var characteristic: Characteristic {
+        guard let characteristic = self._characteristic else {
+            fatalError("Expected `Characteristic`, found `nil` in `self.characteristic`.")
+        }
+        return characteristic
     }
 
-    private unowned var _characteristic: Characteristic
+    private weak var _characteristic: Characteristic?
 
     /// The service that this characteristic belongs to.
     ///

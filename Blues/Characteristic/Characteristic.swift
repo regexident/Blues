@@ -31,10 +31,13 @@ open class Characteristic: CharacteristicProtocol {
     ///   }
     ///   ```
     public var service: ServiceProtocol {
-        return self._service
+        guard let service = self._service else {
+            fatalError("Expected `Service`, found `nil` in `self.service`.")
+        }
+        return service
     }
 
-    private weak var _service: ServiceProtocol!
+    private weak var _service: ServiceProtocol?
     
     /// The peripheral that this characteristic belongs to.
     ///
