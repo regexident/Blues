@@ -5,8 +5,10 @@
 import Foundation
 
 /// Default implementation of `Service` protocol.
-open class DefaultService:
-    Service, DelegatedServiceProtocol, DataSourcedServiceProtocol {
+open class DefaultService: Service {
     public weak var delegate: ServiceDelegate?
     public weak var dataSource: ServiceDataSource?
 }
+
+extension DefaultService: DelegatedServiceProtocol {}
+extension DefaultService: DataSourcedServiceProtocol {}

@@ -5,8 +5,10 @@
 import Foundation
 
 /// Default implementation of `Peripheral` protocol.
-open class DefaultPeripheral:
-    Peripheral, DelegatedPeripheralProtocol, DataSourcedPeripheralProtocol {
+open class DefaultPeripheral: Peripheral {
     public weak var delegate: PeripheralDelegate?
     public weak var dataSource: PeripheralDataSource?
 }
+
+extension DefaultPeripheral: DelegatedPeripheralProtocol {}
+extension DefaultPeripheral: DataSourcedPeripheralProtocol {}
