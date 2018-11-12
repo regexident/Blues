@@ -4,7 +4,7 @@
 
 import CoreBluetooth
 
-protocol CorePeripheralProtocol: class, CorePeerProtocol {
+protocol CBPeripheralProtocol: class, CBPeerProtocol {
     
     var delegate: CBPeripheralDelegate? { get set }
     
@@ -15,7 +15,7 @@ protocol CorePeripheralProtocol: class, CorePeerProtocol {
     
     var state: CBPeripheralState { get }
     
-    var genericServices: [CoreServiceProtocol]? { get }
+    var genericServices: [CBServiceProtocol]? { get }
     
     var canSendWriteWithoutResponse: Bool { get }
     
@@ -23,9 +23,9 @@ protocol CorePeripheralProtocol: class, CorePeerProtocol {
     
     func discoverServices(_ serviceUUIDs: [CBUUID]?)
     
-    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CoreServiceProtocol)
+    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBServiceProtocol)
     
-    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CoreServiceProtocol)
+    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBServiceProtocol)
     
     func readValue(for characteristic: CBCharacteristic)
     
@@ -46,52 +46,52 @@ protocol CorePeripheralProtocol: class, CorePeerProtocol {
     func openL2CAPChannel(_ PSM: CBL2CAPPSM)
 }
 
-internal protocol CorePeripheralDelegateProtocol: class {
+internal protocol CBPeripheralDelegateProtocol: class {
     @available(iOS 6.0, *)
-    func corePeripheralDidUpdateName(_ peripheral: CorePeripheralProtocol)
+    func corePeripheralDidUpdateName(_ peripheral: CBPeripheralProtocol)
     
     @available(iOS 7.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didModifyServices invalidatedServices: [CoreServiceProtocol])
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didModifyServices invalidatedServices: [CBServiceProtocol])
     
     @available(iOS 8.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didReadRSSI RSSI: NSNumber, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didReadRSSI RSSI: NSNumber, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didDiscoverServices error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didDiscoverServices error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didDiscoverIncludedServicesFor service: CBService, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didDiscoverIncludedServicesFor service: CBService, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didDiscoverCharacteristicsFor service: CBService, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didDiscoverCharacteristicsFor service: CBService, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didUpdateValueFor characteristic: CBCharacteristic, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didUpdateValueFor characteristic: CBCharacteristic, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didWriteValueFor characteristic: CBCharacteristic, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didWriteValueFor characteristic: CBCharacteristic, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didUpdateValueFor descriptor: CBDescriptor, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didUpdateValueFor descriptor: CBDescriptor, error: Error?)
     
     @available(iOS 5.0, *)
-    func corePeripheral(_ peripheral: CorePeripheralProtocol, didWriteValueFor descriptor: CBDescriptor, error: Error?)
+    func corePeripheral(_ peripheral: CBPeripheralProtocol, didWriteValueFor descriptor: CBDescriptor, error: Error?)
 }
 
-extension CorePeripheralProtocol {
-    public static func ==(lhs: CorePeripheralProtocol, rhs: CorePeripheralProtocol) -> Bool {
+extension CBPeripheralProtocol {
+    public static func ==(lhs: CBPeripheralProtocol, rhs: CBPeripheralProtocol) -> Bool {
         return lhs.identifier == rhs.identifier
     }
 }
 
-extension CBPeripheral: CorePeripheralProtocol {
-    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
+extension CBPeripheral: CBPeripheralProtocol {
+    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBServiceProtocol) {
         guard let coreService = protocolCast(service, to: CBService.self) else {
             return
         }
@@ -99,7 +99,7 @@ extension CBPeripheral: CorePeripheralProtocol {
         self.discoverIncludedServices(includedServiceUUIDs, for: coreService)
     }
     
-    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
+    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBServiceProtocol) {
         guard let coreService = protocolCast(service, to: CBService.self) else {
             return
         }
@@ -107,7 +107,7 @@ extension CBPeripheral: CorePeripheralProtocol {
         self.discoverCharacteristics(characteristicUUIDs, for: coreService)
     }
     
-    var genericServices: [CoreServiceProtocol]? {
+    var genericServices: [CBServiceProtocol]? {
         return self.services
     }
 }

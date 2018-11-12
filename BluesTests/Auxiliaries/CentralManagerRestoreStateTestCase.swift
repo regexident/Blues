@@ -66,7 +66,7 @@ class CentralManagerRestoreStateTestCase: XCTestCase {
     static func validInputDictionary(services: [UUID] = [], peripherals: [UUID] = []) -> [String: Any] {
         var dictionary = baseDictionary
         let serviceIdentifiers = services.map(CBUUID.init)
-        let corePeripherals = peripherals.map { uuid -> CorePeripheralProtocol in
+        let corePeripherals = peripherals.map { uuid -> CBPeripheralProtocol in
             let mock = CBPeripheralMock()
             mock.identifier = uuid
             return mock

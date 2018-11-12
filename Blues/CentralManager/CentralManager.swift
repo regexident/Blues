@@ -26,7 +26,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     }
     internal var peripheralsByIdentifier: [Identifier: Peripheral] = [:]
 
-    internal var core: CoreCentralManagerProtocol!
+    internal var core: CBCentralManagerProtocol!
 
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
     internal var timer: Timer?
@@ -43,7 +43,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         )
     }
 
-    internal init(core: CoreCentralManagerProtocol) {
+    internal init(core: CBCentralManagerProtocol) {
         super.init()
         self.core = core
         if self.core.delegate !== self {
@@ -161,7 +161,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func wrapper(for core: CorePeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
+    internal func wrapper(for core: CBPeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
         let identifier = Identifier(uuid: core.identifier)
         let peripheral = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
             return dataSource.peripheral(
@@ -271,13 +271,13 @@ extension CentralManager: CBCentralManagerDelegate {
     }
 }
 
-extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
+extension CentralManager: CBCentralCentralManagerDelegateProtocol {
     func coreCentralManager(
-        _ central: CoreCentralManagerProtocol,
+        _ central: CBCentralManagerProtocol,
         willRestoreState dictionary: [String : Any]
     ) {
         self.queue.async {
-            let restoreStateClosure = { (core: CorePeripheralProtocol) -> Peripheral in
+            let restoreStateClosure = { (core: CBPeripheralProtocol) -> Peripheral in
                 let peripheral = self.wrapper(for: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
                 return peripheral
@@ -308,7 +308,7 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
         }
     }
     
-    func coreCentralManagerDidUpdateState(_ central: CoreCentralManagerProtocol) {
+    func coreCentralManagerDidUpdateState(_ central: CBCentralManagerProtocol) {
         self.queue.async {
             self.delegated(to: CentralManagerStateDelegate.self) { delegate in
                 delegate.didUpdateState(of: self)
@@ -317,8 +317,8 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
     }
 
     func coreCentralManager(
-        _ central: CoreCentralManagerProtocol,
-        didDiscover peripheral: CorePeripheralProtocol,
+        _ central: CBCentralManagerProtocol,
+        didDiscover peripheral: CBPeripheralProtocol,
         advertisementData: [String: Any],
         rssi: NSNumber
     ) {
@@ -344,8 +344,8 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
     }
     
     func coreCentralManager(
-        _ central: CoreCentralManagerProtocol,
-        didConnect peripheral: CorePeripheralProtocol
+        _ central: CBCentralManagerProtocol,
+        didConnect peripheral: CBPeripheralProtocol
     ) {
         self.queue.async {
             let identifier = Identifier(uuid: peripheral.identifier)
@@ -366,8 +366,8 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
     }
     
     func coreCentralManager(
-        _ central: CoreCentralManagerProtocol,
-        didFailToConnect peripheral: CorePeripheralProtocol,
+        _ central: CBCentralManagerProtocol,
+        didFailToConnect peripheral: CBPeripheralProtocol,
         error: Error?
     ) {
         self.queue.async {
@@ -382,8 +382,8 @@ extension CentralManager: CoreCentralCentralManagerDelegateProtocol {
     }
     
     func coreCentralManager(
-        _ central: CoreCentralManagerProtocol,
-        didDisconnectPeripheral peripheral: CorePeripheralProtocol,
+        _ central: CBCentralManagerProtocol,
+        didDisconnectPeripheral peripheral: CBPeripheralProtocol,
         error: Error?
     ) {
         self.queue.async {

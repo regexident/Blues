@@ -5,18 +5,18 @@
 import CoreBluetooth
 @testable import Blues
 
-class CBPeripheralMock: CorePeripheralProtocol {
+class CBPeripheralMock: CBPeripheralProtocol {
     enum Error: Swift.Error {
         case unknown
     }
     
     var identifier: UUID = UUID()
-    var genericDelegate: CorePeripheralDelegateProtocol? = nil
+    var genericDelegate: CBPeripheralDelegateProtocol? = nil
     var delegate: CBPeripheralDelegate? = nil
     var name: String? = nil
     var rssi: NSNumber? = 0
     var state: CBPeripheralState = .disconnected
-    var genericServices: [CoreServiceProtocol]? = nil
+    var genericServices: [CBServiceProtocol]? = nil
     var canSendWriteWithoutResponse: Bool = false
     
     var discoverableServices: [CBUUID] = []
@@ -50,11 +50,11 @@ class CBPeripheralMock: CorePeripheralProtocol {
         genericDelegate?.corePeripheral(self, didModifyServices: [CBServiceMock.init(peripheral: self, uuid: service)])
     }
     
-    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
+    func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBServiceProtocol) {
         
     }
     
-    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CoreServiceProtocol) {
+    func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBServiceProtocol) {
         
     }
     

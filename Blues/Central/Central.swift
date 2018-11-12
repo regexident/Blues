@@ -13,7 +13,7 @@ public class Central {
         return self.core.maximumUpdateValueLength
     }
 
-    internal var core: CoreCentralProtocol
+    internal var core: CBCentralProtocol
     
     internal var concrete: CBCentral {
         guard let core = core as? CBCentral else {
@@ -23,7 +23,7 @@ public class Central {
         return core
     }
     
-    internal init(core: CoreCentralProtocol) {
+    internal init(core: CBCentralProtocol) {
         self.core = core
     }
 }

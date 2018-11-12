@@ -5,16 +5,16 @@
 import Foundation
 import CoreBluetooth
 
-internal protocol CorePeerProtocol {
+internal protocol CBPeerProtocol {
     @available(OSX 10.13, *)
     var identifier: UUID { get }
 }
 
-internal protocol CoreAttributeProtocol {
+internal protocol CBAttributeProtocol {
     var uuid: CBUUID { get }
 }
 
-internal protocol CoreCharacteristicsProtocol: class {
+internal protocol CBCharacteristicsProtocol: class {
     var service: CBService { get }
     var properties: CBCharacteristicProperties { get }
     var value: Data? { get }
@@ -26,27 +26,27 @@ internal protocol CoreCharacteristicsProtocol: class {
     var isNotifying: Bool { get }
 }
 
-internal protocol CoreCentralProtocol: CorePeerProtocol {
+internal protocol CBCentralProtocol: CBPeerProtocol {
     var maximumUpdateValueLength: Int { get }
 }
 
-internal protocol CoreManagerProtocol {
+internal protocol CBManagerProtocol {
     var state: CBManagerState { get }
 }
 
-protocol CoreATTRequestProtocol {
+protocol CBATTRequestProtocol {
     var central: CBCentral { get }
     var characteristic: CBCharacteristic { get }
     var offset: Int { get }
     var value: Data? { get }
 }
 
-extension CBPeer: CorePeerProtocol {}
-extension CBAttribute: CoreAttributeProtocol {}
-extension CBCentral: CoreCentralProtocol {}
-extension CBManager: CoreManagerProtocol {}
-extension CBCharacteristic: CoreCharacteristicsProtocol {}
-extension CBATTRequest: CoreATTRequestProtocol {}
+extension CBPeer: CBPeerProtocol {}
+extension CBAttribute: CBAttributeProtocol {}
+extension CBCentral: CBCentralProtocol {}
+extension CBManager: CBManagerProtocol {}
+extension CBCharacteristic: CBCharacteristicsProtocol {}
+extension CBATTRequest: CBATTRequestProtocol {}
 
 internal func protocolCast<T, U>(_ generic: T, to: U.Type) -> U? {
     guard let concrete = generic as? U else {
