@@ -1,5 +1,5 @@
 language: swift
 osx_image: xcode10
 script:
-- xcodebuild -scheme Blues -project Blues.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=12.1,name=iPhone 6' build test
+- xcodebuild -scheme Blues -project Blues.xcodeproj -sdk iphonesimulator build test
 
