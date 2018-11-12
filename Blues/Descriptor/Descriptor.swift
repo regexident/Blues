@@ -49,7 +49,7 @@ open class Descriptor: DescriptorProtocol {
     ///       return super.service as! CustomService
     ///   }
     ///   ```
-    open var service: ServiceProtocol {
+    open var service: Service {
         return self.characteristic.service
     }
 

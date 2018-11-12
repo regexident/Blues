@@ -9,10 +9,9 @@ public protocol ServiceProtocol: class {
 
     var name: String? { get }
 
-    var peripheral: Peripheral { get }
-
     var characteristics: [Characteristic]? { get }
     var includedServices: [Service]? { get }
+    var peripheral: Peripheral { get }
 
     var automaticallyDiscoveredCharacteristics: [Identifier]? { get }
 
