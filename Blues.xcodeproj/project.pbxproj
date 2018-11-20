@@ -220,7 +220,6 @@
 		BFBFE3772006296200402ED7 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		BFC429001F0F923F006C1F8C /* AdvertisementPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisementPersistence.swift; sourceTree = "<group>"; };
 		BFCB8DF01DC0E22200D5430D /* Blues.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Blues.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BFCB8DF31DC0E22200D5430D /* Blues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Blues.h; sourceTree = "<group>"; };
 		BFCB8DF41DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFCB8DF91DC0E22200D5430D /* BluesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFCB8E001DC0E22200D5430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -469,7 +468,6 @@
 		BFCB8DF21DC0E22200D5430D /* Blues */ = {
 			isa = PBXGroup;
 			children = (
-				BFCB8DF31DC0E22200D5430D /* Blues.h */,
 				BF102D551F0D27680099D8AB /* Descriptor */,
 				BF102D561F0D27710099D8AB /* Characteristic */,
 				BF102D571F0D27780099D8AB /* Service */,
@@ -612,12 +610,12 @@
 					};
 					BFCB8DEF1DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Manual;
 					};
 					BFCB8DF81DC0E22200D5430D = {
 						CreatedOnToolsVersion = 8.0;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -899,7 +897,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -954,7 +952,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
