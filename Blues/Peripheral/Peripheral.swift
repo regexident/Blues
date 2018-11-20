@@ -240,7 +240,7 @@ extension Peripheral {
 
 // MARK: - Hashable
 extension Peripheral {
-    open override var hashValue: Int {
+    open override var hash: Int {
         return self.identifier.hashValue
     }
 }
