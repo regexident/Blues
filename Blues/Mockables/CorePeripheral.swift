@@ -42,7 +42,7 @@ protocol CBPeripheralProtocol: class, CBPeerProtocol {
     
     func writeValue(_ data: Data, for descriptor: CBDescriptor)
     
-    @available(iOS 11.0, watchOS 4.0, *)
+    @available(iOS 11.0, watchOS 4.0, macOS 10.14, tvOS 11.0, *)
     func openL2CAPChannel(_ PSM: CBL2CAPPSM)
 }
 
