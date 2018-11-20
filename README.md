@@ -117,7 +117,7 @@ By providing `weak public var delegate: CharacteristicDelegate?` and conforming 
 
 The `Battery Level` characteristic (i.e. `BatteryLevelCharacteristic`) is specified by GATT to be part of a `Battery` service (i.e. `BatteryService`):
 
-```
+```swift
 import Blues
 
 public class BatteryService: Blues.Service,
@@ -189,7 +189,7 @@ Similiar to what we did with `BatteryService` we're overriding `var automaticall
 
 Last but not least we need to provide a data source for our `CentralManager`
 
-```
+```swift
 public class InsoleCentralManagerDataSource: CentralManagerDataSource {
     public func peripheral(
         with identifier: Identifier,
