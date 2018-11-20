@@ -73,7 +73,7 @@ open class CentralManager: NSObject, CentralManagerProtocol {
                     repeats: false
                 )
                 self.timer = timer
-                RunLoop.main.add(timer, forMode: .commonModes)
+                RunLoop.main.add(timer, forMode: .common)
             }
             self.delegated(to: CentralManagerDiscoveryDelegate.self) { delegate in
                 delegate.didStartScanningForPeripherals(with: self)
