@@ -16,7 +16,7 @@ open class Descriptor: DescriptorProtocol {
     /// - Note:
     ///   Default implementation returns the identifier.
     ///   Override this property to provide a name for your custom type.
-    open var name: String?
+    open lazy var name: String? = nil
 
     /// The characteristic that this descriptor belongs to.
     public var characteristic: CharacteristicProtocol {
