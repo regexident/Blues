@@ -13,9 +13,7 @@ open class Service: ServiceProtocol {
     ///
     /// - Note:
     ///   Default implementation returns the identifier.
-    open var name: String? {
-        return nil
-    }
+    open lazy var name: String? = nil
 
     /// The peripheral to which this service belongs.
     ///

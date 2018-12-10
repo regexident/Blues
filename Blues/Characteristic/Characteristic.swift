@@ -16,9 +16,7 @@ open class Characteristic: CharacteristicProtocol {
     /// - Note:
     ///   Default implementation returns the identifier.
     ///   Override this property to provide a name for your custom type.
-    open var name: String? {
-        return nil
-    }
+    open var name: String? = nil
 
     /// The service that this characteristic belongs to.
     ///

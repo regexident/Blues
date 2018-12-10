@@ -25,9 +25,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///   of names associated with it, this property returns its GAP device name.
     ///   Default implementation returns the identifier.
     ///   Override this property to provide a name for your custom type.
-    open var name: String? {
-        return self.core.name
-    }
+    open lazy var name: String? = self.core.name
 
     /// Which services the peripheral should discover automatically.
     /// Return `nil` to discover all available services.
