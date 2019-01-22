@@ -58,19 +58,21 @@ open class Peripheral: NSObject, PeripheralProtocol {
     public var connectionOptions: ConnectionOptions?
 
     internal var core: CBPeripheralProtocol!
-
-    internal var queue: DispatchQueue
+    internal var centralManager: CentralManager
+    internal var queue: DispatchQueue {
+        return self.centralManager.queue
+    }
 
     public init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
         self.core = nil
-        self.queue = centralManager.queue
+        self.centralManager = centralManager
     }
     
-    internal init(core: CBPeripheralProtocol, queue: DispatchQueue) {
+    internal init(core: CBPeripheralProtocol, centralManager: CentralManager) {
         self.identifier = Identifier(uuid: core.identifier)
         self.core = core
-        self.queue = queue
+        self.centralManager = centralManager
     }
     
     open func updateAdvertisement(_ advertisement: Advertisement) {
