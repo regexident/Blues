@@ -47,14 +47,14 @@ public struct Identifier {
 // MARK: - Equatable
 extension Identifier: Equatable {
     public static func == (lhs: Identifier, rhs: Identifier) -> Bool {
-        return lhs.core == rhs.core
+        return lhs.core.uuidString == rhs.core.uuidString
     }
 }
 
 // MARK: - Hashable
 extension Identifier: Hashable {
-    public var hashValue: Int {
-        return self.core.hashValue
+    public func hash(into hasher: inout Hasher) {
+        self.core.uuidString.hash(into: &hasher)
     }
 }
 
