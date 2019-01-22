@@ -110,6 +110,11 @@ public enum Result<T, E> {
 extension Result where E: Swift.Error {
     // Convert the `Result` back to typical Swift `throws` error handling
     public func unwrap() throws -> T {
+        return try self.okOrThrow()
+    }
+    
+    // Convert the `Result` back to typical Swift `throws` error handling
+    public func okOrThrow() throws -> T {
         switch self {
         case .ok(let v): return v
         case .err(let e): throw e
