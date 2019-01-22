@@ -12,7 +12,7 @@ struct CBCentralMock: CBCentralProtocol {
     var maximumUpdateValueLength: Int
 }
 
-class CentralTestCase: XCTestCase {
+class CentralTests: XCTestCase {
     
     func testCentralMaximumUpdateValueLength() {
         let maximumUpdateValueLength = 20

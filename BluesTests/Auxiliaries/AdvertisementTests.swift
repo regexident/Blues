@@ -7,7 +7,7 @@ import XCTest
 import CoreBluetooth
 @testable import Blues
 
-class AdvertisementTestCase: XCTestCase {
+class AdvertisementTests: XCTestCase {
     
     let dictionary: [String: Any] = [
         CBAdvertisementDataLocalNameKey: "Test Device",

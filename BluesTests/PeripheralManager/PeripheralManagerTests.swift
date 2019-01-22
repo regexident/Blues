@@ -15,7 +15,7 @@ private class MutableServiceMock: MutableService {
     }
 }
 
-class PeripheralManagerTestCase: XCTestCase {
+class PeripheralManagerTests: XCTestCase {
     func testIsAdvertisingProperty() {
         let core = CBPeripheralManagerMock.default
         let peripheralManager = PeripheralManager(core: core)

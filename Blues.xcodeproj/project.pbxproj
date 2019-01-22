@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */; };
-		2E0B23411F680CE400AF2B80 /* PeripheralManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */; };
+		2E0B233D1F67ED4600AF2B80 /* CentralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B233C1F67ED4600AF2B80 /* CentralTests.swift */; };
+		2E0B23411F680CE400AF2B80 /* PeripheralManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B23401F680CE400AF2B80 /* PeripheralManagerTests.swift */; };
 		2E0B23431F68105300AF2B80 /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0B23421F68105300AF2B80 /* TestSetup.swift */; };
 		2E9D018E1F66E52800E50A08 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
 		2E9D01911F66EE2500E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
 		2E9D01921F66F00000E50A08 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01901F66EE2500E50A08 /* Log.swift */; };
 		2E9D01941F67E21400E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
-		2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */; };
-		2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */; };
+		2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift */; };
+		2E9D01971F67E65800E50A08 /* CentralManagerOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTests.swift */; };
 		2E9D01981F67E6B100E50A08 /* CentralManagerScanningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */; };
 		2EC6865F20078D45008D77FF /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EF1F6AB7C900AC3B26 /* CoreService.swift */; };
 		2EC6866020078D47008D77FF /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EF1F6AB7C900AC3B26 /* CoreService.swift */; };
@@ -23,7 +23,7 @@
 		2EC6866220078D4C008D77FF /* CorePeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F51F6ABA8100AC3B26 /* CorePeripheralManager.swift */; };
 		2EC6866320078D4E008D77FF /* CoreMutableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */; };
 		2EC6866420078D4F008D77FF /* CoreMutableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */; };
-		2EC6866520078D5E008D77FF /* PeripheralTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTestCase.swift */; };
+		2EC6866520078D5E008D77FF /* PeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTests.swift */; };
 		2EC6866920078F8F008D77FF /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6866620078E87008D77FF /* CoreBluetooth.framework */; };
 		2EDF838C1F69430E00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
 		2EDF838D1F6943AD00AEEE00 /* CorePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */; };
@@ -32,12 +32,12 @@
 		2EDF83931F696BB700AEEE00 /* CBServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF83921F696BB700AEEE00 /* CBServiceMock.swift */; };
 		2EDF83961F69711500AEEE00 /* CentralManagerConnectionDelegateCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF83951F69711500AEEE00 /* CentralManagerConnectionDelegateCatcher.swift */; };
 		2EEFC32F1F669B8A00BB7657 /* CoreMockables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */; };
-		2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */; };
+		2EEFC3321F66AA1D00BB7657 /* AdvertisementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC3311F66AA1D00BB7657 /* AdvertisementTests.swift */; };
 		2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFC33A1F66D45C00BB7657 /* Helpers.swift */; };
-		2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */; };
+		2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTests.swift */; };
 		2EFE13761F68305900DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
 		2EFE13771F6830CC00DAE7E7 /* CoreCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */; };
-		2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */; };
+		2EFE13791F68311B00DAE7E7 /* CentralManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE13781F68311B00DAE7E7 /* CentralManagerTests.swift */; };
 		2EFE137C1F68314500DAE7E7 /* CBCentralManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */; };
 		BF102D541F0CF3730099D8AB /* DefaultCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */; };
 		BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */; };
@@ -155,12 +155,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralTestCase.swift; sourceTree = "<group>"; };
-		2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralManagerTestCase.swift; sourceTree = "<group>"; };
+		2E0B233C1F67ED4600AF2B80 /* CentralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralTests.swift; sourceTree = "<group>"; };
+		2E0B23401F680CE400AF2B80 /* PeripheralManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralManagerTests.swift; sourceTree = "<group>"; };
 		2E0B23421F68105300AF2B80 /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
-		2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptionsTestCase.swift; sourceTree = "<group>"; };
+		2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptionsTests.swift; sourceTree = "<group>"; };
 		2EA02D701F6BE51000E46A35 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EC6866620078E87008D77FF /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePeripheral.swift; sourceTree = "<group>"; };
@@ -169,16 +169,16 @@
 		2EDF83921F696BB700AEEE00 /* CBServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBServiceMock.swift; sourceTree = "<group>"; };
 		2EDF83951F69711500AEEE00 /* CentralManagerConnectionDelegateCatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerConnectionDelegateCatcher.swift; sourceTree = "<group>"; };
 		2EEFC32E1F669B8A00BB7657 /* CoreMockables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMockables.swift; sourceTree = "<group>"; };
-		2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTestCase.swift; sourceTree = "<group>"; };
+		2EEFC3311F66AA1D00BB7657 /* AdvertisementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementTests.swift; sourceTree = "<group>"; };
 		2EEFC33A1F66D45C00BB7657 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerOptionsTestCase.swift; sourceTree = "<group>"; };
-		2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreStateTestCase.swift; sourceTree = "<group>"; };
-		2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralTestCase.swift; sourceTree = "<group>"; };
+		2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerOptionsTests.swift; sourceTree = "<group>"; };
+		2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreStateTests.swift; sourceTree = "<group>"; };
+		2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralTests.swift; sourceTree = "<group>"; };
 		2EF8F2EF1F6AB7C900AC3B26 /* CoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreService.swift; sourceTree = "<group>"; };
 		2EF8F2F21F6AB7EF00AC3B26 /* CoreMutableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMutableService.swift; sourceTree = "<group>"; };
 		2EF8F2F51F6ABA8100AC3B26 /* CorePeripheralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePeripheralManager.swift; sourceTree = "<group>"; };
 		2EFE13751F68305900DAE7E7 /* CoreCentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCentralManager.swift; sourceTree = "<group>"; };
-		2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerTestCase.swift; sourceTree = "<group>"; };
+		2EFE13781F68311B00DAE7E7 /* CentralManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerTests.swift; sourceTree = "<group>"; };
 		2EFE137B1F68314500DAE7E7 /* CBCentralManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBCentralManagerMock.swift; sourceTree = "<group>"; };
 		BF102D531F0CF3730099D8AB /* DefaultCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCentralManager.swift; sourceTree = "<group>"; };
 		BF12A8A01DCA77D300DFD137 /* CentralManagerRestoreState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManagerRestoreState.swift; sourceTree = "<group>"; };
@@ -265,7 +265,7 @@
 		2E0B233B1F67ED3800AF2B80 /* Central */ = {
 			isa = PBXGroup;
 			children = (
-				2E0B233C1F67ED4600AF2B80 /* CentralTestCase.swift */,
+				2E0B233C1F67ED4600AF2B80 /* CentralTests.swift */,
 			);
 			path = Central;
 			sourceTree = "<group>";
@@ -273,7 +273,7 @@
 		2E0B233F1F680CCE00AF2B80 /* PeripheralManager */ = {
 			isa = PBXGroup;
 			children = (
-				2E0B23401F680CE400AF2B80 /* PeripheralManagerTestCase.swift */,
+				2E0B23401F680CE400AF2B80 /* PeripheralManagerTests.swift */,
 			);
 			path = PeripheralManager;
 			sourceTree = "<group>";
@@ -302,10 +302,10 @@
 		2EEFC3301F66AA0900BB7657 /* Auxiliaries */ = {
 			isa = PBXGroup;
 			children = (
-				2EEFC3311F66AA1D00BB7657 /* AdvertisementTestCase.swift */,
-				2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTestCase.swift */,
-				2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift */,
-				2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift */,
+				2EEFC3311F66AA1D00BB7657 /* AdvertisementTests.swift */,
+				2EEFC33E1F66DCFD00BB7657 /* CentralManagerOptionsTests.swift */,
+				2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift */,
+				2EF8F2E91F698C9D00AC3B26 /* CentralManagerRestoreStateTests.swift */,
 			);
 			path = Auxiliaries;
 			sourceTree = "<group>";
@@ -313,7 +313,7 @@
 		2EF8F2EB1F6A92B900AC3B26 /* Peripheral */ = {
 			isa = PBXGroup;
 			children = (
-				2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTestCase.swift */,
+				2EF8F2EC1F6A92DA00AC3B26 /* PeripheralTests.swift */,
 			);
 			path = Peripheral;
 			sourceTree = "<group>";
@@ -321,7 +321,7 @@
 		2EFE13741F68303200DAE7E7 /* Central Manager */ = {
 			isa = PBXGroup;
 			children = (
-				2EFE13781F68311B00DAE7E7 /* CentralManagerTestCase.swift */,
+				2EFE13781F68311B00DAE7E7 /* CentralManagerTests.swift */,
 			);
 			path = "Central Manager";
 			sourceTree = "<group>";
@@ -786,21 +786,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EEFC3321F66AA1D00BB7657 /* AdvertisementTestCase.swift in Sources */,
-				2E0B23411F680CE400AF2B80 /* PeripheralManagerTestCase.swift in Sources */,
+				2EEFC3321F66AA1D00BB7657 /* AdvertisementTests.swift in Sources */,
+				2E0B23411F680CE400AF2B80 /* PeripheralManagerTests.swift in Sources */,
 				2EFE137C1F68314500DAE7E7 /* CBCentralManagerMock.swift in Sources */,
 				2EEFC33B1F66D45C00BB7657 /* Helpers.swift in Sources */,
-				2E9D01971F67E65800E50A08 /* CentralManagerOptionsTestCase.swift in Sources */,
+				2E9D01971F67E65800E50A08 /* CentralManagerOptionsTests.swift in Sources */,
 				2E0B23431F68105300AF2B80 /* TestSetup.swift in Sources */,
-				2E0B233D1F67ED4600AF2B80 /* CentralTestCase.swift in Sources */,
+				2E0B233D1F67ED4600AF2B80 /* CentralTests.swift in Sources */,
 				2EDF83911F6964BC00AEEE00 /* CBPeripheralManagerMock.swift in Sources */,
-				2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTestCase.swift in Sources */,
+				2E9D01961F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift in Sources */,
 				2EDF838F1F69447100AEEE00 /* CBPeripheralMock.swift in Sources */,
 				2EDF83931F696BB700AEEE00 /* CBServiceMock.swift in Sources */,
-				2EC6866520078D5E008D77FF /* PeripheralTestCase.swift in Sources */,
+				2EC6866520078D5E008D77FF /* PeripheralTests.swift in Sources */,
 				2EDF83961F69711500AEEE00 /* CentralManagerConnectionDelegateCatcher.swift in Sources */,
-				2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTestCase.swift in Sources */,
-				2EFE13791F68311B00DAE7E7 /* CentralManagerTestCase.swift in Sources */,
+				2EF8F2EA1F698C9D00AC3B26 /* CentralManagerRestoreStateTests.swift in Sources */,
+				2EFE13791F68311B00DAE7E7 /* CentralManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
