@@ -13,15 +13,15 @@ class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
     var updateClosure: ((String?) -> Void)? = nil
 
     func didModify(services: [Service], of peripheral: Peripheral) {
-        modifyClosure?(services)
+        self.modifyClosure?(services)
     }
     
     func didUpdate(name: String?, of peripheral: Peripheral) {
-        updateClosure?(name)
+        self.updateClosure?(name)
     }
     
     func didRead(rssi: Result<Float, Error>, of peripheral: Peripheral) {
-        readClosure?(rssi)
+        self.readClosure?(rssi)
     }
 }
 

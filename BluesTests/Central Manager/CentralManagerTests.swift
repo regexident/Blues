@@ -15,7 +15,7 @@ private class CentralManagerStateDelegateCatcher: CentralManagerStateDelegate {
     var closure: (() -> Void)? = nil
 
     func didUpdateState(of manager: CentralManager) {
-        closure?()
+        self.closure?()
     }
 }
 
@@ -23,7 +23,7 @@ private class CentralManagerRestorationDelegateCatcher: CentralManagerRestoratio
     var closure: (() -> Void)? = nil
     
     func willRestore(state: CentralManagerRestoreState, of manager: CentralManager) {
-        closure?()
+        self.closure?()
     }
 }
 
@@ -32,7 +32,7 @@ private class SelfManagingCentralManager: CentralManager, CentralManagerStateDel
     var dataSource = FooPeripheralDataSource()
     
     func didUpdateState(of manager: CentralManager) {
-        catcher.closure?()
+        self.catcher.closure?()
     }
         
     required convenience init(options: CentralManagerOptions?, queue: DispatchQueue) {
@@ -40,7 +40,7 @@ private class SelfManagingCentralManager: CentralManager, CentralManagerStateDel
     }
     
     func peripheral(with identifier: Identifier, advertisement: Advertisement?, for manager: CentralManager) -> Peripheral {
-        return dataSource.peripheral(with: identifier, advertisement: advertisement, for: manager)
+        return self.dataSource.peripheral(with: identifier, advertisement: advertisement, for: manager)
     }
 }
 
