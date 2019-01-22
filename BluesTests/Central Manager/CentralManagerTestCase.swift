@@ -34,11 +34,7 @@ private class SelfManagingCentralManager: CentralManager, CentralManagerStateDel
     func didUpdateState(of manager: CentralManager) {
         catcher.closure?()
     }
-    
-    convenience init(core: CBCentralProtocol) {
-        self.init(core: core)
-    }
-    
+        
     required convenience init(options: CentralManagerOptions?, queue: DispatchQueue) {
         fatalError("init(options:queue:) has not been implemented")
     }
