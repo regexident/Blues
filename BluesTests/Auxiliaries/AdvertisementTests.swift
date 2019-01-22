@@ -8,23 +8,35 @@ import CoreBluetooth
 @testable import Blues
 
 class AdvertisementTests: XCTestCase {
+    private enum Key {
+        static let localNameKey: String = CBAdvertisementDataLocalNameKey
+        static let manufacturerDataKey: String = CBAdvertisementDataManufacturerDataKey
+        static let serviceDataKey: String = CBAdvertisementDataServiceDataKey
+        static let serviceUUIDsKey: String = CBAdvertisementDataServiceUUIDsKey
+        static let overflowServiceUUIDsKey: String = CBAdvertisementDataOverflowServiceUUIDsKey
+        static let solicitedServiceUUIDsKey: String = CBAdvertisementDataSolicitedServiceUUIDsKey
+        static let txPowerLevelKey: String = CBAdvertisementDataTxPowerLevelKey
+        static let isConnectable: String = CBAdvertisementDataIsConnectable
+    }
     
-    let dictionary: [String: Any] = [
-        CBAdvertisementDataLocalNameKey: "Test Device",
-        CBAdvertisementDataManufacturerDataKey: Data(),
-        CBAdvertisementDataServiceDataKey: [CBUUID(): Data()],
-        CBAdvertisementDataServiceUUIDsKey: [],
-        CBAdvertisementDataOverflowServiceUUIDsKey: [],
-        CBAdvertisementDataSolicitedServiceUUIDsKey: [],
-        CBAdvertisementDataTxPowerLevelKey: 100,
-        CBAdvertisementDataIsConnectable: true
-    ]
+    private enum Stub {
+        static let dictionary: [String: Any] = [
+            Key.localNameKey: "Test Device",
+            Key.manufacturerDataKey: Data(),
+            Key.serviceDataKey: [CBUUID(): Data()],
+            Key.serviceUUIDsKey: [],
+            Key.overflowServiceUUIDsKey: [],
+            Key.solicitedServiceUUIDsKey: [],
+            Key.txPowerLevelKey: 100,
+            Key.isConnectable: true
+        ]
+    }
     
     //MARK: Service Data
     func testExistingServiceData() {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         let uuid = UUID()
-        dictionary[CBAdvertisementDataServiceDataKey] = [
+        dictionary[Key.serviceDataKey] = [
             CBUUID(nsuuid: uuid): Data(),
         ] as Dictionary<CBUUID, Data>
         
@@ -34,9 +46,9 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testEmptyServiceData() {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
-        dictionary[CBAdvertisementDataServiceDataKey] = [:] as Dictionary<CBUUID, Data>
+        dictionary[Key.serviceDataKey] = [:] as Dictionary<CBUUID, Data>
         
         let advertisement = Advertisement(dictionary: dictionary)
         
@@ -44,9 +56,9 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testNonUUIDServiceData() {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
-        dictionary[CBAdvertisementDataServiceDataKey] = ["Test": "Test"] as Dictionary<String, String>
+        dictionary[Key.serviceDataKey] = ["Test": "Test"] as Dictionary<String, String>
         
         let advertisement = Advertisement(dictionary: dictionary)
         
@@ -55,9 +67,11 @@ class AdvertisementTests: XCTestCase {
     
     //MARK: Services
     func testServices() {
-        let services = [\Advertisement.serviceUUIDs: CBAdvertisementDataServiceUUIDsKey,
-                        \Advertisement.overflowServiceUUIDs: CBAdvertisementDataOverflowServiceUUIDsKey,
-                        \Advertisement.solicitedServiceUUIDs: CBAdvertisementDataSolicitedServiceUUIDsKey]
+        let services = [
+            \Advertisement.serviceUUIDs: Key.serviceUUIDsKey,
+            \Advertisement.overflowServiceUUIDs: Key.overflowServiceUUIDsKey,
+            \Advertisement.solicitedServiceUUIDs: Key.solicitedServiceUUIDsKey,
+        ]
         
         for (keyPath, key) in services {
             testExistingServices(keyPath: keyPath, key: key)
@@ -68,7 +82,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testExistingServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         let uuid = UUID()
         dictionary[key] = [
             CBUUID(nsuuid: uuid),
@@ -87,7 +101,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testDuplicatedServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         let uuid = UUID()
         
         dictionary[key] = [
@@ -102,7 +116,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testEmptyServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
         dictionary[key] = [] as Array<CBUUID>
         
@@ -113,7 +127,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testNonUUIDServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
         dictionary[key] = ["Test"] as Array<String>
         
@@ -124,6 +138,8 @@ class AdvertisementTests: XCTestCase {
     
     //MARK: Data Representation
     func testDataRepresentation() {
+        let dictionary = Stub.dictionary
+        
         let advertisement = Advertisement(dictionary: dictionary)
         let data = advertisement.data
         guard let restored = Advertisement(data: data) else {
@@ -157,18 +173,55 @@ class AdvertisementTests: XCTestCase {
         XCTAssertNil(advertisement)
     }
     
+    func testDescription() {
+        let dictionary = Stub.dictionary
+        
+        let advertisement = Advertisement(dictionary: dictionary)
+        let description = advertisement.description
+        
+        XCTAssertEqual(
+            description,
+            """
+            <Advertisement \
+            localName: "Test Device" \
+            manufacturerData: 0 bytes \
+            serviceData: [0000: 0 bytes] \
+            serviceUUIDs: [] \
+            overflowServiceUUIDs: [] \
+            solicitedServiceUUIDs: [] \
+            txPowerLevel: 100 \
+            isConnectable: true\
+            >
+            """
+        )
+    }
+    
     //MARK: Primitive Values
     func testPowerLevel() {
-        testPrimitiveValue(keyPath: \Advertisement.txPowerLevel, key: CBAdvertisementDataTxPowerLevelKey, expectedValue: 100)
+        testPrimitiveValue(
+            keyPath: \Advertisement.txPowerLevel,
+            key: Key.txPowerLevelKey,
+            expectedValue: 100
+        )
     }
     
     func testLocalName() {
-        testPrimitiveValue(keyPath: \Advertisement.localName, key: CBAdvertisementDataLocalNameKey, expectedValue: "Local Name")
+        testPrimitiveValue(
+            keyPath: \Advertisement.localName,
+            key: Key.localNameKey,
+            expectedValue: "Local Name"
+        )
     }
     
     func testIsConnectable() {
-        testPrimitiveValue(keyPath: \Advertisement.isConnectable, key: CBAdvertisementDataIsConnectable, expectedValue: false)
+        testPrimitiveValue(
+            keyPath: \Advertisement.isConnectable,
+            key: Key.isConnectable,
+            expectedValue: false
+        )
     }
+    
+    //MARK: Generic Helpers
     
     func testPrimitiveValue<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, expectedValue: T) {
         testPrimitiveValueExpected(keyPath: keyPath, key: key, value: expectedValue)
@@ -176,9 +229,8 @@ class AdvertisementTests: XCTestCase {
         testPrimitiveValueNil(keyPath: keyPath, key: key)
     }
     
-    //MARK: Generic Helpers
     func testPrimitiveValueExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, value: T) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
         dictionary[key] = value
         
@@ -189,7 +241,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testPrimitiveValueNotExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
 
         dictionary[key] = []
         
@@ -200,7 +252,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     func testPrimitiveValueNil<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
-        var dictionary = self.dictionary
+        var dictionary = Stub.dictionary
         
         dictionary[key] = nil as T?
         

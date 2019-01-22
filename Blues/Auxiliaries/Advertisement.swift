@@ -161,16 +161,33 @@ public struct Advertisement {
 extension Advertisement: CustomStringConvertible {
     public var description: String {
         let className = String(describing: type(of: self))
-        let properties = [
-            "localName: \(String(describing: self.localName))",
-            "manufacturerData: \(String(describing: self.manufacturerData))",
-            "serviceData: \(String(describing: self.serviceData))",
-            "serviceUUIDs: \(String(describing: self.serviceUUIDs))",
-            "overflowServiceUUIDs: \(String(describing: self.overflowServiceUUIDs))",
-            "solicitedServiceUUIDs: \(String(describing: self.solicitedServiceUUIDs))",
-            "txPowerLevel: \(String(describing: self.txPowerLevel))",
-            "isConnectable: \(String(describing: self.isConnectable))",
-        ].joined(separator: ", ")
-        return "<\(className) \(properties)>"
+        var properties = ""
+        
+        if let localName = self.localName {
+            properties += " localName: \"\(localName)\""
+        }
+        if let manufacturerData = self.manufacturerData {
+            properties += " manufacturerData: \(manufacturerData)"
+        }
+        if let serviceData = self.serviceData {
+            properties += " serviceData: \(serviceData)"
+        }
+        if let serviceUUIDs = self.serviceUUIDs {
+            properties += " serviceUUIDs: \(serviceUUIDs)"
+        }
+        if let overflowServiceUUIDs = self.overflowServiceUUIDs {
+            properties += " overflowServiceUUIDs: \(overflowServiceUUIDs)"
+        }
+        if let solicitedServiceUUIDs = self.solicitedServiceUUIDs {
+            properties += " solicitedServiceUUIDs: \(solicitedServiceUUIDs)"
+        }
+        if let txPowerLevel = self.txPowerLevel {
+            properties += " txPowerLevel: \(txPowerLevel)"
+        }
+        if let isConnectable = self.isConnectable {
+            properties += " isConnectable: \(isConnectable)"
+        }
+        
+        return "<\(className)\(properties)>"
     }
 }
