@@ -24,9 +24,9 @@ class AdvertisementTests: XCTestCase {
             Key.localNameKey: "Test Device",
             Key.manufacturerDataKey: Data(),
             Key.serviceDataKey: [CBUUID(): Data()],
-            Key.serviceUUIDsKey: [],
-            Key.overflowServiceUUIDsKey: [],
-            Key.solicitedServiceUUIDsKey: [],
+            Key.serviceUUIDsKey: [CBUUID()],
+            Key.overflowServiceUUIDsKey: [CBUUID()],
+            Key.solicitedServiceUUIDsKey: [CBUUID()],
             Key.txPowerLevelKey: 100,
             Key.isConnectable: true
         ]
@@ -150,21 +150,10 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(advertisement.isConnectable, restored.isConnectable)
         XCTAssertEqual(advertisement.txPowerLevel, restored.txPowerLevel)
         XCTAssertEqual(advertisement.manufacturerData, restored.manufacturerData)
-        XCTAssert(areOptionalsEqual(advertisement.serviceUUIDs, restored.serviceUUIDs))
-        XCTAssert(areOptionalsEqual(advertisement.solicitedServiceUUIDs, restored.solicitedServiceUUIDs))
-        XCTAssert(areOptionalsEqual(advertisement.overflowServiceUUIDs, restored.overflowServiceUUIDs))
-        
-        guard
-            let leftServiceData = advertisement.serviceData,
-            let rightServiceData = restored.serviceData
-        else {
-            return XCTFail()
-        }
-        
-        for (left, right) in zip(leftServiceData, rightServiceData) {
-            XCTAssertEqual(left.key.string, right.key.string)
-            XCTAssertEqual(left.value, right.value)
-        }
+        XCTAssertEqual(advertisement.serviceUUIDs, restored.serviceUUIDs)
+        XCTAssertEqual(advertisement.solicitedServiceUUIDs, restored.solicitedServiceUUIDs)
+        XCTAssertEqual(advertisement.overflowServiceUUIDs, restored.overflowServiceUUIDs)
+        XCTAssertEqual(advertisement.serviceData, restored.serviceData)
     }
     
     func testFailingDataRepresentation() {
@@ -186,9 +175,9 @@ class AdvertisementTests: XCTestCase {
             localName: "Test Device" \
             manufacturerData: 0 bytes \
             serviceData: [0000: 0 bytes] \
-            serviceUUIDs: [] \
-            overflowServiceUUIDs: [] \
-            solicitedServiceUUIDs: [] \
+            serviceUUIDs: [0000] \
+            overflowServiceUUIDs: [0000] \
+            solicitedServiceUUIDs: [0000] \
             txPowerLevel: 100 \
             isConnectable: true\
             >
