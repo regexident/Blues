@@ -161,18 +161,18 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func wrapper(for core: CBPeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
-        let identifier = Identifier(uuid: core.identifier)
-        let peripheral = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
+    internal func wrapperOf(peripheral: CBPeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
+        let identifier = Identifier(uuid: peripheral.identifier)
+        let wrapper = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
             return dataSource.peripheral(
                 with: identifier,
                 advertisement: advertisement,
                 for: self
             )
         } ?? DefaultPeripheral(identifier: identifier, centralManager: self)
-        peripheral.core = core
-        core.delegate = peripheral
-        return peripheral
+        wrapper.core = peripheral
+        peripheral.delegate = wrapper
+        return wrapper
     }
 
     internal func dataSourced<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
@@ -278,7 +278,7 @@ extension CentralManager: CBCentralCentralManagerDelegateProtocol {
     ) {
         self.queue.async {
             let restoreStateClosure = { (core: CBPeripheralProtocol) -> Peripheral in
-                let peripheral = self.wrapper(for: core, advertisement: nil)
+                let peripheral = self.wrapperOf(peripheral: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
                 return peripheral
             }
@@ -333,7 +333,7 @@ extension CentralManager: CBCentralCentralManagerDelegateProtocol {
                 wrapper = existingWrapper
                 wrapper.updateAdvertisement(advertisement)
             } else {
-                wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
+                wrapper = self.wrapperOf(peripheral: peripheral, advertisement: advertisement)
                 self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             }
             self.delegated(to: CentralManagerDiscoveryDelegate.self) { delegate in
