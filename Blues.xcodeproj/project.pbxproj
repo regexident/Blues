@@ -117,6 +117,9 @@
 		BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */; };
 		BFACE1511DC3E2B900328A63 /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E0E1DC0E61C00D5430D /* CentralManager.swift */; };
 		BFACE1521DC3E2FB00328A63 /* CentralManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCB8E101DC0E76600D5430D /* CentralManagerProtocols.swift */; };
+		BFAF65B621F72FC80098D98D /* L2CAPPSM.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAF65B521F72FC80098D98D /* L2CAPPSM.swift */; };
+		BFAF65B721F72FCB0098D98D /* L2CAPPSM.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAF65B521F72FC80098D98D /* L2CAPPSM.swift */; };
+		BFAF65BA21F7313C0098D98D /* L2CAPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAF65B921F7313C0098D98D /* L2CAPChannel.swift */; };
 		BFB360541DE2FEAC00B7931F /* CharacteristicProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */; };
 		BFB360561DE2FEEC00B7931F /* DescriptorProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */; };
 		BFB360581DE2FF0400B7931F /* ServiceProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */; };
@@ -211,6 +214,8 @@
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD911EC3470300FAD246 /* DefaultService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultDescriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BFAF65B521F72FC80098D98D /* L2CAPPSM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L2CAPPSM.swift; sourceTree = "<group>"; };
+		BFAF65B921F7313C0098D98D /* L2CAPChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L2CAPChannel.swift; sourceTree = "<group>"; };
 		BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProtocols.swift; sourceTree = "<group>"; };
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
@@ -439,6 +444,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		BFAF65B821F731300098D98D /* L2CAP */ = {
+			isa = PBXGroup;
+			children = (
+				BFAF65B521F72FC80098D98D /* L2CAPPSM.swift */,
+				BFAF65B921F7313C0098D98D /* L2CAPChannel.swift */,
+			);
+			path = L2CAP;
+			sourceTree = "<group>";
+		};
 		BFCB8DE61DC0E22200D5430D = {
 			isa = PBXGroup;
 			children = (
@@ -472,6 +486,7 @@
 				BF5CD5551F1BED5E00C2702A /* PeripheralManager */,
 				BF6741CD219701E50048C593 /* Coder */,
 				BF6741DE21977C330048C593 /* ValueCoder */,
+				BFAF65B821F731300098D98D /* L2CAP */,
 				BFE23EAA1DC563F500F94D20 /* Auxiliaries */,
 				2EEFC32A1F669B6800BB7657 /* Mockables */,
 				BFCB8DF41DC0E22200D5430D /* Info.plist */,
@@ -670,6 +685,7 @@
 				BF70B4C91F30E743005FCCD9 /* Service.swift in Sources */,
 				BF70B4CA1F30E743005FCCD9 /* MutableService.swift in Sources */,
 				BF70B4CB1F30E743005FCCD9 /* ServiceProtocols.swift in Sources */,
+				BFAF65B721F72FCB0098D98D /* L2CAPPSM.swift in Sources */,
 				BF6741E5219845090048C593 /* ValueCoder.swift in Sources */,
 				BF70B4CC1F30E743005FCCD9 /* DefaultService.swift in Sources */,
 				BF70B4CD1F30E743005FCCD9 /* Peripheral.swift in Sources */,
@@ -730,6 +746,7 @@
 				2EC6866120078D4C008D77FF /* CorePeripheralManager.swift in Sources */,
 				BF5CD5481F1BED5800C2702A /* MutableDescriptor.swift in Sources */,
 				BF77CEFE1DC3E45F005E41FD /* ManagerState.swift in Sources */,
+				BFAF65B621F72FC80098D98D /* L2CAPPSM.swift in Sources */,
 				BF84AD941EC34A0C00FAD246 /* DefaultDescriptor.swift in Sources */,
 				BFE23EB21DC694FC00F94D20 /* Identifier.swift in Sources */,
 				BF12A8A11DCA77D300DFD137 /* CentralManagerRestoreState.swift in Sources */,
@@ -740,6 +757,7 @@
 				BF5CD54E1F1BED5800C2702A /* PeripheralManagerAuthorizationStatus.swift in Sources */,
 				BF6741DF219796600048C593 /* StringCharacteristicValueTransformer.swift in Sources */,
 				BFCB8E0B1DC0E45600D5430D /* Peripheral.swift in Sources */,
+				BFAF65BA21F7313C0098D98D /* L2CAPChannel.swift in Sources */,
 				BFE23EB01DC65B2700F94D20 /* CharacteristicProperties.swift in Sources */,
 				BF5CD5491F1BED5800C2702A /* MutableCharacteristic.swift in Sources */,
 				BF6741DD21977BC20048C593 /* ValueCoder.swift in Sources */,

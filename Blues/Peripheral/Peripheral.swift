@@ -227,6 +227,16 @@ open class Peripheral: NSObject, PeripheralProtocol {
     }
 }
 
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+extension L2CAPPeripheralProtocol
+where
+    Self: Peripheral
+{
+    public func openL2CAPChannel(_ psm: L2CAPPSM) {
+        self.core.openL2CAPChannel(psm.core)
+    }
+}
+
 // MARK: - Equatable
 extension Peripheral {
     public static func == (lhs: Peripheral, rhs: Peripheral) -> Bool {
@@ -653,6 +663,30 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             wrapper.delegated(to: DescriptorWritingDelegate.self) { delegate in
                 delegate.didWrite(any: result, for: wrapper)
             }
+        }
+    }
+}
+
+// MARK: - CBPeripheralDelegateProtocol
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+extension Peripheral {
+    public func peripheralManager(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
+        let channel: L2CAPChannel? = channel.map { channel in
+            // FIXME: Sure it's not CBCentral?
+            guard let core = channel.peer as? CBPeripheral else {
+                fatalError()
+            }
+            
+            // Shouldn't we re-use an existing peripheral?
+//            let peer = Peripheral(core: core, queue: self.queue)
+            
+            let peer = Peripheral(core: core, centralManager: self.centralManager)
+            
+            return L2CAPChannel(core: channel, peer: peer)
+        }
+        
+        self.delegated(to: PeripheralL2CAPDelegate.self) { delegate in
+            delegate.peripheral(self, didOpen: channel, error: error)
         }
     }
 }

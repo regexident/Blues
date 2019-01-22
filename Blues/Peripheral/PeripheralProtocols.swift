@@ -86,3 +86,20 @@ public protocol PeripheralDataSource: class {
     /// - Returns: A new service object.
     func service(with identifier: Identifier, for peripheral: Peripheral) -> Service
 }
+
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+public protocol L2CAPPeripheralProtocol {
+    func openL2CAPChannel(_ psm: L2CAPPSM)
+}
+
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+public protocol PeripheralL2CAPDelegate: PeripheralDelegate {
+    /// This method is the response to a `peripheral.openL2CAPChannel(_:)` call.
+    ///
+    /// - Parameters:
+    ///   - peripheral: The peripheral requesting this information.
+    ///   - channel: The channel that was opened.
+    ///   - error: If an error occurred, the cause of the failure.
+    @available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+    func peripheral(_ peripheral: Peripheral, didOpen channel: L2CAPChannel?, error: Error?)
+}

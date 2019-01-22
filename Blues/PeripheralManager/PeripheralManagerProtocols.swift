@@ -45,6 +45,13 @@ public protocol DelegatedPeripheralManagerProtocol: PeripheralManagerProtocol {
     var delegate: PeripheralManagerDelegate? { get set }
 }
 
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+public protocol L2CAPPeripheralManagerProtocol: PeripheralManagerProtocol {
+    func publishL2CAPChannel(withEncryption encryptionRequired: Bool)
+
+    func unpublishL2CAPChannel(_ psm: L2CAPPSM)
+}
+
 /// The delegate of a `PeripheralManager` object must adopt the `PeripheralManagerDelegate`
 /// protocol. The single required method indicates the availability of the peripheral manager,
 /// while the optional methods provide information about centrals, which can connect and access
@@ -158,6 +165,38 @@ public protocol PeripheralManagerWritingDelegate: PeripheralManagerDelegate {
     /// - Parameters:
     ///   - manager: The peripheral manager providing this update.
     func peripheralManagerIsReady(toUpdateSubscribers manager: PeripheralManager)
+}
+
+@available(iOS 6.0, watchOS 4.0, macOS 10.9, tvOS 11.0, *)
+public protocol PeripheralManagerL2CAPDelegate: PeripheralManagerDelegate {
+    /// This method is the response to a `self.publishL2CAPChannel(_:)` call.
+    ///
+    /// The PSM will contain the PSM that was assigned for the published channel.
+    ///
+    /// - Parameters:
+    ///   - manager: The peripheral manager requesting this information.
+    ///   - psm: The PSM of the channel that was published.
+    ///   - error: If an error occurred, the cause of the failure.
+    func peripheralManager(_ manager: PeripheralManager, didPublishL2CAPChannel psm: L2CAPPSM, error: Error?)
+    
+    /// This method is the response to a `self.unpublishL2CAPChannel(_:)` call.
+    ///
+    /// The PSM will contain the PSM that was assigned for the unpublished channel.
+    ///
+    /// - Parameters:
+    ///   - manager: The peripheral manager requesting this information.
+    ///   - psm: The PSM of the channel that was unpublished.
+    ///   - error: If an error occurred, the cause of the failure.
+    func peripheralManager(_ manager: PeripheralManager, didUnpublishL2CAPChannel psm: L2CAPPSM, error: Error?)
+    
+    /// This method is the response to a `peripheral.openL2CAPChannel(_:)` call.
+    ///
+    /// - Parameters:
+    ///   - manager: The peripheral manager requesting this information.
+    ///   - channel: The channel that was opened.
+    ///   - error: If an error occurred, the cause of the failure.
+    @available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+    func peripheralManager(_ manager: PeripheralManager, didOpen channel: L2CAPChannel?, error: Error?)
 }
 
 #endif
