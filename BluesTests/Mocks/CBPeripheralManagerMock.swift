@@ -18,14 +18,20 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     static var _authorizationStatus = CBPeripheralManagerAuthorizationStatus.authorized
     
     static func authorizationStatus() -> CBPeripheralManagerAuthorizationStatus {
-        return _authorizationStatus
+        return self._authorizationStatus
     }
     
     static var `default`: CBPeripheralManagerMock {
-        return CBPeripheralManagerMock(delegate: nil, queue: nil, options: nil)
+        return CBPeripheralManagerMock()
     }
     
-    required init(delegate: CBPeripheralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {}
+    required init(
+        delegate: CBPeripheralManagerDelegate? = nil,
+        queue: DispatchQueue? = nil,
+        options: [String : Any]? = nil
+    ) {
+        
+    }
     
     func startAdvertising(_ advertisementData: [String : Any]?) {
         self.isAdvertising = true
@@ -36,7 +42,7 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     func setDesiredConnectionLatency(_ latency: CBPeripheralManagerConnectionLatency, for central: CBCentralProtocol) {
-        desiredConnectionLatencyStore = latency
+        self.desiredConnectionLatencyStore = latency
     }
     
     func add(_ service: CBMutableServiceProtocol) {
@@ -58,10 +64,11 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     func respond(to request: CBATTRequestProtocol, withResult result: CBATTError.Code) {
-        lastATTRequestResponse = result
+        self.lastATTRequestResponse = result
     }
     
     func publishL2CAPChannel(withEncryption encryptionRequired: Bool) {}
+    
     func unpublishL2CAPChannel(_ PSM: CBL2CAPPSM) {}
     
     func updateValue(_ value: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals centrals: [CBCentralProtocol]?) -> Bool {

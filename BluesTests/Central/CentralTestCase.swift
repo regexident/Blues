@@ -15,10 +15,20 @@ struct CBCentralMock: CBCentralProtocol {
 class CentralTestCase: XCTestCase {
     
     func testCentralMaximumUpdateValueLength() {
-        let maxminumUpdateValueLength = 20
-        let coreCentral = CBCentralMock(identifier: UUID(), maximumUpdateValueLength: maxminumUpdateValueLength)
-        let central = Central(core: coreCentral)
+        let maximumUpdateValueLength = 20
         
-        XCTAssertEqual(maxminumUpdateValueLength, central.maximumUpdateValueLength)
+        let centralMock = CBCentralMock(
+            identifier: UUID(),
+            maximumUpdateValueLength: maximumUpdateValueLength
+        )
+        
+        let peripheralManager = PeripheralManager()
+        
+        let central = Central(
+            core: centralMock,
+            peripheralManager: peripheralManager
+        )
+        
+        XCTAssertEqual(central.maximumUpdateValueLength, maximumUpdateValueLength)
     }
 }

@@ -40,11 +40,13 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
             self.core.permissions = CBAttributePermissions(rawValue: self.permissions.rawValue)
         }
     }
-
+    
     /// For notifying characteristics, the set of currently subscribed centrals.
     open var subscribedCentrals: [Central]? {
         return self.core.subscribedCentrals.map { cores in
-            cores.map { Central(core: $0) }
+            cores.map { core in
+                Central(core: core, peripheralManager: self.peripheralManager)
+            }
         }
     }
 
@@ -57,8 +59,9 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
         }
     }
 
-    internal var core: CBMutableCharacteristic
-
+    internal var core: CBMutableCharacteristic!
+    internal var peripheralManager: PeripheralManager
+    
     /// Returns a newly initialized mutable service specified by identifier and service type.
     ///
     /// - Parameters:
@@ -71,41 +74,45 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
         type identifier: Identifier,
         properties: CharacteristicProperties,
         data: Data?,
-        permissions: AttributePermissions
+        permissions: AttributePermissions,
+        peripheralManager: PeripheralManager
     ) {
-        self.init(core: CBMutableCharacteristic(
-            type: identifier.core,
-            properties: properties.core,
-            value: data,
-            permissions: permissions.core
-        ))
+        self.init(
+            core: CBMutableCharacteristic(
+                type: identifier.core,
+                properties: properties.core,
+                value: data,
+                permissions: permissions.core
+            ),
+            peripheralManager: peripheralManager
+        )
     }
 
-    public init(core: CBMutableCharacteristic) {
+    public init(core: CBMutableCharacteristic, peripheralManager: PeripheralManager) {
         self.core = core
+        self.peripheralManager = peripheralManager
     }
 }
 
-//// MARK: - TypedCharacteristicProtocol
-//extension TypedWritableCharacteristicProtocol
-//where
-//    Self: MutableCharacteristicProtocol,
-//    Encoder.Output == Data,
-//    Decoder.Input == Data
-//{
-//    func set(value: Encoder.Value?) -> Result<(), EncodingError> {
-//        guard let value = value else {
-//            self.data = nil
-//            return .ok(())
-//        }
-//        switch self.encoder.encode(value) {
-//        case let .ok(data):
-//            self.data = data
-//            return .ok(())
-//        case let .err(error):
-//            return .err(error)
-//        }
-//    }
-//}
+// MARK: - TypedCharacteristicProtocol
+extension TypedWritableCharacteristicProtocol
+where
+    Self: MutableCharacteristic,
+    Self.Encoder.Value == Data
+{
+    public func set(value: Encoder.Value?) -> Result<(), EncodingError> {
+        guard let value = value else {
+            self.data = nil
+            return .ok(())
+        }
+        switch self.encoder.encode(value) {
+        case let .ok(data):
+            self.data = data
+            return .ok(())
+        case let .err(error):
+            return .err(error)
+        }
+    }
+}
 
 #endif

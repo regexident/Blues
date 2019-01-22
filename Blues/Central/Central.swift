@@ -16,18 +16,21 @@ public class Central {
         return self.core.maximumUpdateValueLength
     }
 
-    internal var core: CBCentralProtocol
-    
-    internal var concrete: CBCentral {
-        guard let core = self.core as? CBCentral else {
-            fatalError()
-        }
-        
-        return core
+    internal var core: CBCentralProtocol!
+    internal var peripheralManager: PeripheralManager
+    internal var queue: DispatchQueue {
+        return self.peripheralManager.queue
     }
     
-    internal init(core: CBCentralProtocol) {
+    public init(identifier: Identifier, peripheralManager: PeripheralManager) {
+        self.identifier = identifier
+        self.core = nil
+        self.peripheralManager = peripheralManager
+    }
+    
+    internal init(core: CBCentralProtocol, peripheralManager: PeripheralManager) {
         self.identifier = Identifier(uuid: core.identifier)
         self.core = core
+        self.peripheralManager = peripheralManager
     }
 }

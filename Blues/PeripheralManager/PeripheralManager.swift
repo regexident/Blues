@@ -22,6 +22,10 @@ import CoreBluetooth
 /// managed at the system level and shared by all applications. This means that even if you aren't
 /// advertising at the moment, someone else might be!
 open class PeripheralManager: NSObject, PeripheralManagerProtocol {
+    private struct Constants {
+        static let queueLabel = "com.nwtnberlin.blues.queue"
+    }
+    
     /// The delegate object that will receive peripheral events.
     public weak var delegate: PeripheralManagerDelegate?
 
@@ -32,6 +36,8 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
 
     internal var core: CBPeripheralManagerProtocol!
 
+    internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
+    
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
     public var state: ManagerState {
@@ -169,11 +175,15 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         onSubscribedCentrals centrals: [Central]?
     ) -> Bool {
         assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
-        let characteristic = characteristic.core
+        let characteristic = characteristic.core!
         let centrals = centrals.map { centrals in
-            centrals.map { $0.core }
+            centrals.map { $0.core! }
         }
-        return self.core.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
+        return self.core.updateValue(
+            data,
+            for: characteristic,
+            onSubscribedCentrals: centrals
+        )
     }
 
     fileprivate func apiMisuseErrorMessage() -> String {
@@ -235,8 +245,11 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         central: CBCentral,
         didSubscribeTo characteristic: CBCharacteristic
     ) {
-        let central = Central(core: central)
-        let characteristic = MutableCharacteristic(core: characteristic as! CBMutableCharacteristic)
+        let central = Central(core: central, peripheralManager: self)
+        let characteristic = MutableCharacteristic(
+            core: characteristic as! CBMutableCharacteristic,
+            peripheralManager: self
+        )
         self.delegated(to: PeripheralManagerSubscriptionDelegate.self) { delegate in
             delegate.peripheralManager(self, central: central, didSubscribeTo: characteristic)
         }
@@ -247,8 +260,11 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         central: CBCentral,
         didUnsubscribeFrom characteristic: CBCharacteristic
     ) {
-        let central = Central(core: central)
-        let characteristic = MutableCharacteristic(core: characteristic as! CBMutableCharacteristic)
+        let central = Central(core: central, peripheralManager: self)
+        let characteristic = MutableCharacteristic(
+            core: characteristic as! CBMutableCharacteristic,
+            peripheralManager: self
+        )
         self.delegated(to: PeripheralManagerSubscriptionDelegate.self) { delegate in
             delegate.peripheralManager(self, central: central, didSubscribeTo: characteristic)
         }

@@ -18,24 +18,33 @@ private class MutableServiceMock: MutableService {
 class PeripheralManagerTestCase: XCTestCase {
     func testIsAdvertisingProperty() {
         let core = CBPeripheralManagerMock.default
-        let manager = PeripheralManager(core: core)
+        let peripheralManager = PeripheralManager(core: core)
         
-        manager.startAdvertising(nil)
+        peripheralManager.startAdvertising(nil)
         
         XCTAssertEqual(core.isAdvertising, true)
-        XCTAssertEqual(manager.isAdvertising, true)
+        XCTAssertEqual(peripheralManager.isAdvertising, true)
         
-        manager.stopAdvertising()
+        peripheralManager.stopAdvertising()
         XCTAssertEqual(core.isAdvertising, false)
-        XCTAssertEqual(manager.isAdvertising, false)
+        XCTAssertEqual(peripheralManager.isAdvertising, false)
     }
     
     func testDesiredConnectionLatency() {
         let core = CBPeripheralManagerMock.default
-        let manager = PeripheralManager(core: core)
-        let central = Central(core: CBCentralMock(identifier: UUID(), maximumUpdateValueLength: 0))
+        let peripheralManager = PeripheralManager(core: core)
+        
+        let central: Central = {
+            let core = CBCentralMock(identifier: UUID(), maximumUpdateValueLength: 0)
+            
+            return Central(
+                core: core,
+                peripheralManager: peripheralManager
+            )
+        }()
+        
         let desiredLatency = PeripheralManagerConnectionLatency.high
-        manager.setDesiredConnectionLatency(desiredLatency, for: central)
+        peripheralManager.setDesiredConnectionLatency(desiredLatency, for: central)
         
         XCTAssertEqual(core.desiredConnectionLatencyStore, desiredLatency.core)
     }

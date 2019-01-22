@@ -35,7 +35,7 @@ open class MutableService {
         }
     }
 
-    internal var core: CBMutableServiceProtocol
+    internal var core: CBMutableServiceProtocol!
 
     /// Returns a service, initialized with a service type and UUID.
     ///

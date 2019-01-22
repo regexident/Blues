@@ -8,7 +8,7 @@ import CoreBluetooth
 #if os(iOS) || os(OSX)
 
 open class MutableDescriptor : CBDescriptor {
-    internal var core: CBMutableDescriptor
+    internal var core: CBMutableDescriptor!
 
     /// Returns a decriptor, initialized with a service type and value. The _value_ is required
     /// and cannot be updated dynamically once the parent service has been published.
