@@ -6,7 +6,7 @@ import Foundation
 import CoreBluetooth
 
 open class Peripheral: NSObject, PeripheralProtocol {
-    /// The Bluetooth-specific identifier of the service.
+    /// The Bluetooth-specific identifier of the peripheral.
     public let identifier: Identifier
 
     /// The peripheral's name.
