@@ -202,6 +202,20 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     }
 }
 
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+extension L2CAPPeripheralManagerProtocol
+where
+    Self: PeripheralManager
+{
+    func publishL2CAPChannel(withEncryption encryptionRequired: Bool) {
+        self.core.publishL2CAPChannel(withEncryption: encryptionRequired)
+    }
+    
+    func unpublishL2CAPChannel(_ psm: L2CAPPSM) {
+        self.core.unpublishL2CAPChannel(psm.core)
+    }
+}
+
 // MARK: - CBPeripheralManagerDelegate
 extension PeripheralManager: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ manager: CBPeripheralManager) {
@@ -293,6 +307,46 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
     public func peripheralManagerIsReady(toUpdateSubscribers manager: CBPeripheralManager) {
         self.delegated(to: PeripheralManagerWritingDelegate.self) { delegate in
             delegate.peripheralManagerIsReady(toUpdateSubscribers: self)
+        }
+    }
+}
+
+@available(iOS 6.0, watchOS 4.0, macOS 10.9, tvOS 11.0, *)
+extension PeripheralManager {
+    public func peripheralManager(_ manager: CBPeripheralManager, didPublishL2CAPChannel psm: CBL2CAPPSM, error: Error?) {
+        let psm = L2CAPPSM(core: psm)
+        
+        self.delegated(to: PeripheralManagerL2CAPDelegate.self) { delegate in
+            delegate.peripheralManager(self, didPublishL2CAPChannel: psm, error: error)
+        }
+    }
+    
+    public func peripheralManager(_ manager: CBPeripheralManager, didUnpublishL2CAPChannel psm: CBL2CAPPSM, error: Error?) {
+        let psm = L2CAPPSM(core: psm)
+        
+        self.delegated(to: PeripheralManagerL2CAPDelegate.self) { delegate in
+            delegate.peripheralManager(self, didUnpublishL2CAPChannel: psm, error: error)
+        }
+    }
+}
+
+@available(iOS 11.0, watchOS 4.0, macOS 10.13, tvOS 11.0, *)
+extension PeripheralManager {
+    public func peripheralManager(_ manager: CBPeripheralManager, didOpen channel: CBL2CAPChannel?, error: Error?) {
+        let channel: L2CAPChannel? = channel.map { channel in
+            // FIXME: Sure it's not CBPeripheral?
+            guard let core = channel.peer as? CBCentral else {
+                fatalError()
+            }
+            
+            // Shouldn't we re-use an existing central?
+            let peer = Central(core: core, peripheralManager: self)
+            
+            return L2CAPChannel(core: channel, peer: peer)
+        }
+        
+        self.delegated(to: PeripheralManagerL2CAPDelegate.self) { delegate in
+            delegate.peripheralManager(self, didOpen: channel, error: error)
         }
     }
 }
