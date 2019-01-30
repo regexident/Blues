@@ -7,6 +7,11 @@ import CoreBluetooth
 
 @testable import Blues
 
+private struct CBCentralMock: CBCentralProtocol {
+    var identifier: UUID
+    var maximumUpdateValueLength: Int
+}
+
 private class MutableServiceMock: MutableService {
     init() {
         let randomIdentifier = Identifier(uuid: UUID())
@@ -16,7 +21,7 @@ private class MutableServiceMock: MutableService {
 }
 
 class PeripheralManagerTests: XCTestCase {
-    func testIsAdvertisingProperty() {
+    func test_isAdvertisingProperty() {
         let core = CBPeripheralManagerMock.default
         let peripheralManager = PeripheralManager(core: core)
         
@@ -30,7 +35,7 @@ class PeripheralManagerTests: XCTestCase {
         XCTAssertEqual(peripheralManager.isAdvertising, false)
     }
     
-    func testDesiredConnectionLatency() {
+    func test_desiredConnectionLatency() {
         let core = CBPeripheralManagerMock.default
         let peripheralManager = PeripheralManager(core: core)
         
@@ -49,7 +54,7 @@ class PeripheralManagerTests: XCTestCase {
         XCTAssertEqual(core.desiredConnectionLatencyStore, desiredLatency.core)
     }
     
-    func testServiceAdding() {
+    func test_serviceAdding() {
         let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()
@@ -60,7 +65,7 @@ class PeripheralManagerTests: XCTestCase {
         }))
     }
     
-    func testServiceRemoving() {
+    func test_serviceRemoving() {
         let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()

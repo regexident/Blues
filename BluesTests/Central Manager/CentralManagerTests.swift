@@ -76,7 +76,7 @@ class CentralManagerTests: XCTestCase {
         ]
     }
         
-    func testCanStartScanning() {
+    func test_canStartScanning() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = CentralManager(core: centralManagerMock)
         
@@ -87,7 +87,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testCanStopScanning() {
+    func test_canStopScanning() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = CentralManager(core: centralManagerMock)
         
@@ -100,7 +100,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testCanStartScanningWithTimeout() {
+    func test_canStartScanningWithTimeout() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = CentralManager(core: centralManagerMock)
         
@@ -125,7 +125,7 @@ class CentralManagerTests: XCTestCase {
         self.wait(for: [turnOnExpectation, turnOffExpectation], timeout: 2)
     }
     
-    func testRetrievePeripheralsByPeripheralUUIDs() {
+    func test_retrievePeripheralsByPeripheralUUIDs() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = CentralManager(core: centralManagerMock)
         
@@ -148,7 +148,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testRetrievePeripheralsByServiceUUIDs() {
+    func test_retrievePeripheralsByServiceUUIDs() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = CentralManager(core: centralManagerMock)
         
@@ -173,7 +173,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testConnectingToPeripheral() {
+    func test_connectingToPeripheral() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -200,7 +200,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testConnectingToPeripheralShouldFail() {
+    func test_connectingToPeripheralShouldFail() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -229,7 +229,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testDisconnectPeripheral() {
+    func test_disconnectPeripheral() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -267,7 +267,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testDisconnectAllPeripheral() {
+    func test_disconnectAllPeripheral() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -307,7 +307,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [allPeripheralsDisconnectedExpectation], timeout: 1)
     }
     
-    func testCustomPeripheralWrapping() {
+    func test_customPeripheralWrapping() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -330,7 +330,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testSelfDelegatingManager() {
+    func test_selfDelegatingManager() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = SelfManagingCentralManager(core: centralManagerMock)
         
@@ -345,7 +345,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testSelfDataSourcingManager() {
+    func test_selfDataSourcingManager() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -366,7 +366,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testDelegatedMananger() {
+    func test_delegatedMananger() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -385,7 +385,7 @@ class CentralManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testDataSourcedManager() {
+    func test_dataSourcedManager() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -406,7 +406,7 @@ class CentralManagerTests: XCTestCase {
         }
     }
     
-    func testStateRestoration() {
+    func test_stateRestoration() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         

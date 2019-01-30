@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
 import XCTest
 import CoreBluetooth
 
@@ -26,7 +25,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         Key.solicitedServiceUUIDsKey: Stub.solicitedServiceIdentifiers
     ]
     
-    func testAllowDuplicatesTrue() {
+    func test_allowDuplicatesTrue() {
         var dictionary = type(of: self).dictionary
         dictionary[Key.allowDuplicatesKey] = true
         
@@ -37,7 +36,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertEqual(options.allowDuplicates, true)
     }
     
-    func testAllowDuplicatesFalse() {
+    func test_allowDuplicatesFalse() {
         var dictionary = type(of: self).dictionary
         dictionary[Key.allowDuplicatesKey] = false
         
@@ -48,7 +47,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertEqual(options.allowDuplicates, false)
     }
     
-    func testAllowDuplicatesWithNoKey() {
+    func test_allowDuplicatesWithNoKey() {
         var dictionary = type(of: self).dictionary
         dictionary[Key.allowDuplicatesKey] = nil
         
@@ -60,7 +59,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertEqual(options.allowDuplicates, false)
     }
     
-    func testValidServiceIdentifier() {
+    func test_validServiceIdentifier() {
         var dictionary = type(of: self).dictionary
         let stub = Stub.solicitedServiceIdentifiers
         dictionary[Key.solicitedServiceUUIDsKey] = stub
@@ -80,7 +79,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         }
     }
     
-    func testNoServiceIdentifiers() {
+    func test_noServiceIdentifiers() {
         var dictionary = type(of: self).dictionary
         
         dictionary[Key.solicitedServiceUUIDsKey] = nil
@@ -92,7 +91,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertNil(options.solicitedServiceIdentifiers)
     }
     
-    func testDictionaryMarshalling() {
+    func test_dictionaryMarshalling() {
         let dictionary = type(of: self).dictionary
         guard let options = Options(dictionary: dictionary) else {
             return XCTFail()
@@ -107,7 +106,7 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertEqual(solicitedServicesIdentifiers as? [CBUUID], Stub.solicitedServiceIdentifiers)
     }
     
-    func testInvalidDictionaryMarshalling() {
+    func test_invalidDictionaryMarshalling() {
         var dictionary = type(of: self).dictionary
         
         dictionary[Key.solicitedServiceUUIDsKey] = 123

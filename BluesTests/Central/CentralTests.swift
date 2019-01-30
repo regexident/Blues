@@ -7,14 +7,13 @@ import CoreBluetooth
 
 @testable import Blues
 
-struct CBCentralMock: CBCentralProtocol {
+private struct CBCentralMock: CBCentralProtocol {
     var identifier: UUID
     var maximumUpdateValueLength: Int
 }
 
 class CentralTests: XCTestCase {
-    
-    func testCentralMaximumUpdateValueLength() {
+    func test_centralMaximumUpdateValueLength() {
         let maximumUpdateValueLength = 20
         
         let centralMock = CBCentralMock(

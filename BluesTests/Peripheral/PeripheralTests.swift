@@ -7,7 +7,7 @@ import CoreBluetooth
 
 @testable import Blues
 
-class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
+private class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
     var readClosure: ((Result<Float, Error>) -> Void)? = nil
     var modifyClosure: (([Service]) -> Void)? = nil
     var updateClosure: ((String?) -> Void)? = nil
@@ -26,7 +26,7 @@ class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
 }
 
 class PeripheralTests: XCTestCase {
-    func testPeripheralIdentifier() {
+    func test_peripheralIdentifier() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -41,7 +41,7 @@ class PeripheralTests: XCTestCase {
         XCTAssertEqual(peripheralMock.identifier.uuidString, peripheral.identifier.string)
     }
     
-    func testPeripheralName() {
+    func test_peripheralName() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -56,7 +56,7 @@ class PeripheralTests: XCTestCase {
         XCTAssertEqual(peripheralMock.name, peripheral.name)
     }
     
-    func testPeripheralState() {
+    func test_peripheralState() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -71,7 +71,7 @@ class PeripheralTests: XCTestCase {
         XCTAssertEqual(peripheralMock.state, peripheral.state.inner)
     }
     
-    func testIsValid() {
+    func test_isValid() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -92,7 +92,7 @@ class PeripheralTests: XCTestCase {
         XCTAssertFalse(peripheral.isValid(core: otherCore))
     }
     
-    func testServiceDisoveryAllServicesRequested() {
+    func test_serviceDisoveryAllServicesRequested() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -123,7 +123,7 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func testServiceDisoverySomeServicesRequested() {
+    func test_serviceDisoverySomeServicesRequested() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -156,7 +156,7 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func testServiceDisoveryNoServicesRequested() {
+    func test_serviceDisoveryNoServicesRequested() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -184,7 +184,7 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func testServiceDisoveryNilServicesRequested() {
+    func test_serviceDisoveryNilServicesRequested() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -215,7 +215,7 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func testModifiedServices() {
+    func test_modifiedServices() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -252,7 +252,7 @@ class PeripheralTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testValidRSSIReading() {
+    func test_validRSSIReading() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         
@@ -283,7 +283,7 @@ class PeripheralTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testInvalidRSSIReading() {
+    func test_invalidRSSIReading() {
         let centralManagerMock = CBCentralManagerMock()
         let centralManager = DefaultCentralManager(core: centralManagerMock)
         

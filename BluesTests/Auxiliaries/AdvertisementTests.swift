@@ -2,10 +2,15 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
 import XCTest
 import CoreBluetooth
+
 @testable import Blues
+
+private struct CBCentralMock: CBCentralProtocol {
+    var identifier: UUID
+    var maximumUpdateValueLength: Int
+}
 
 class AdvertisementTests: XCTestCase {
     private enum Key {
@@ -33,7 +38,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     //MARK: Service Data
-    func testExistingServiceData() {
+    func test_existingServiceData() {
         var dictionary = Stub.dictionary
         let uuid = UUID()
         dictionary[Key.serviceDataKey] = [
@@ -45,7 +50,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(advertisement.serviceData?.count, 1)
     }
     
-    func testEmptyServiceData() {
+    func test_emptyServiceData() {
         var dictionary = Stub.dictionary
         
         dictionary[Key.serviceDataKey] = [:] as Dictionary<CBUUID, Data>
@@ -55,7 +60,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(advertisement.serviceData?.count, 0)
     }
     
-    func testNonUUIDServiceData() {
+    func test_nonUUIDServiceData() {
         var dictionary = Stub.dictionary
         
         dictionary[Key.serviceDataKey] = ["Test": "Test"] as Dictionary<String, String>
@@ -66,7 +71,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     //MARK: Services
-    func testServices() {
+    func test_services() {
         let services = [
             \Advertisement.serviceUUIDs: Key.serviceUUIDsKey,
             \Advertisement.overflowServiceUUIDs: Key.overflowServiceUUIDsKey,
@@ -74,14 +79,14 @@ class AdvertisementTests: XCTestCase {
         ]
         
         for (keyPath, key) in services {
-            testExistingServices(keyPath: keyPath, key: key)
-            testDuplicatedServices(keyPath: keyPath, key: key)
-            testEmptyServices(keyPath: keyPath, key: key)
-            testNonUUIDServices(keyPath: keyPath, key: key)
+            self.test_existingServices(keyPath: keyPath, key: key)
+            self.test_duplicatedServices(keyPath: keyPath, key: key)
+            self.test_emptyServices(keyPath: keyPath, key: key)
+            self.test_nonUUIDServices(keyPath: keyPath, key: key)
         }
     }
     
-    func testExistingServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
+    func test_existingServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
         var dictionary = Stub.dictionary
         let uuid = UUID()
         dictionary[key] = [
@@ -100,7 +105,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(coreUUID.uuid.uuidString, uuid.uuidString)
     }
     
-    func testDuplicatedServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
+    func test_duplicatedServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
         var dictionary = Stub.dictionary
         let uuid = UUID()
         
@@ -115,7 +120,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(value?.count, 2)
     }
     
-    func testEmptyServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
+    func test_emptyServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
         var dictionary = Stub.dictionary
         
         dictionary[key] = [] as Array<CBUUID>
@@ -126,7 +131,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(value?.count, 0)
     }
     
-    func testNonUUIDServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
+    func test_nonUUIDServices(keyPath: KeyPath<Advertisement, [Identifier]?>, key: String) {
         var dictionary = Stub.dictionary
         
         dictionary[key] = ["Test"] as Array<String>
@@ -137,7 +142,7 @@ class AdvertisementTests: XCTestCase {
     }
     
     //MARK: Data Representation
-    func testDataRepresentation() {
+    func test_dataRepresentation() {
         let dictionary = Stub.dictionary
         
         let advertisement = Advertisement(dictionary: dictionary)
@@ -156,13 +161,13 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(advertisement.serviceData, restored.serviceData)
     }
     
-    func testFailingDataRepresentation() {
+    func test_failingDataRepresentation() {
         let data = Data()
         let advertisement = Advertisement(data: data)
         XCTAssertNil(advertisement)
     }
     
-    func testDescription() {
+    func test_description() {
         let dictionary = Stub.dictionary
         
         let advertisement = Advertisement(dictionary: dictionary)
@@ -186,24 +191,24 @@ class AdvertisementTests: XCTestCase {
     }
     
     //MARK: Primitive Values
-    func testPowerLevel() {
-        testPrimitiveValue(
+    func test_powerLevel() {
+        test_primitiveValue(
             keyPath: \Advertisement.txPowerLevel,
             key: Key.txPowerLevelKey,
             expectedValue: 100
         )
     }
     
-    func testLocalName() {
-        testPrimitiveValue(
+    func test_localName() {
+        test_primitiveValue(
             keyPath: \Advertisement.localName,
             key: Key.localNameKey,
             expectedValue: "Local Name"
         )
     }
     
-    func testIsConnectable() {
-        testPrimitiveValue(
+    func test_isConnectable() {
+        test_primitiveValue(
             keyPath: \Advertisement.isConnectable,
             key: Key.isConnectable,
             expectedValue: false
@@ -212,13 +217,13 @@ class AdvertisementTests: XCTestCase {
     
     //MARK: Generic Helpers
     
-    func testPrimitiveValue<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, expectedValue: T) {
-        testPrimitiveValueExpected(keyPath: keyPath, key: key, value: expectedValue)
-        testPrimitiveValueNotExpected(keyPath: keyPath, key: key)
-        testPrimitiveValueNil(keyPath: keyPath, key: key)
+    func test_primitiveValue<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, expectedValue: T) {
+        self.test_primitiveValueExpected(keyPath: keyPath, key: key, value: expectedValue)
+        self.test_primitiveValueNotExpected(keyPath: keyPath, key: key)
+        self.test_primitiveValueNil(keyPath: keyPath, key: key)
     }
     
-    func testPrimitiveValueExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, value: T) {
+    func test_primitiveValueExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String, value: T) {
         var dictionary = Stub.dictionary
         
         dictionary[key] = value
@@ -229,7 +234,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(transformed!, value)
     }
     
-    func testPrimitiveValueNotExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
+    func test_primitiveValueNotExpected<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
         var dictionary = Stub.dictionary
 
         dictionary[key] = []
@@ -240,7 +245,7 @@ class AdvertisementTests: XCTestCase {
         XCTAssertEqual(transformed, nil)
     }
     
-    func testPrimitiveValueNil<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
+    func test_primitiveValueNil<T: Equatable>(keyPath: KeyPath<Advertisement, T?>, key: String) {
         var dictionary = Stub.dictionary
         
         dictionary[key] = nil as T?

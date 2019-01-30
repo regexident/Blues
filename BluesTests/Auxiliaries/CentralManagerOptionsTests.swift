@@ -23,7 +23,7 @@ class CentralManagerOptionsTests: XCTestCase {
         ]
     }
 
-    func testShouldShowPowerAlert() {
+    func test_shouldShowPowerAlert() {
         var dictionary = Stub.dictionary
         dictionary[Key.showPowerAlertKey] = true
 
@@ -34,7 +34,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, true)
     }
     
-    func testShouldntShowPowerAlert() {
+    func test_shouldntShowPowerAlert() {
         var dictionary = Stub.dictionary
         dictionary[Key.showPowerAlertKey] = false
         
@@ -45,7 +45,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, false)
     }
     
-    func testShowPowerAlertWithNoKey() {
+    func test_showPowerAlertWithNoKey() {
         var dictionary = Stub.dictionary
         dictionary[Key.showPowerAlertKey] = nil
         
@@ -56,7 +56,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, nil)
     }
     
-    func testProperIdentifier() {
+    func test_properIdentifier() {
         let identifier = UUID().uuidString
         var dictionary = Stub.dictionary
         
@@ -76,7 +76,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(value, identifier)
     }
     
-    func testNoRestoreIdentifier() {
+    func test_noRestoreIdentifier() {
         var dictionary = Stub.dictionary
         
         dictionary[Key.restoreIdentifierKey] = nil
@@ -88,7 +88,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertNil(options.restoreIdentifier)
     }
     
-    func testDictionaryMarshalling() {
+    func test_dictionaryMarshalling() {
         let dictionary = Stub.dictionary
         
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
@@ -104,7 +104,7 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(shoudShowPowerAlert as? Bool, Stub.shouldShowPowerAlert)
     }
     
-    func testInvalidDictionaryMarshalling() {
+    func test_invalidDictionaryMarshalling() {
         var dictionary = Stub.dictionary
         
         dictionary[Key.restoreIdentifierKey] = 123

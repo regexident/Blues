@@ -33,7 +33,7 @@ class CentralManagerRestoreStateTests: XCTestCase {
         ]
     }
     
-    func testRestoreationWithDictionary() {
+    func test_restoreationWithDictionary() {
         let serviceIdentifiers = [UUID()]
         let peripheralIdentifiers = [UUID()]
         let dictionary = CentralManagerRestoreStateTests.validInputDictionary(services: serviceIdentifiers, peripherals: peripheralIdentifiers)
@@ -83,7 +83,7 @@ class CentralManagerRestoreStateTests: XCTestCase {
         XCTAssertEqual(restoredPeripherals, peripherals)
     }
     
-    func testRestoreationWithInvalidDictionary() {
+    func test_restoreationWithInvalidDictionary() {
         var dictionary = type(of: self).validInputDictionary()
         
         dictionary[Key.restoredStateScanOptionsKey] = nil
