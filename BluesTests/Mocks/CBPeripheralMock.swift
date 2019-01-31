@@ -87,7 +87,7 @@ class CBPeripheralMock: CBPeripheralProtocol {
         
     }
     
-    func openL2CAPChannel(_ PSM: CBL2CAPPSM) {
+    func open(l2capChannel: _ PSM: CBL2CAPPSM) {
         
     }
 }

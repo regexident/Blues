@@ -232,7 +232,7 @@ extension L2CAPPeripheralProtocol
 where
     Self: Peripheral
 {
-    public func openL2CAPChannel(_ psm: L2CAPPSM) {
+    public func open(l2capChannel psm: L2CAPPSM) {
         self.core.openL2CAPChannel(psm.core)
     }
 }

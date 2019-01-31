@@ -189,7 +189,7 @@ public protocol PeripheralManagerL2CAPDelegate: PeripheralManagerDelegate {
     ///   - error: If an error occurred, the cause of the failure.
     func peripheralManager(_ manager: PeripheralManager, didUnpublishL2CAPChannel psm: L2CAPPSM, error: Error?)
     
-    /// This method is the response to a `peripheral.openL2CAPChannel(_:)` call.
+    /// This method is the response to a `peripheral.open(l2capChannel: _:)` call.
     ///
     /// - Parameters:
     ///   - manager: The peripheral manager requesting this information.
