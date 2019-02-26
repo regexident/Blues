@@ -165,7 +165,6 @@
 		2E9D01901F66EE2500E50A08 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2E9D01931F67E21400E50A08 /* CentralManagerScanningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptions.swift; sourceTree = "<group>"; };
 		2E9D01951F67E22900E50A08 /* CentralManagerScanningOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerScanningOptionsTests.swift; sourceTree = "<group>"; };
-		2EA02D701F6BE51000E46A35 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EC6866620078E87008D77FF /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		2EDF838B1F69430E00AEEE00 /* CorePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePeripheral.swift; sourceTree = "<group>"; };
 		2EDF838E1F69447100AEEE00 /* CBPeripheralMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBPeripheralMock.swift; sourceTree = "<group>"; };
@@ -213,13 +212,11 @@
 		BF6741D7219763B50048C593 /* FixedWidthIntegerValueCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixedWidthIntegerValueCoder.swift; sourceTree = "<group>"; };
 		BF6741DC21977BC20048C593 /* ValueCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueCoder.swift; sourceTree = "<group>"; };
 		BF70B4B81F30E70F005FCCD9 /* libBlues.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlues.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF70B4E81F30E855005FCCD9 /* libResult.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libResult.a; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/libResult.a"; sourceTree = "<group>"; };
 		BF77CEFD1DC3E45F005E41FD /* ManagerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerState.swift; sourceTree = "<group>"; };
 		BF77CEFF1DC3E494005E41FD /* CentralManagerOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CentralManagerOptions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD8F1EC3411700FAD246 /* DefaultCharacteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultCharacteristic.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD911EC3470300FAD246 /* DefaultService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BF84AD931EC34A0C00FAD246 /* DefaultDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DefaultDescriptor.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		BFA1CC341E66DA42009B077C /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB360531DE2FEAB00B7931F /* CharacteristicProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicProtocols.swift; sourceTree = "<group>"; };
 		BFB360551DE2FEEC00B7931F /* DescriptorProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorProtocols.swift; sourceTree = "<group>"; };
 		BFB360571DE2FF0400B7931F /* ServiceProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProtocols.swift; sourceTree = "<group>"; };
@@ -447,9 +444,6 @@
 			isa = PBXGroup;
 			children = (
 				2EC6866620078E87008D77FF /* CoreBluetooth.framework */,
-				2EA02D701F6BE51000E46A35 /* Result.framework */,
-				BF70B4E81F30E855005FCCD9 /* libResult.a */,
-				BFA1CC341E66DA42009B077C /* Result.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
