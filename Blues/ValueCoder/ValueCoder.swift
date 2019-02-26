@@ -63,15 +63,3 @@ public protocol ValueDecoder {
 }
 
 public typealias ValueCoder = ValueDecoder & ValueEncoder
-
-/// A characteristic value that provides a matching value coder.
-public protocol CodableCharacteristicValue {
-    associatedtype Encoder: ValueEncoder where Encoder.Value == Self, Encoder.Output == Data
-    associatedtype Decoder: ValueDecoder where Decoder.Value == Self, Decoder.Input == Data
-}
-
-/// A descriptor value that provides a matching value coder.
-public protocol CodableDescriptorValue {
-    associatedtype Encoder: ValueEncoder where Encoder.Value == Self, Encoder.Output == Data
-    associatedtype Decoder: ValueDecoder where Decoder.Value == Self, Decoder.Input == Any
-}

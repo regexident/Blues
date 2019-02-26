@@ -15,6 +15,10 @@ import CoreBluetooth
 /// it is considered a dynamic value and will be requested on-demand. Dynamic values are
 /// identified by a _value_ of _nil_.
 open class MutableCharacteristic: MutableCharacteristicProtocol {
+    public let identifier: Identifier
+    
+    public let properties: CharacteristicProperties
+    
     /// A list of descriptors that describe the characteristic.
     ///
     /// - Note:
@@ -40,13 +44,11 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
             self.core.permissions = CBAttributePermissions(rawValue: self.permissions.rawValue)
         }
     }
-    
+
     /// For notifying characteristics, the set of currently subscribed centrals.
     open var subscribedCentrals: [Central]? {
         return self.core.subscribedCentrals.map { cores in
-            cores.map { core in
-                Central(core: core, peripheralManager: self.peripheralManager)
-            }
+            cores.map { Central(core: $0) }
         }
     }
 
@@ -59,9 +61,8 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
         }
     }
 
-    internal var core: CBMutableCharacteristic!
-    internal var peripheralManager: PeripheralManager
-    
+    internal let core: CBMutableCharacteristic
+
     /// Returns a newly initialized mutable service specified by identifier and service type.
     ///
     /// - Parameters:
@@ -70,48 +71,26 @@ open class MutableCharacteristic: MutableCharacteristicProtocol {
     ///   - value: The characteristic value to be cached.
     ///     If _nil_, the value will be dynamic and requested on-demand.
     ///   - permissions: The permissions of the characteristic value.
-    public convenience init(
-        type identifier: Identifier,
+    public init(
+        identifier: Identifier,
         properties: CharacteristicProperties,
         data: Data?,
-        permissions: AttributePermissions,
-        peripheralManager: PeripheralManager
+        permissions: AttributePermissions
     ) {
-        self.init(
-            core: CBMutableCharacteristic(
-                type: identifier.core,
-                properties: properties.core,
-                value: data,
-                permissions: permissions.core
-            ),
-            peripheralManager: peripheralManager
+        self.identifier = identifier
+        self.properties = properties
+        self.core = CBMutableCharacteristic(
+            type: identifier.core,
+            properties: properties.core,
+            value: data,
+            permissions: permissions.core
         )
     }
 
-    public init(core: CBMutableCharacteristic, peripheralManager: PeripheralManager) {
+    internal init(core: CBMutableCharacteristic) {
+        self.identifier = Identifier(uuid: core.uuid)
+        self.properties = CharacteristicProperties(core: core.properties)
         self.core = core
-        self.peripheralManager = peripheralManager
-    }
-}
-
-// MARK: - TypedCharacteristicProtocol
-extension TypedWritableCharacteristicProtocol
-where
-    Self: MutableCharacteristic,
-    Self.Encoder.Value == Data
-{
-    public func set(value: Encoder.Value?) -> Result<(), EncodingError> {
-        guard let value = value else {
-            self.data = nil
-            return .ok(())
-        }
-        switch self.encoder.encode(value) {
-        case let .ok(data):
-            self.data = data
-            return .ok(())
-        case let .err(error):
-            return .err(error)
-        }
     }
 }
 

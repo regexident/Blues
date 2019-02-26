@@ -5,22 +5,21 @@
 import Foundation
 import CoreBluetooth
 
-open class DefaultCentralManager:
-    CentralManager, DelegatedCentralManagerProtocol, DataSourcedCentralManagerProtocol
+open class DefaultPeripheralManager:
+    PeripheralManager, DelegatedPeripheralManagerProtocol
 {
-    public weak var delegate: CentralManagerDelegate?
-    public weak var dataSource: CentralManagerDataSource?
+    public weak var delegate: PeripheralManagerDelegate?
     
     public init(
-        delegate: CentralManagerDelegate? = nil,
+        delegate: PeripheralManagerDelegate? = nil,
         queue: DispatchQueue = .global(),
-        options: CentralManagerOptions? = nil
+        options: [String : Any]? = nil
     ) {
         self.delegate = delegate
         super.init(queue: queue, options: options)
     }
     
-    internal override init(core: CBCentralManagerProtocol) {
+    internal override init(core: CBPeripheralManagerProtocol) {
         super.init(core: core)
     }
 }

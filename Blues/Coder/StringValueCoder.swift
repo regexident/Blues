@@ -40,8 +40,3 @@ extension StringValueCoder: ValueDecoder {
         return .ok(string)
     }
 }
-
-extension String: CodableCharacteristicValue {
-    public typealias Encoder = StringValueCoder
-    public typealias Decoder = StringValueCoder
-}

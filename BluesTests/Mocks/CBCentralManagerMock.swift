@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Foundation
 import CoreBluetooth
 
 @testable import Blues
@@ -31,13 +32,13 @@ class CBCentralManagerMock: CBCentralManagerProtocol {
     required init(delegate: CBCentralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {}
     
     func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CBPeripheralProtocol] {
-        return peripherals
+        return self.peripherals
             .filter { identifiers.contains($0.identifier) }
     }
     
     func retrieveConnectedPeripherals(withServices serviceUUIDs: [CBUUID]) -> [CBPeripheralProtocol] {
         let uuids = Set(serviceUUIDs)
-        return peripherals
+        return self.peripherals
             .filter {
                 guard let servicesArray = $0.genericServices else {
                     return false
@@ -59,7 +60,7 @@ class CBCentralManagerMock: CBCentralManagerProtocol {
     }
     
     func connect(_ peripheral: CBPeripheralProtocol, options: [String : Any]?) {
-        if shouldFailOnConnect {
+        if self.shouldFailOnConnect {
             self.genericDelegate?.coreCentralManager(self, didFailToConnect: peripheral, error: nil)
         } else {
             self.genericDelegate?.coreCentralManager(self, didConnect: peripheral)
@@ -67,7 +68,7 @@ class CBCentralManagerMock: CBCentralManagerProtocol {
     }
     
     func cancelPeripheralConnection(_ peripheral: CBPeripheralProtocol) {
-        self.peripherals = peripherals.filter { $0.identifier != peripheral.identifier }
+        self.peripherals = self.peripherals.filter { $0.identifier != peripheral.identifier }
         self.genericDelegate?.coreCentralManager(self, didDisconnectPeripheral: peripheral, error: nil)
     }
     

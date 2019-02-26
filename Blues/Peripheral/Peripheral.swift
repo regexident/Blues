@@ -6,7 +6,7 @@ import Foundation
 import CoreBluetooth
 
 open class Peripheral: NSObject, PeripheralProtocol {
-    /// The Bluetooth-specific identifier of the peripheral.
+    /// The Bluetooth-specific identifier of the service.
     public let identifier: Identifier
 
     /// The peripheral's name.
@@ -58,21 +58,19 @@ open class Peripheral: NSObject, PeripheralProtocol {
     public var connectionOptions: ConnectionOptions?
 
     internal var core: CBPeripheralProtocol!
-    internal var centralManager: CentralManager
-    internal var queue: DispatchQueue {
-        return self.centralManager.queue
-    }
+
+    internal var queue: DispatchQueue
 
     public init(identifier: Identifier, centralManager: CentralManager) {
         self.identifier = identifier
         self.core = nil
-        self.centralManager = centralManager
+        self.queue = centralManager.queue
     }
     
-    internal init(core: CBPeripheralProtocol, centralManager: CentralManager) {
+    internal init(core: CBPeripheralProtocol, queue: DispatchQueue) {
         self.identifier = Identifier(uuid: core.identifier)
         self.core = core
-        self.centralManager = centralManager
+        self.queue = queue
     }
     
     open func updateAdvertisement(_ advertisement: Advertisement) {

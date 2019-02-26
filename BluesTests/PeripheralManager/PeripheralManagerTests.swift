@@ -7,11 +7,6 @@ import CoreBluetooth
 
 @testable import Blues
 
-private struct CBCentralMock: CBCentralProtocol {
-    var identifier: UUID
-    var maximumUpdateValueLength: Int
-}
-
 private class MutableServiceMock: MutableService {
     init() {
         let randomIdentifier = Identifier(uuid: UUID())
@@ -21,40 +16,31 @@ private class MutableServiceMock: MutableService {
 }
 
 class PeripheralManagerTests: XCTestCase {
-    func test_isAdvertisingProperty() {
+    func testIsAdvertisingProperty() {
         let core = CBPeripheralManagerMock.default
-        let peripheralManager = PeripheralManager(core: core)
+        let manager = PeripheralManager(core: core)
         
-        peripheralManager.startAdvertising(nil)
+        manager.startAdvertising(nil)
         
         XCTAssertEqual(core.isAdvertising, true)
-        XCTAssertEqual(peripheralManager.isAdvertising, true)
+        XCTAssertEqual(manager.isAdvertising, true)
         
-        peripheralManager.stopAdvertising()
+        manager.stopAdvertising()
         XCTAssertEqual(core.isAdvertising, false)
-        XCTAssertEqual(peripheralManager.isAdvertising, false)
+        XCTAssertEqual(manager.isAdvertising, false)
     }
     
-    func test_desiredConnectionLatency() {
+    func testDesiredConnectionLatency() {
         let core = CBPeripheralManagerMock.default
-        let peripheralManager = PeripheralManager(core: core)
-        
-        let central: Central = {
-            let core = CBCentralMock(identifier: UUID(), maximumUpdateValueLength: 0)
-            
-            return Central(
-                core: core,
-                peripheralManager: peripheralManager
-            )
-        }()
-        
+        let manager = PeripheralManager(core: core)
+        let central = Central(core: CBCentralMock(identifier: UUID(), maximumUpdateValueLength: 0))
         let desiredLatency = PeripheralManagerConnectionLatency.high
-        peripheralManager.setDesiredConnectionLatency(desiredLatency, for: central)
+        manager.setDesiredConnectionLatency(desiredLatency, for: central)
         
         XCTAssertEqual(core.desiredConnectionLatencyStore, desiredLatency.core)
     }
     
-    func test_serviceAdding() {
+    func testServiceAdding() {
         let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()
@@ -65,7 +51,7 @@ class PeripheralManagerTests: XCTestCase {
         }))
     }
     
-    func test_serviceRemoving() {
+    func testServiceRemoving() {
         let core = CBPeripheralManagerMock.default
         let manager = PeripheralManager(core: core)
         let service = MutableServiceMock()

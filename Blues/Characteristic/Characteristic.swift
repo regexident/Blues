@@ -7,7 +7,7 @@ import CoreBluetooth
 
 /// A characteristic of a peripheral’s service,
 /// providing further information about one of its value.
-open class Characteristic: CharacteristicProtocol {
+open class Characteristic: PeripheralCharacteristicProtocol {
     /// The Bluetooth-specific identifier of the characteristic.
     public let identifier: Identifier
 
@@ -158,8 +158,8 @@ extension Characteristic: Equatable {
 
 // MARK: - Hashable
 extension Characteristic: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        self.identifier.hash(into: &hasher)
+    public var hashValue: Int {
+        return self.identifier.hashValue
     }
 }
 
@@ -282,10 +282,6 @@ where
     }
 }
 
-// MARK: - TypedCharacteristicProtocol
-//extension ReadableCharacteristicProtocol
-//where
-//    Self: TypedCharacteristicProtocol,
 extension ReadableCharacteristicProtocol
 where
     Self: Characteristic & TypedReadableCharacteristicProtocol

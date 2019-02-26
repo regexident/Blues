@@ -11,7 +11,10 @@ import CoreBluetooth
 /// via `CBPeripheralManager`. Once a service is published, it is cached and can no longer
 /// be changed. This class adds write access to all properties in the `CBService` class.
 open class MutableService {
-    open var includedServices: [Service]? {
+    /// The Bluetooth-specific identifier of the service.
+    public let identifier: Identifier
+    
+    open var includedServices: [MutableService]? {
         didSet {
             self.core.genericIncludedServices = self.includedServices.map { includedServices in
                 includedServices.map { $0.core }
@@ -27,30 +30,58 @@ open class MutableService {
     ///   a heart rate service may contain one characteristic that describes the intended
     ///   body location of the device’s heart rate sensor and another characteristic that
     ///   transmits heart rate measurement data.
-    open var characteristics: [Characteristic]? {
+    open var characteristics: [CharacteristicProtocol]? {
         didSet {
             self.core.genericCharacteristics = self.characteristics.map { characteristics in
-                characteristics.map { $0.core }
+                characteristics.compactMap { characteristic in
+                    guard let facade = characteristic as? CharacteristicFacadeProtocol else {
+                        return nil
+                    }
+                    return facade.core
+                }
             }
         }
     }
 
-    internal var core: CBMutableServiceProtocol!
+    internal let core: CBMutableServiceProtocol
 
     /// Returns a service, initialized with a service type and UUID.
     ///
     /// - Parameters:
     ///   - identifier: The Bluetooth identifier of the service.
     ///   - isPrimary: The type of the service (primary or secondary).
-    public convenience init(type identifier: Identifier, primary isPrimary: Bool) {
-        self.init(core: CBMutableService(
+    public init(
+        identifier: Identifier,
+        primary isPrimary: Bool = true
+    ) {
+        self.identifier = identifier
+        self.core = CBMutableService(
             type: identifier.core,
             primary: isPrimary
-        ))
+        )
     }
 
-    internal init(core: CBMutableService) {
+    internal init(core: CBMutableServiceProtocol) {
+        self.identifier = Identifier(uuid: core.uuid)
         self.core = core
+    }
+    
+    // FIXME: remove
+    public init(core: CBMutableService) {
+        self.identifier = Identifier(uuid: core.uuid)
+        self.core = core
+    }
+}
+
+extension MutableService: Equatable {
+    public static func == (lhs: MutableService, rhs: MutableService) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}
+
+extension MutableService: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        self.identifier.hash(into: &hasher)
     }
 }
 

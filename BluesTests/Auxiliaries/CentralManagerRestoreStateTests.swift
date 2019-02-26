@@ -8,56 +8,26 @@ import CoreBluetooth
 @testable import Blues
 
 class CentralManagerRestoreStateTests: XCTestCase {
-    private enum Key {
-        static let allowDuplicatesKey: String = CBCentralManagerScanOptionAllowDuplicatesKey
-        static let solicitedServiceUUIDsKey: String = CBCentralManagerScanOptionSolicitedServiceUUIDsKey
-        
-        static let restoredStateScanOptionsKey: String = CBCentralManagerRestoredStateScanOptionsKey
-        static let restoredStatePeripheralsKey: String = CBCentralManagerRestoredStatePeripheralsKey
-        static let restoredStateScanServicesKey: String = CBCentralManagerRestoredStateScanServicesKey
-    }
+    static let baseDictionary: [String: Any] = [
+        CBCentralManagerRestoredStateScanOptionsKey: false,
+        CBCentralManagerRestoredStatePeripheralsKey: false,
+        CBCentralManagerRestoredStateScanServicesKey: false
+    ]
     
-    private enum Stub {
-        static let solicitedServiceIdentifiers = [CBUUID(), CBUUID()]
-        static let allowDuplicates = true
-        
-        static let scanDictionary: [String: Any] = [
-            Key.allowDuplicatesKey: Stub.allowDuplicates,
-            Key.solicitedServiceUUIDsKey: Stub.solicitedServiceIdentifiers
-        ]
-        
-        static let restoreDictionary: [String: Any] = [
-            Key.restoredStateScanOptionsKey: false,
-            Key.restoredStatePeripheralsKey: false,
-            Key.restoredStateScanServicesKey: false
-        ]
-    }
-    
-    func test_restoreationWithDictionary() {
+    func testRestoreationWithDictionary() {
         let serviceIdentifiers = [UUID()]
         let peripheralIdentifiers = [UUID()]
         let dictionary = CentralManagerRestoreStateTests.validInputDictionary(services: serviceIdentifiers, peripherals: peripheralIdentifiers)
         
         let services = serviceIdentifiers.map(Identifier.init)
         let peripherals = peripheralIdentifiers.map { (uuid) -> Peripheral in
-            let centralManager = CentralManager()
-            let peripheralMock = CBPeripheralMock()
-            
-            peripheralMock.identifier = uuid
-            
-            return Peripheral(
-                core: peripheralMock,
-                centralManager: centralManager
-            )
+            let core = CBPeripheralMock()
+            core.identifier = uuid
+            return Peripheral(core: core, queue: .main)
         }
         
         let restorationState = CentralManagerRestoreState(dictionary: dictionary) { core in
-            let centralManager = CentralManager()
-            
-            return Peripheral(
-                core: core,
-                centralManager: centralManager
-            )
+            return Peripheral(core: core, queue: .main)
         }
         
         guard let restoredServices = restorationState?.scanServices else {
@@ -72,9 +42,7 @@ class CentralManagerRestoreStateTests: XCTestCase {
             return XCTFail()
         }
         
-        guard let scanOptions = CentralManagerScanningOptions(
-            dictionary: Stub.scanDictionary
-        ) else {
+        guard let scanOptions = CentralManagerScanningOptions(dictionary: CentralManagerScanningOptionsTests.dictionary) else {
             return XCTFail()
         }
         
@@ -83,25 +51,20 @@ class CentralManagerRestoreStateTests: XCTestCase {
         XCTAssertEqual(restoredPeripherals, peripherals)
     }
     
-    func test_restoreationWithInvalidDictionary() {
-        var dictionary = type(of: self).validInputDictionary()
+    func testRestoreationWithInvalidDictionary() {
+        var dictionary = CentralManagerRestoreStateTests.validInputDictionary()
         
-        dictionary[Key.restoredStateScanOptionsKey] = nil
+        dictionary[CBCentralManagerRestoredStateScanOptionsKey] = nil
         
         let restorationState = CentralManagerRestoreState(dictionary: dictionary) { core in
-            let centralManager = CentralManager()
-            
-            return Peripheral(
-                core: core,
-                centralManager: centralManager
-            )
+            return Peripheral(core: core, queue: .main)
         }
 
         XCTAssertNil(restorationState)
     }
     
     static func validInputDictionary(services: [UUID] = [], peripherals: [UUID] = []) -> [String: Any] {
-        var dictionary = Stub.restoreDictionary
+        var dictionary = baseDictionary
         let serviceIdentifiers = services.map(CBUUID.init)
         let corePeripherals = peripherals.map { uuid -> CBPeripheralProtocol in
             let mock = CBPeripheralMock()
@@ -109,9 +72,9 @@ class CentralManagerRestoreStateTests: XCTestCase {
             return mock
         }
         
-        dictionary[Key.restoredStateScanOptionsKey] = Stub.scanDictionary
-        dictionary[Key.restoredStatePeripheralsKey] = corePeripherals
-        dictionary[Key.restoredStateScanServicesKey] = serviceIdentifiers
+        dictionary[CBCentralManagerRestoredStateScanOptionsKey] = CentralManagerScanningOptionsTests.dictionary
+        dictionary[CBCentralManagerRestoredStatePeripheralsKey] = corePeripherals
+        dictionary[CBCentralManagerRestoredStateScanServicesKey] = serviceIdentifiers
         
         return dictionary
     }

@@ -7,27 +7,23 @@ import CoreBluetooth
 
 @testable import Blues
 
-private struct CBCentralMock: CBCentralProtocol {
+class CBCentralMock: CBCentralProtocol {
     var identifier: UUID
     var maximumUpdateValueLength: Int
+    
+    init(identifier: UUID, maximumUpdateValueLength: Int) {
+        self.identifier = identifier
+        self.maximumUpdateValueLength = maximumUpdateValueLength
+    }
 }
 
 class CentralTests: XCTestCase {
-    func test_centralMaximumUpdateValueLength() {
-        let maximumUpdateValueLength = 20
+    
+    func testCentralMaximumUpdateValueLength() {
+        let maxminumUpdateValueLength = 20
+        let coreCentral = CBCentralMock(identifier: UUID(), maximumUpdateValueLength: maxminumUpdateValueLength)
+        let central = Central(core: coreCentral)
         
-        let centralMock = CBCentralMock(
-            identifier: UUID(),
-            maximumUpdateValueLength: maximumUpdateValueLength
-        )
-        
-        let peripheralManager = PeripheralManager()
-        
-        let central = Central(
-            core: centralMock,
-            peripheralManager: peripheralManager
-        )
-        
-        XCTAssertEqual(central.maximumUpdateValueLength, maximumUpdateValueLength)
+        XCTAssertEqual(maxminumUpdateValueLength, central.maximumUpdateValueLength)
     }
 }

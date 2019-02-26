@@ -22,22 +22,15 @@ import CoreBluetooth
 /// managed at the system level and shared by all applications. This means that even if you aren't
 /// advertising at the moment, someone else might be!
 open class PeripheralManager: NSObject, PeripheralManagerProtocol {
-    private struct Constants {
-        static let queueLabel = "com.nwtnberlin.blues.queue"
-    }
-    
-    /// The delegate object that will receive peripheral events.
-    public weak var delegate: PeripheralManagerDelegate?
-
     /// Whether or not the peripheral is currently advertising data.
     open var isAdvertising: Bool {
         return self.core.isAdvertising
     }
+    
+    public private(set) var services: Set<MutableService> = []
 
     internal var core: CBPeripheralManagerProtocol!
 
-    internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
-    
     @available(iOS 10.0, *)
     @available(iOSApplicationExtension 10.0, *)
     public var state: ManagerState {
@@ -52,6 +45,10 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     public class func authorizationStatus() -> PeripheralManagerAuthorizationStatus {
         return .init(from: CBPeripheralManager.authorizationStatus())
     }
+    
+//    public convenience required override init() {
+//        
+//    }
 
     /// The initialization call. The events of the peripheral role will be dispatched
     /// on the provided queue. If `nil`, the main queue will be used.
@@ -60,11 +57,11 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///   - delegate: The delegate that will receive peripheral role events.
     ///   - queue: The dispatch queue on which the events will be dispatched.
     ///   - options: An optional dictionary specifying options for the manager.
-    public convenience required init(
+    public init(
         queue: DispatchQueue = .global(),
         options: [String : Any]? = nil
     ) {
-        self.init()
+        super.init()
         self.core = CBPeripheralManager(
             delegate: self,
             queue: queue,
@@ -72,8 +69,8 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         )
     }
     
-    internal convenience init(core: CBPeripheralManagerProtocol) {
-        self.init()
+    internal init(core: CBPeripheralManagerProtocol) {
+        super.init()
         self.core = core
         if self.core.delegate !== self {
             self.core.delegate = self
@@ -96,6 +93,7 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     /// - Parameter advertisementData: An optional dictionary containing the data to be advertised.
     public func startAdvertising(_ advertisement: Advertisement?) {
         assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+        print("Advertisement:", advertisement?.dictionary.map { "\($0)" } ?? "nil")
         self.core.startAdvertising(advertisement?.dictionary)
     }
 
@@ -126,7 +124,12 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///
     /// - Parameter service: A GATT service.
     public func add(_ service: MutableService) {
-        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+//        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+        guard !self.services.contains(service) else {
+            return
+        }
+        
+        self.services.insert(service)
         self.core.add(service.core)
     }
 
@@ -135,13 +138,19 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
     ///
     /// - Parameter service: A GATT service.
     public func remove(_ service: MutableService) {
-        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+//        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+        guard self.services.contains(service) else {
+            return
+        }
+        
+        self.services.remove(service)
         self.core.remove(service.core)
     }
 
     /// Removes all published services from the local database.
     public func removeAllServices() {
-        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+//        assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
+        self.services.removeAll()
         self.core.removeAllServices()
     }
 
@@ -175,15 +184,11 @@ open class PeripheralManager: NSObject, PeripheralManagerProtocol {
         onSubscribedCentrals centrals: [Central]?
     ) -> Bool {
         assert(self.state == .poweredOn, self.apiMisuseErrorMessage())
-        let characteristic = characteristic.core!
+        let characteristic = characteristic.core
         let centrals = centrals.map { centrals in
-            centrals.map { $0.core! }
+            centrals.map { $0.core }
         }
-        return self.core.updateValue(
-            data,
-            for: characteristic,
-            onSubscribedCentrals: centrals
-        )
+        return self.core.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
     }
 
     fileprivate func apiMisuseErrorMessage() -> String {
@@ -210,15 +215,15 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         }
     }
 
-    public func peripheralManager(
-        _ manager: CBPeripheralManager,
-        willRestoreState dictionary: [String : Any]
-    ) {
-        self.delegated(to: PeripheralManagerRestorationDelegate.self) { delegate in
-            let state = PeripheralManagerRestoreState(dictionary: dictionary)
-            delegate.peripheralManager(self, willRestoreState: state)
-        }
-    }
+//    public func peripheralManager(
+//        _ manager: CBPeripheralManager,
+//        willRestoreState dictionary: [String : Any]
+//    ) {
+//        self.delegated(to: PeripheralManagerRestorationDelegate.self) { delegate in
+//            let state = PeripheralManagerRestoreState(dictionary: dictionary)
+//            delegate.peripheralManager(self, willRestoreState: state)
+//        }
+//    }
 
     public func peripheralManagerDidStartAdvertising(
         _ manager: CBPeripheralManager,
@@ -245,11 +250,8 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         central: CBCentral,
         didSubscribeTo characteristic: CBCharacteristic
     ) {
-        let central = Central(core: central, peripheralManager: self)
-        let characteristic = MutableCharacteristic(
-            core: characteristic as! CBMutableCharacteristic,
-            peripheralManager: self
-        )
+        let central = Central(core: central)
+        let characteristic = MutableCharacteristic(core: characteristic as! CBMutableCharacteristic)
         self.delegated(to: PeripheralManagerSubscriptionDelegate.self) { delegate in
             delegate.peripheralManager(self, central: central, didSubscribeTo: characteristic)
         }
@@ -260,11 +262,8 @@ extension PeripheralManager: CBPeripheralManagerDelegate {
         central: CBCentral,
         didUnsubscribeFrom characteristic: CBCharacteristic
     ) {
-        let central = Central(core: central, peripheralManager: self)
-        let characteristic = MutableCharacteristic(
-            core: characteristic as! CBMutableCharacteristic,
-            peripheralManager: self
-        )
+        let central = Central(core: central)
+        let characteristic = MutableCharacteristic(core: characteristic as! CBMutableCharacteristic)
         self.delegated(to: PeripheralManagerSubscriptionDelegate.self) { delegate in
             delegate.peripheralManager(self, central: central, didSubscribeTo: characteristic)
         }

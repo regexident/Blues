@@ -60,7 +60,7 @@ extension CharacteristicProperties: Equatable {
 
 // MARK: - Hashable
 extension CharacteristicProperties: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        self.rawValue.hash(into: &hasher)
+    public var hashValue: Int {
+        return self.rawValue.hashValue
     }
 }

@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Foundation
 import CoreBluetooth
 
 @testable import Blues
@@ -21,16 +22,10 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     static var `default`: CBPeripheralManagerMock {
-        return CBPeripheralManagerMock()
+        return CBPeripheralManagerMock(delegate: nil, queue: nil, options: nil)
     }
     
-    required init(
-        delegate: CBPeripheralManagerDelegate? = nil,
-        queue: DispatchQueue? = nil,
-        options: [String : Any]? = nil
-    ) {
-        
-    }
+    required init(delegate: CBPeripheralManagerDelegate?, queue: DispatchQueue?, options: [String : Any]?) {}
     
     func startAdvertising(_ advertisementData: [String : Any]?) {
         self.isAdvertising = true
@@ -49,7 +44,7 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     func remove(_ service: CBMutableServiceProtocol) {
-        guard let index = serviceStore.index(where: { (knownService) -> Bool in
+        guard let index = self.serviceStore.index(where: { (knownService) -> Bool in
             knownService.uuid == service.uuid
         }) else {
             return
@@ -67,7 +62,6 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     func publishL2CAPChannel(withEncryption encryptionRequired: Bool) {}
-    
     func unpublishL2CAPChannel(_ PSM: CBL2CAPPSM) {}
     
     func updateValue(_ value: Data, for characteristic: CBMutableCharacteristic, onSubscribedCentrals centrals: [CBCentralProtocol]?) -> Bool {

@@ -38,8 +38,3 @@ extension PrimitiveValueCoder: ValueDecoder {
         })
     }
 }
-
-//extension String: CodableCharacteristicValue {
-//    public typealias Encoder = PrimitiveValueCoder
-//    public typealias Decoder = PrimitiveValueCoder
-//}

@@ -118,13 +118,12 @@ public struct Advertisement {
         static let isConnectable = CBAdvertisementDataIsConnectable
     }
 
-    init(dictionary: [String: Any]) {
-        assert(dictionary.count <= 8)
+    internal init(dictionary: [String: Any]) {
         self.dictionary = dictionary
     }
 
     /// Creates an advertisement from an opaque plist-compatible `Data` representation.
-    public init?(data: Data) {
+    init?(data: Data) {
         let unarchivedObject = NSKeyedUnarchiver.unarchiveObject(with: data)
         guard let plist = unarchivedObject as? [String : Any] else {
             let typeName = String(describing: type(of: unarchivedObject))
@@ -155,39 +154,33 @@ public struct Advertisement {
         
         self.init(dictionary: dictionary)
     }
+    
+    public init?(localName: String?, serviceUUIDs: [Identifier]?) {
+        var dictionary: [String: Any] = [:]
+        if let localName = localName {
+            dictionary[Keys.localName] = localName
+        }
+        if let serviceUUIDs = serviceUUIDs {
+            dictionary[Keys.serviceUUIDs] = serviceUUIDs.map { $0.core }
+        }
+        self.init(dictionary: dictionary)
+    }
 }
 
 // MARK: - CustomStringConvertible
 extension Advertisement: CustomStringConvertible {
     public var description: String {
         let className = String(describing: type(of: self))
-        var properties = ""
-        
-        if let localName = self.localName {
-            properties += " localName: \"\(localName)\""
-        }
-        if let manufacturerData = self.manufacturerData {
-            properties += " manufacturerData: \(manufacturerData)"
-        }
-        if let serviceData = self.serviceData {
-            properties += " serviceData: \(serviceData)"
-        }
-        if let serviceUUIDs = self.serviceUUIDs {
-            properties += " serviceUUIDs: \(serviceUUIDs)"
-        }
-        if let overflowServiceUUIDs = self.overflowServiceUUIDs {
-            properties += " overflowServiceUUIDs: \(overflowServiceUUIDs)"
-        }
-        if let solicitedServiceUUIDs = self.solicitedServiceUUIDs {
-            properties += " solicitedServiceUUIDs: \(solicitedServiceUUIDs)"
-        }
-        if let txPowerLevel = self.txPowerLevel {
-            properties += " txPowerLevel: \(txPowerLevel)"
-        }
-        if let isConnectable = self.isConnectable {
-            properties += " isConnectable: \(isConnectable)"
-        }
-        
-        return "<\(className)\(properties)>"
+        let properties = [
+            "localName: \(String(describing: self.localName))",
+            "manufacturerData: \(String(describing: self.manufacturerData))",
+            "serviceData: \(String(describing: self.serviceData))",
+            "serviceUUIDs: \(String(describing: self.serviceUUIDs))",
+            "overflowServiceUUIDs: \(String(describing: self.overflowServiceUUIDs))",
+            "solicitedServiceUUIDs: \(String(describing: self.solicitedServiceUUIDs))",
+            "txPowerLevel: \(String(describing: self.txPowerLevel))",
+            "isConnectable: \(String(describing: self.isConnectable))",
+        ].joined(separator: ", ")
+        return "<\(className) \(properties)>"
     }
 }

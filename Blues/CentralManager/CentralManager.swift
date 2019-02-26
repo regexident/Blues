@@ -31,9 +31,9 @@ open class CentralManager: NSObject, CentralManagerProtocol {
     internal let queue = DispatchQueue(label: Constants.queueLabel, attributes: [])
     internal var timer: Timer?
 
-    public required init(
-        options: CentralManagerOptions? = nil,
-        queue: DispatchQueue = .global()
+    public init(
+        queue: DispatchQueue = .global(),
+        options: CentralManagerOptions? = nil
     ) {
         super.init()
         self.core = CBCentralManager(
@@ -161,18 +161,18 @@ open class CentralManager: NSObject, CentralManagerProtocol {
         return "\(type(of: self)) can only accept commands while in the connected state."
     }
 
-    internal func wrapperOf(peripheral: CBPeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
-        let identifier = Identifier(uuid: peripheral.identifier)
-        let wrapper = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
+    internal func wrapper(for core: CBPeripheralProtocol, advertisement: Advertisement?) -> Peripheral {
+        let identifier = Identifier(uuid: core.identifier)
+        let peripheral = self.dataSourced(from: CentralManagerDataSource.self) { dataSource in
             return dataSource.peripheral(
                 with: identifier,
                 advertisement: advertisement,
                 for: self
             )
         } ?? DefaultPeripheral(identifier: identifier, centralManager: self)
-        wrapper.core = peripheral
-        peripheral.delegate = wrapper
-        return wrapper
+        peripheral.core = core
+        core.delegate = peripheral
+        return peripheral
     }
 
     internal func dataSourced<T, U>(from type: T.Type, closure: (T) -> (U)) -> U? {
@@ -278,7 +278,7 @@ extension CentralManager: CBCentralCentralManagerDelegateProtocol {
     ) {
         self.queue.async {
             let restoreStateClosure = { (core: CBPeripheralProtocol) -> Peripheral in
-                let peripheral = self.wrapperOf(peripheral: core, advertisement: nil)
+                let peripheral = self.wrapper(for: core, advertisement: nil)
                 self.peripheralsByIdentifier[peripheral.identifier] = peripheral
                 return peripheral
             }
@@ -333,7 +333,7 @@ extension CentralManager: CBCentralCentralManagerDelegateProtocol {
                 wrapper = existingWrapper
                 wrapper.updateAdvertisement(advertisement)
             } else {
-                wrapper = self.wrapperOf(peripheral: peripheral, advertisement: advertisement)
+                wrapper = self.wrapper(for: peripheral, advertisement: advertisement)
                 self.peripheralsByIdentifier[wrapper.identifier] = wrapper
             }
             self.delegated(to: CentralManagerDiscoveryDelegate.self) { delegate in
