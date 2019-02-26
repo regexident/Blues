@@ -6,23 +6,30 @@ import Foundation
 
 public protocol CharacteristicProtocol: class {
     var identifier: Identifier { get }
-    var name: String? { get }
+    
+    var properties: CharacteristicProperties { get }
+}
 
+public protocol PeripheralCharacteristicProtocol: CharacteristicProtocol {
+    var name: String? { get }
+    
     var descriptors: [Descriptor]? { get }
     var service: ServiceProtocol { get }
     var peripheral: Peripheral { get }
 
     var shouldDiscoverDescriptorsAutomatically: Bool { get }
     
-    var properties: CharacteristicProperties { get }
-
     func discoverDescriptors()
 
     func descriptor<D>(ofType type: D.Type) -> D?
         where D: Descriptor, D: TypeIdentifiable
 }
 
-public protocol ReadableCharacteristicProtocol: CharacteristicProtocol {
+internal protocol CharacteristicFacadeProtocol: PeripheralCharacteristicProtocol {
+    var core: CBCharacteristicsProtocol { get set }
+}
+
+public protocol ReadableCharacteristicProtocol: PeripheralCharacteristicProtocol {
     var data: Data? { get }
     
     var shouldSubscribeToNotificationsAutomatically: Bool { get }
@@ -32,11 +39,11 @@ public protocol ReadableCharacteristicProtocol: CharacteristicProtocol {
     func set(notifyValue: Bool)
 }
 
-public protocol WritableCharacteristicProtocol: CharacteristicProtocol {
+public protocol WritableCharacteristicProtocol: PeripheralCharacteristicProtocol {
     func write(data: Data, type: WriteType)
 }
 
-public protocol MutableCharacteristicProtocol: class {
+public protocol MutableCharacteristicProtocol: CharacteristicProtocol {
     var permissions: AttributePermissions { get set }
     var subscribedCentrals: [Central]? { get }
     var data: Data? { get set }
@@ -54,15 +61,15 @@ public protocol TypedWritableCharacteristicProtocol: WritableCharacteristicProto
     var encoder: Encoder { get }
 }
 
-public protocol StringConvertibleCharacteristicProtocol: CharacteristicProtocol {
+public protocol StringConvertibleCharacteristicProtocol: PeripheralCharacteristicProtocol {
     var stringValue: Result<String?, DecodingError> { get }
 }
 
-public protocol DelegatedCharacteristicProtocol: CharacteristicProtocol {
+public protocol DelegatedCharacteristicProtocol: PeripheralCharacteristicProtocol {
     var delegate: CharacteristicDelegate? { get set }
 }
 
-public protocol DataSourcedCharacteristicProtocol: CharacteristicProtocol {
+public protocol DataSourcedCharacteristicProtocol: PeripheralCharacteristicProtocol {
     var dataSource: CharacteristicDataSource? { get set }
 }
 

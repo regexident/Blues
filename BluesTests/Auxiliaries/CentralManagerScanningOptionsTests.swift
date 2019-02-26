@@ -2,56 +2,48 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Foundation
 import XCTest
 import CoreBluetooth
 
 @testable import Blues
 
 class CentralManagerScanningOptionsTests: XCTestCase {
-    typealias Options = CentralManagerScanningOptions
-    
-    private enum Key {
-        static let allowDuplicatesKey: String = CBCentralManagerScanOptionAllowDuplicatesKey
-        static let solicitedServiceUUIDsKey: String = CBCentralManagerScanOptionSolicitedServiceUUIDsKey
-    }
-    
-    private enum Stub {
-        static let solicitedServiceIdentifiers = [CBUUID(), CBUUID()]
-        static let allowDuplicates = true
-    }
+    static private let SolicitedServiceIdentifiersStub = [CBUUID(), CBUUID()]
+    static private let AllowDuplicatesStub = true
     
     static let dictionary: [String: Any] = [
-        Key.allowDuplicatesKey: Stub.allowDuplicates,
-        Key.solicitedServiceUUIDsKey: Stub.solicitedServiceIdentifiers
+        CBCentralManagerScanOptionAllowDuplicatesKey: AllowDuplicatesStub,
+        CBCentralManagerScanOptionSolicitedServiceUUIDsKey: SolicitedServiceIdentifiersStub
     ]
     
-    func test_allowDuplicatesTrue() {
-        var dictionary = type(of: self).dictionary
-        dictionary[Key.allowDuplicatesKey] = true
+    func testAllowDuplicatesTrue() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
+        dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = true
         
-        guard let options = Options(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
         XCTAssertEqual(options.allowDuplicates, true)
     }
     
-    func test_allowDuplicatesFalse() {
-        var dictionary = type(of: self).dictionary
-        dictionary[Key.allowDuplicatesKey] = false
+    func testAllowDuplicatesFalse() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
+        dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = false
         
-        guard let options = Options(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
         XCTAssertEqual(options.allowDuplicates, false)
     }
     
-    func test_allowDuplicatesWithNoKey() {
-        var dictionary = type(of: self).dictionary
-        dictionary[Key.allowDuplicatesKey] = nil
+    func testAllowDuplicatesWithNoKey() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
+        dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = nil
         
-        guard let options = Options(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
@@ -59,12 +51,12 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         XCTAssertEqual(options.allowDuplicates, false)
     }
     
-    func test_validServiceIdentifier() {
-        var dictionary = type(of: self).dictionary
-        let stub = Stub.solicitedServiceIdentifiers
-        dictionary[Key.solicitedServiceUUIDsKey] = stub
+    func testValidServiceIdentifier() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
+        let stub = CentralManagerScanningOptionsTests.SolicitedServiceIdentifiersStub
+        dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = stub
         
-        guard let options = Options(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
@@ -79,41 +71,44 @@ class CentralManagerScanningOptionsTests: XCTestCase {
         }
     }
     
-    func test_noServiceIdentifiers() {
-        var dictionary = type(of: self).dictionary
+    func testNoServiceIdentifiers() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
         
-        dictionary[Key.solicitedServiceUUIDsKey] = nil
+        dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = nil
         
-        guard let options = Options(dictionary: dictionary) else {
+        guard let options = CentralManagerScanningOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
         XCTAssertNil(options.solicitedServiceIdentifiers)
     }
     
-    func test_dictionaryMarshalling() {
-        let dictionary = type(of: self).dictionary
-        guard let options = Options(dictionary: dictionary) else {
+    func testDictionaryMarshalling() {
+        guard let options = CentralManagerScanningOptions(dictionary: CentralManagerScanningOptionsTests.dictionary) else {
             return XCTFail()
         }
         
         let parsed = options.dictionary
         
-        let allowDuplicates = parsed[Key.allowDuplicatesKey]
-        let solicitedServicesIdentifiers = parsed[Key.solicitedServiceUUIDsKey]
+        guard
+            let solicitedServicesIdentifiers = parsed[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] as? [CBUUID],
+            let allowDuplicates = parsed[CBCentralManagerScanOptionAllowDuplicatesKey] as? Bool
+            else {
+                return XCTFail()
+        }
         
-        XCTAssertEqual(allowDuplicates as? Bool, Stub.allowDuplicates)
-        XCTAssertEqual(solicitedServicesIdentifiers as? [CBUUID], Stub.solicitedServiceIdentifiers)
+        XCTAssertEqual(allowDuplicates, CentralManagerScanningOptionsTests.AllowDuplicatesStub)
+        XCTAssertEqual(solicitedServicesIdentifiers, CentralManagerScanningOptionsTests.SolicitedServiceIdentifiersStub)
     }
     
-    func test_invalidDictionaryMarshalling() {
-        var dictionary = type(of: self).dictionary
+    func testInvalidDictionaryMarshalling() {
+        var dictionary = CentralManagerScanningOptionsTests.dictionary
         
-        dictionary[Key.solicitedServiceUUIDsKey] = 123
-        dictionary[Key.allowDuplicatesKey] = "Test"
+        dictionary[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = 123
+        dictionary[CBCentralManagerScanOptionAllowDuplicatesKey] = "Test"
         
         
-        let options = Options(dictionary: dictionary)
+        let options = CentralManagerScanningOptions(dictionary: dictionary)
         
         XCTAssertNil(options)
     }

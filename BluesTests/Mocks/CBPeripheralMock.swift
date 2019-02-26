@@ -3,7 +3,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreBluetooth
-
 @testable import Blues
 
 class CBPeripheralMock: CBPeripheralProtocol {
@@ -27,28 +26,28 @@ class CBPeripheralMock: CBPeripheralProtocol {
     var shouldFailReadingRSSI = false
     
     func readRSSI() {
-        if shouldFailReadingRSSI {
-            genericDelegate?.corePeripheral(self, didReadRSSI: 0, error: Error.unknown)
+        if self.shouldFailReadingRSSI {
+            self.genericDelegate?.corePeripheral(self, didReadRSSI: 0, error: Error.unknown)
         } else {
-            genericDelegate?.corePeripheral(self, didReadRSSI: rssi!, error: nil)
+            self.genericDelegate?.corePeripheral(self, didReadRSSI: rssi!, error: nil)
         }
     }
     
     func discoverServices(_ serviceUUIDs: [CBUUID]?) {
-        discoverServicesWasCalled = true
+        self.discoverServicesWasCalled = true
         if serviceUUIDs == nil {
-            genericServices = discoverableServices.map { CBServiceMock.init(peripheral: self, uuid: $0) }
+            self.genericServices = self.discoverableServices.map { CBServiceMock.init(peripheral: self, uuid: $0) }
         } else {
-            genericServices = discoverableServices.filter {
+            self.genericServices = self.discoverableServices.filter {
                 serviceUUIDs!.contains($0)
             }.map { CBServiceMock.init(peripheral: self, uuid: $0) }
         }
         
-        genericDelegate?.corePeripheral(self, didDiscoverServices: nil)
+        self.genericDelegate?.corePeripheral(self, didDiscoverServices: nil)
     }
     
     func modify(service: CBUUID) {
-        genericDelegate?.corePeripheral(self, didModifyServices: [CBServiceMock.init(peripheral: self, uuid: service)])
+        self.genericDelegate?.corePeripheral(self, didModifyServices: [CBServiceMock.init(peripheral: self, uuid: service)])
     }
     
     func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBServiceProtocol) {

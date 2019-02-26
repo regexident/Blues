@@ -8,24 +8,18 @@ import CoreBluetooth
 @testable import Blues
 
 class CentralManagerOptionsTests: XCTestCase {
-    private enum Key {
-        static let restoreIdentifierKey: String = CBCentralManagerOptionRestoreIdentifierKey
-        static let showPowerAlertKey: String = CBCentralManagerOptionShowPowerAlertKey
-    }
     
-    private enum Stub {
-        static let restoreIdentifier = "RestoreIdentifier"
-        static let shouldShowPowerAlert = true
-        
-        static let dictionary: [String: Any] = [
-            Key.restoreIdentifierKey: Stub.restoreIdentifier,
-            Key.showPowerAlertKey: Stub.shouldShowPowerAlert
-        ]
-    }
+    static private let RestoreIdentifierStub = "RestoreIdentifier"
+    static private let ShouldShowPowerAlert = true
 
-    func test_shouldShowPowerAlert() {
-        var dictionary = Stub.dictionary
-        dictionary[Key.showPowerAlertKey] = true
+    let dictionary: [String: Any] = [
+        CBCentralManagerOptionRestoreIdentifierKey: RestoreIdentifierStub,
+        CBCentralManagerOptionShowPowerAlertKey: ShouldShowPowerAlert
+    ]
+    
+    func testShouldShowPowerAlert() {
+        var dictionary = self.dictionary
+        dictionary[CBCentralManagerOptionShowPowerAlertKey] = true
 
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
@@ -34,9 +28,9 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, true)
     }
     
-    func test_shouldntShowPowerAlert() {
-        var dictionary = Stub.dictionary
-        dictionary[Key.showPowerAlertKey] = false
+    func testShouldntShowPowerAlert() {
+        var dictionary = self.dictionary
+        dictionary[CBCentralManagerOptionShowPowerAlertKey] = false
         
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
@@ -45,9 +39,9 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, false)
     }
     
-    func test_showPowerAlertWithNoKey() {
-        var dictionary = Stub.dictionary
-        dictionary[Key.showPowerAlertKey] = nil
+    func testShowPowerAlertWithNoKey() {
+        var dictionary = self.dictionary
+        dictionary[CBCentralManagerOptionShowPowerAlertKey] = nil
         
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
@@ -56,11 +50,11 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(options.showPowerAlert, nil)
     }
     
-    func test_properIdentifier() {
+    func testProperIdentifier() {
         let identifier = UUID().uuidString
-        var dictionary = Stub.dictionary
+        var dictionary = self.dictionary
         
-        dictionary[Key.restoreIdentifierKey] = identifier
+        dictionary[CBCentralManagerOptionRestoreIdentifierKey] = identifier
         
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
@@ -76,10 +70,10 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertEqual(value, identifier)
     }
     
-    func test_noRestoreIdentifier() {
-        var dictionary = Stub.dictionary
+    func testNoRestoreIdentifier() {
+        var dictionary = self.dictionary
         
-        dictionary[Key.restoreIdentifierKey] = nil
+        dictionary[CBCentralManagerOptionRestoreIdentifierKey] = nil
         
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
@@ -88,27 +82,29 @@ class CentralManagerOptionsTests: XCTestCase {
         XCTAssertNil(options.restoreIdentifier)
     }
     
-    func test_dictionaryMarshalling() {
-        let dictionary = Stub.dictionary
-        
+    func testDictionaryMarshalling() {
         guard let options = CentralManagerOptions(dictionary: dictionary) else {
             return XCTFail()
         }
         
         let parsed = options.dictionary
         
-        let restoreIdentifier = parsed[Key.restoreIdentifierKey]
-        let shoudShowPowerAlert = parsed[Key.showPowerAlertKey]
+        guard
+            let restoreIdentifier = parsed[CBCentralManagerOptionRestoreIdentifierKey] as? String,
+            let shoudShowPowerAlert = parsed[CBCentralManagerOptionShowPowerAlertKey] as? Bool
+        else {
+            return XCTFail()
+        }
         
-        XCTAssertEqual(restoreIdentifier as? String, Stub.restoreIdentifier)
-        XCTAssertEqual(shoudShowPowerAlert as? Bool, Stub.shouldShowPowerAlert)
+        XCTAssertEqual(restoreIdentifier, CentralManagerOptionsTests.RestoreIdentifierStub)
+        XCTAssertEqual(shoudShowPowerAlert, CentralManagerOptionsTests.ShouldShowPowerAlert)
     }
     
-    func test_invalidDictionaryMarshalling() {
-        var dictionary = Stub.dictionary
+    func testInvalidDictionaryMarshalling() {
+        var dictionary = self.dictionary
         
-        dictionary[Key.restoreIdentifierKey] = 123
-        dictionary[Key.showPowerAlertKey] = "Test"
+        dictionary[CBCentralManagerOptionRestoreIdentifierKey] = 123
+        dictionary[CBCentralManagerOptionShowPowerAlertKey] = "Test"
 
         
         let options = CentralManagerOptions(dictionary: dictionary)

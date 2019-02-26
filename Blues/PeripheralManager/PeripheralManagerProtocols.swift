@@ -12,13 +12,11 @@ public protocol PeripheralManagerProtocol: class {
     @available(iOSApplicationExtension 10.0, *)
     var state: ManagerState { get }
     
-    var delegate: PeripheralManagerDelegate? { get set }
-
     var isAdvertising: Bool { get }
 
     static func authorizationStatus() -> PeripheralManagerAuthorizationStatus
 
-    init(queue: DispatchQueue, options: [String : Any]?)
+//    init(queue: DispatchQueue, options: [String : Any]?)
 
     func startAdvertising(_ advertisement: Advertisement?)
     func stopAdvertising()
@@ -58,8 +56,7 @@ public protocol PeripheralManagerStateDelegate: PeripheralManagerDelegate {
     /// `poweredOff`, advertisement is stopped and must be explicitly restarted, and the
     /// local database is cleared and all services must be re-added.
     ///
-    /// - Parameters:
-    ///   - manager: The peripheral manager whose state has changed.
+    /// - Parameter manager: The peripheral manager whose state has changed.
     func peripheralManagerDidUpdateState(_ manager: PeripheralManager)
 }
 
@@ -69,7 +66,7 @@ public protocol PeripheralManagerRestorationDelegate: PeripheralManagerDelegate 
     /// Use this method to synchronize your app's state with the state of the Bluetooth system.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager providing this information.
+    ///   - peripheral: The peripheral manager providing this information.
     ///   - dict: A dictionary containing information about _peripheral_ that
     ///     was preserved by the system at the time the app was terminated.
     func peripheralManager(
@@ -83,7 +80,7 @@ public protocol PeripheralManagerAdvertisingDelegate: PeripheralManagerDelegate 
     /// be started, the cause will be detailed in the _error_ parameter.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager providing this information.
+    ///   - peripheral: The peripheral manager providing this information.
     ///   - error: If an error occurred, the cause of the failure.
     func peripheralManagerDidStartAdvertising(_ manager: PeripheralManager, error: Error?)
 }
@@ -93,7 +90,7 @@ public protocol PeripheralManagerServiceAdditionDelegate: PeripheralManagerDeleg
     /// not be published to the local database, the cause will be detailed in the _error_ parameter.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager providing this information.
+    ///   - peripheral: The peripheral manager providing this information.
     ///   - service: The service that was added to the local database.
     ///   - error: If an error occurred, the cause of the failure.
     func peripheralManager(_ manager: PeripheralManager, didAdd service: MutableService, error: Error?)
@@ -104,7 +101,7 @@ public protocol PeripheralManagerSubscriptionDelegate: PeripheralManagerDelegate
     /// It should be used as a cue to start sending updates as the characteristic value changes.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager providing this update.
+    ///   - peripheral: The peripheral manager providing this update.
     ///   - central: The central that issued the command.
     ///   - characteristic: The characteristic on which notifications or indications were enabled.
     func peripheralManager(
@@ -117,7 +114,7 @@ public protocol PeripheralManagerSubscriptionDelegate: PeripheralManagerDelegate
     /// from _characteristic_.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager providing this update.
+    ///   - peripheral: The peripheral manager providing this update.
     ///   - central: The central that issued the command.
     ///   - characteristic: The characteristic on which notifications or indications were disabled.
     func peripheralManager(
@@ -133,7 +130,7 @@ public protocol PeripheralManagerReadingDelegate: PeripheralManagerDelegate {
     /// must be called.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager requesting this information.
+    ///   - peripheral: The peripheral manager requesting this information.
     ///   - request: A `ATTRequest` object.
     func peripheralManager(_ manager: PeripheralManager, didReceiveRead request: ATTRequest)
 }
@@ -147,7 +144,7 @@ public protocol PeripheralManagerWritingDelegate: PeripheralManagerDelegate {
     /// `respondToRequest:withResult:` and none of the requests should be executed.
     ///
     /// - Parameters:
-    ///   - manager: The peripheral manager requesting this information.
+    ///   - peripheral: The peripheral manager requesting this information.
     ///   - requests: A list of one or more `ATTRequest` objects.
     func peripheralManager(_ manager: PeripheralManager, didReceiveWrite requests: [ATTRequest])
 
@@ -155,8 +152,7 @@ public protocol PeripheralManagerWritingDelegate: PeripheralManagerDelegate {
     /// `updateValue:forCharacteristic:onSubscribedCentrals:`, when _peripheral_ is again ready
     /// to send characteristic value updates.
     ///
-    /// - Parameters:
-    ///   - manager: The peripheral manager providing this update.
+    /// - Parameter peripheral: The peripheral manager providing this update.
     func peripheralManagerIsReady(toUpdateSubscribers manager: PeripheralManager)
 }
 

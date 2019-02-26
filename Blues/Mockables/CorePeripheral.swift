@@ -4,7 +4,7 @@
 
 import CoreBluetooth
 
-protocol CBPeripheralProtocol: class, CBPeerProtocol {
+protocol CBPeripheralProtocol: CBPeerProtocol {
     
     var delegate: CBPeripheralDelegate? { get set }
     

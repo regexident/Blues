@@ -5,12 +5,12 @@
 import Foundation
 import CoreBluetooth
 
-internal protocol CBPeerProtocol {
+internal protocol CBPeerProtocol: class {
     @available(OSX 10.13, *)
     var identifier: UUID { get }
 }
 
-internal protocol CBAttributeProtocol {
+internal protocol CBAttributeProtocol: class {
     var uuid: CBUUID { get }
 }
 
@@ -30,7 +30,7 @@ internal protocol CBCentralProtocol: CBPeerProtocol {
     var maximumUpdateValueLength: Int { get }
 }
 
-internal protocol CBManagerProtocol {
+internal protocol CBManagerProtocol: class {
     var state: CBManagerState { get }
 }
 

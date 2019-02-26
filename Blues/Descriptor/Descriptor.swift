@@ -19,14 +19,14 @@ open class Descriptor: DescriptorProtocol {
     open lazy var name: String? = nil
 
     /// The characteristic that this descriptor belongs to.
-    public var characteristic: CharacteristicProtocol {
+    public var characteristic: PeripheralCharacteristicProtocol {
         guard let characteristic = self._characteristic else {
             fatalError("Expected `Characteristic`, found `nil` in `self.characteristic`.")
         }
         return characteristic
     }
 
-    private weak var _characteristic: CharacteristicProtocol?
+    private weak var _characteristic: PeripheralCharacteristicProtocol?
 
     /// The service that this characteristic belongs to.
     public var service: ServiceProtocol {
@@ -71,8 +71,8 @@ extension Descriptor: Equatable {
 
 // MARK: - Hashable
 extension Descriptor: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        self.identifier.hash(into: &hasher)
+    public var hashValue: Int {
+        return self.identifier.hashValue
     }
 }
 
@@ -151,21 +151,9 @@ where
     }
 }
 
-//public protocol DecodableDescriptorProtocol: DescriptorProtocol {
-//    associatedtype Decoder: ValueDecoder where Decoder.Input == Any
-//
-//    var decoder: Decoder { get }
-//}
-//
-//public protocol EncodableDescriptorProtocol: DescriptorProtocol {
-//    associatedtype Encoder: ValueEncoder where Encoder.Output == Data
-//
-//    var encoder: Encoder { get }
-//}
-
-extension TypedReadableDescriptorProtocol
+extension ReadableDescriptorProtocol
 where
-    Self: Descriptor & ReadableDescriptorProtocol
+    Self: Descriptor & TypedReadableDescriptorProtocol
 {
     /// A type-safe value representation of the descriptor.
     ///
@@ -182,9 +170,9 @@ where
     }
 }
 
-extension TypedWritableDescriptorProtocol
+extension WritableDescriptorProtocol
 where
-    Self: Descriptor & WritableDescriptorProtocol
+    Self: Descriptor & TypedWritableDescriptorProtocol
 {
     /// Writes the value of a characteristic descriptor.
     ///
@@ -215,9 +203,9 @@ where
     }
 }
 
-extension StringConvertibleDescriptorProtocol
+extension ReadableDescriptorProtocol
 where
-    Self: Descriptor & ReadableDescriptorProtocol
+    Self: Descriptor & StringConvertibleDescriptorProtocol
 {
     public var stringValue: Result<String?, DecodingError> {
         guard let any = self.any else {
@@ -227,9 +215,9 @@ where
     }
 }
 
-extension StringConvertibleDescriptorProtocol
+extension TypedReadableDescriptorProtocol
     where
-    Self: Descriptor & TypedReadableDescriptorProtocol
+    Self: Descriptor & StringConvertibleDescriptorProtocol
 {
     public var stringValue: Result<String?, DecodingError> {
         return self.value.map { value in

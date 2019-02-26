@@ -11,86 +11,83 @@ public struct ConnectionOptions {
     /// A Boolean value that specifies whether the system should display
     /// an alert for a given peripheral if the app is suspended
     /// when a successful connection is made.
-    //    @available(iOS 6, tvOS 6, *)
-    public let notifyOnConnection: Bool?
+    @available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *)
+    public var notifyOnConnection: Bool {
+        get {
+            return self.dictionary[Keys.notifyOnConnection] as? Bool ?? false
+        }
+        set {
+            self.dictionary[Keys.notifyOnConnection] = newValue
+        }
+    }
 
     /// A Boolean value that specifies whether the system should display
     /// a disconnection alert for a given peripheral if the app is
     /// suspended at the time of the disconnection.
-    //    @available(iOS 8, OSX 10.10, tvOS 9, *)
-    public let notifyOnDisconnection: Bool?
+    @available(iOS 5, macOS 10.7, tvOS 9, watchOS 4, *)
+    public var notifyOnDisconnection: Bool? {
+        get {
+            return self.dictionary[Keys.notifyOnDisconnection] as? Bool ?? false
+        }
+        set {
+            self.dictionary[Keys.notifyOnDisconnection] = newValue
+        }
+    }
 
     /// A Boolean value that specifies whether the system should display
     /// an alert for all notifications received from a given peripheral
     /// if the app is suspended at the time.
-    //    @available(iOS 6, tvOS 6, *)
-    public let notifyOnNotification: Bool?
+    @available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *)
+    public var notifyOnNotification: Bool? {
+        get {
+            return self.dictionary[Keys.notifyOnNotification] as? Bool ?? false
+        }
+        set {
+            self.dictionary[Keys.notifyOnNotification] = newValue
+        }
+    }
+    
+    /// A dictionary-representation according to Core Bluetooth's `CBConnectPeripheralOption`s.
+    internal private(set) var dictionary: [String: Any]
 
-    public init(
-        notifyOnConnection: Bool? = nil,
-        notifyOnDisconnection: Bool? = nil,
-        notifyOnNotification: Bool? = nil
-    ) {
-        self.notifyOnConnection = notifyOnConnection
-        self.notifyOnDisconnection = notifyOnDisconnection
-        self.notifyOnNotification = notifyOnNotification
+    public init() {
+        self.dictionary = [:]
     }
 
     enum Keys {
+        @available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *)
         static let notifyOnConnection = CBConnectPeripheralOptionNotifyOnConnectionKey
+        
+        @available(iOS 5, macOS 10.7, tvOS 9, watchOS 4, *)
         static let notifyOnDisconnection = CBConnectPeripheralOptionNotifyOnDisconnectionKey
+        
+        @available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *)
         static let notifyOnNotification = CBConnectPeripheralOptionNotifyOnNotificationKey
-    }
-
-    /// A dictionary-representation according to Core Bluetooth's `CBConnectPeripheralOption`s.
-    var dictionary: [String: Any] {
-        var dictionary: [String: Any] = [:]
-
-        if let notifyOnConnection = self.notifyOnConnection {
-            dictionary[Keys.notifyOnConnection] = notifyOnConnection
-        }
-
-        if let notifyOnDisconnection = self.notifyOnDisconnection {
-            dictionary[Keys.notifyOnDisconnection] = notifyOnDisconnection
-        }
-
-        if let notifyOnNotification = self.notifyOnNotification {
-            dictionary[Keys.notifyOnNotification] = notifyOnNotification
-        }
-
-        return dictionary
     }
 
     /// Initializes an instance based on a dictionary of `CBConnectPeripheralOption`s
     ///
     /// - Parameters
     ///   - dictionary: The dictionary to take values from.
-    init(dictionary: [String: Any]) {
-        guard let notifyOnConnection = dictionary[Keys.notifyOnConnection] as? Bool? else {
-            fatalError()
-        }
-        self.notifyOnConnection = notifyOnConnection
-
-        guard let notifyOnDisconnection = dictionary[Keys.notifyOnDisconnection] as? Bool? else {
-            fatalError()
-        }
-        self.notifyOnDisconnection = notifyOnDisconnection
-
-        guard let notifyOnNotification = dictionary[Keys.notifyOnNotification] as? Bool? else {
-            fatalError()
-        }
-        self.notifyOnNotification = notifyOnNotification
+    internal init(dictionary: [String: Any]) {
+        self.dictionary = dictionary
     }
 }
 
 // MARK: - CustomStringConvertible
 extension ConnectionOptions: CustomStringConvertible {
     public var description: String {
-        let properties = [
-            "notifyOnConnection: \(String(describing: self.notifyOnConnection))",
-            "notifyOnDisconnection: \(String(describing: self.notifyOnDisconnection))",
-            "notifyOnNotification: \(String(describing: self.notifyOnNotification))",
-        ].joined(separator: ", ")
-        return "<ConnectionOptions \(properties)>"
+        var properties: [String] = []
+        if #available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *) {
+            properties.append("notifyOnConnection: \(String(describing: self.notifyOnConnection))")
+        }
+        if #available(iOS 5, macOS 10.7, tvOS 9, watchOS 4, *) {
+            properties.append("notifyOnDisconnection: \(String(describing: self.notifyOnDisconnection))")
+        }
+        if #available(iOS 6, macOS 10.13, tvOS 9, watchOS 2, *) {
+            properties.append("notifyOnNotification: \(String(describing: self.notifyOnNotification))")
+        }
+        let propertiesString = properties.joined(separator: ", ")
+        return "<ConnectionOptions \(propertiesString)>"
     }
 }

@@ -7,84 +7,57 @@ import CoreBluetooth
 
 @testable import Blues
 
-private class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
+class PeripheralStateDelegateCatcher: PeripheralStateDelegate {
     var readClosure: ((Result<Float, Error>) -> Void)? = nil
     var modifyClosure: (([Service]) -> Void)? = nil
     var updateClosure: ((String?) -> Void)? = nil
 
     func didModify(services: [Service], of peripheral: Peripheral) {
-        self.modifyClosure?(services)
+        modifyClosure?(services)
     }
     
     func didUpdate(name: String?, of peripheral: Peripheral) {
-        self.updateClosure?(name)
+        updateClosure?(name)
     }
     
     func didRead(rssi: Result<Float, Error>, of peripheral: Peripheral) {
-        self.readClosure?(rssi)
+        readClosure?(rssi)
     }
 }
 
 class PeripheralTests: XCTestCase {
-    func test_peripheralIdentifier() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testPeripheralIdentifier() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        let peripheral = Peripheral(core: core, queue: .main)
         
-        let peripheralMock = CBPeripheralMock()
-        peripheralMock.identifier = UUID()
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        XCTAssertEqual(peripheralMock.identifier.uuidString, peripheral.identifier.string)
+        XCTAssertEqual(core.identifier.uuidString, peripheral.identifier.string)
     }
     
-    func test_peripheralName() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testPeripheralName() {
+        let core = CBPeripheralMock()
+        core.name = UUID().uuidString
         
-        let peripheralMock = CBPeripheralMock()
-        peripheralMock.name = UUID().uuidString
+        let peripheral = Peripheral(core: core, queue: .main)
         
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        XCTAssertEqual(peripheralMock.name, peripheral.name)
+        XCTAssertEqual(core.name, peripheral.name)
     }
     
-    func test_peripheralState() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testPeripheralState() {
+        let core = CBPeripheralMock()
+        core.state = .connected
         
-        let peripheralMock = CBPeripheralMock()
-        peripheralMock.state = .connected
+        let peripheral = Peripheral(core: core, queue: .main)
         
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        XCTAssertEqual(peripheralMock.state, peripheral.state.inner)
+        XCTAssertEqual(core.state, peripheral.state.inner)
     }
     
-    func test_isValid() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testIsValid() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        let peripheral = Peripheral(core: core, queue: .main)
         
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        XCTAssertTrue(peripheral.isValid(core: peripheralMock))
+        XCTAssertTrue(peripheral.isValid(core: core))
         
         let otherCore = CBPeripheralMock()
         otherCore.identifier = UUID()
@@ -92,21 +65,13 @@ class PeripheralTests: XCTestCase {
         XCTAssertFalse(peripheral.isValid(core: otherCore))
     }
     
-    func test_serviceDisoveryAllServicesRequested() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testServiceDisoveryAllServicesRequested() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
         
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        peripheralMock.genericDelegate = peripheral
+        let peripheral = Peripheral(core: core, queue: .main)
+        core.genericDelegate = peripheral
         
         let serviceUUIDs = [UUID()]
         let serviceIdentifiers = serviceUUIDs.map(Identifier.init)
@@ -114,7 +79,7 @@ class PeripheralTests: XCTestCase {
             return Service(identifier: $0, peripheral: peripheral)
         }
         
-        peripheralMock.discoverableServices = serviceIdentifiers.map { $0.core }
+        core.discoverableServices = serviceIdentifiers.map { $0.core }
         
         peripheral.discover(services: serviceIdentifiers)
         
@@ -123,21 +88,13 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func test_serviceDisoverySomeServicesRequested() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testServiceDisoverySomeServicesRequested() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
         
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        peripheralMock.genericDelegate = peripheral
+        let peripheral = Peripheral(core: core, queue: .main)
+        core.genericDelegate = peripheral
         
         let availableServices = [UUID(), UUID()]
         let availableServicesIdentifiers = availableServices.map(Identifier.init)
@@ -147,7 +104,7 @@ class PeripheralTests: XCTestCase {
             return Service(identifier: $0, peripheral: peripheral)
         }
         
-        peripheralMock.discoverableServices = availableServicesIdentifiers.map { $0.core }
+        core.discoverableServices = availableServicesIdentifiers.map { $0.core }
         
         peripheral.discover(services: Array(requestedServiceIdentifiers))
         
@@ -156,49 +113,33 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func test_serviceDisoveryNoServicesRequested() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testServiceDisoveryNoServicesRequested() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
         
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        peripheralMock.genericDelegate = peripheral
+        let peripheral = Peripheral(core: core, queue: .main)
+        core.genericDelegate = peripheral
         
         let serviceUUIDs: [UUID] = []
         let serviceIdentifiers = serviceUUIDs.map(Identifier.init)
         
-        peripheralMock.discoverableServices = serviceIdentifiers.map { $0.core }
+        core.discoverableServices = serviceIdentifiers.map { $0.core }
         
         peripheral.discover(services: serviceIdentifiers)
         
         onNextRunLoop {
-            XCTAssertFalse(peripheralMock.discoverServicesWasCalled)
+            XCTAssertFalse(core.discoverServicesWasCalled)
         }
     }
     
-    func test_serviceDisoveryNilServicesRequested() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
+    func testServiceDisoveryNilServicesRequested() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
         
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        
-        let peripheral = Peripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
-        peripheralMock.genericDelegate = peripheral
+        let peripheral = Peripheral(core: core, queue: .main)
+        core.genericDelegate = peripheral
         
         let serviceUUIDs = [UUID()]
         let serviceIdentifiers = serviceUUIDs.map(Identifier.init)
@@ -206,7 +147,7 @@ class PeripheralTests: XCTestCase {
             return Service(identifier: $0, peripheral: peripheral)
         }
         
-        peripheralMock.discoverableServices = serviceIdentifiers.map { $0.core }
+        core.discoverableServices = serviceIdentifiers.map { $0.core }
         
         peripheral.discover(services: nil)
         
@@ -215,27 +156,19 @@ class PeripheralTests: XCTestCase {
         }
     }
     
-    func test_modifiedServices() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
-        
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
+    func testModifiedServices() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
         
         let catcher = PeripheralStateDelegateCatcher()
         
-        let peripheral = DefaultPeripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
-        
+        let peripheral = DefaultPeripheral(core: core, queue: .main)
         peripheral.delegate = catcher
-        peripheralMock.genericDelegate = peripheral
+        core.genericDelegate = peripheral
         
         let serviceUUID = CBUUID()
-        peripheralMock.discoverableServices = [serviceUUID]
+        core.discoverableServices = [serviceUUID]
         
         peripheral.discover(services: nil)
         
@@ -246,31 +179,23 @@ class PeripheralTests: XCTestCase {
         }
         
         onNextRunLoop {
-            peripheralMock.modify(service: serviceUUID)
+            core.modify(service: serviceUUID)
         }
         
         wait(for: [expectation], timeout: 1)
     }
     
-    func test_validRSSIReading() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
-        
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        peripheralMock.rssi = 100
-        
-        let peripheral = DefaultPeripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
+    func testValidRSSIReading() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
+        core.rssi = 100
         
         let catcher = PeripheralStateDelegateCatcher()
+        let peripheral = DefaultPeripheral(core: core, queue: .main)
         
         peripheral.delegate = catcher
-        peripheralMock.genericDelegate = peripheral
+        core.genericDelegate = peripheral
 
         let expectation = XCTestExpectation()
         catcher.readClosure = { result in
@@ -283,26 +208,18 @@ class PeripheralTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func test_invalidRSSIReading() {
-        let centralManagerMock = CBCentralManagerMock()
-        let centralManager = DefaultCentralManager(core: centralManagerMock)
-        
-        let peripheralMock = CBPeripheralMock()
-        
-        peripheralMock.identifier = UUID()
-        peripheralMock.state = .connected
-        peripheralMock.rssi = nil
-        
-        let peripheral = DefaultPeripheral(
-            core: peripheralMock,
-            centralManager: centralManager
-        )
+    func testInvalidRSSIReading() {
+        let core = CBPeripheralMock()
+        core.identifier = UUID()
+        core.state = .connected
+        core.rssi = nil
         
         let catcher = PeripheralStateDelegateCatcher()
+        let peripheral = DefaultPeripheral(core: core, queue: .main)
         
         peripheral.delegate = catcher
-        peripheralMock.genericDelegate = peripheral
-        peripheralMock.shouldFailReadingRSSI = true
+        core.genericDelegate = peripheral
+        core.shouldFailReadingRSSI = true
         
         let expectation = XCTestExpectation()
         catcher.readClosure = { result in

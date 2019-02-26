@@ -13,8 +13,6 @@ public protocol CentralManagerProtocol: class {
 
     var peripherals: [Peripheral] { get }
 
-    init(options: CentralManagerOptions?, queue: DispatchQueue)
-
     func startScanningForPeripherals(
         advertisingWithServices services: [Identifier]?,
         options: CentralManagerScanningOptions?,

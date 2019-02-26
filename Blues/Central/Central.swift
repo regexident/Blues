@@ -7,30 +7,23 @@ import CoreBluetooth
 
 /// Represents a remote central.
 public class Central {
-    /// The Bluetooth-specific identifier of the central.
-    public let identifier: Identifier
-    
     /// The maximum amount of data, in bytes, that can be received by the central in a
     /// single notification or indication.
     public var maximumUpdateValueLength: Int {
         return self.core.maximumUpdateValueLength
     }
 
-    internal var core: CBCentralProtocol!
-    internal var peripheralManager: PeripheralManager
-    internal var queue: DispatchQueue {
-        return self.peripheralManager.queue
+    internal var core: CBCentralProtocol
+    
+    internal var concrete: CBCentral {
+        guard let core = core as? CBCentral else {
+            fatalError()
+        }
+        
+        return core
     }
     
-    public init(identifier: Identifier, peripheralManager: PeripheralManager) {
-        self.identifier = identifier
-        self.core = nil
-        self.peripheralManager = peripheralManager
-    }
-    
-    internal init(core: CBCentralProtocol, peripheralManager: PeripheralManager) {
-        self.identifier = Identifier(uuid: core.identifier)
+    internal init(core: CBCentralProtocol) {
         self.core = core
-        self.peripheralManager = peripheralManager
     }
 }
