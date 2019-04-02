@@ -57,8 +57,10 @@ extension FixedWidthIntegerValueCoder: ValueDecoder {
             return .err(.init(message: message))
         }
         // Read raw bytes from data object:
-        let endian = input.withUnsafeBytes { (pointer: UnsafePointer<Value>) in
-            pointer.pointee
+        let endian: Value = input.withUnsafeBytes { unsafeRawBufferPointer in
+            let unsafeBufferPointer = unsafeRawBufferPointer.bindMemory(to: Value.self)
+            let unsafePointer = unsafeBufferPointer.baseAddress!
+            return unsafePointer.pointee
         }
         // Adjust for native endianness:
         switch self.endianness {
