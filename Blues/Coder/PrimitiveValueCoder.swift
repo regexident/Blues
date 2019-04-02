@@ -33,8 +33,10 @@ extension PrimitiveValueCoder: ValueDecoder {
             let message = "Expected \(expectedLength) bytes, found \(foundBytes) bytes."
             return .err(.init(message: message))
         }
-        return .ok(input.withUnsafeBytes { (pointer: UnsafePointer<Value>) in
-            pointer.pointee
+        return .ok(input.withUnsafeBytes { unsafeRawBufferPointer in
+            let unsafeBufferPointer = unsafeRawBufferPointer.bindMemory(to: Value.self)
+            let unsafePointer = unsafeBufferPointer.baseAddress!
+            return unsafePointer.pointee
         })
     }
 }
