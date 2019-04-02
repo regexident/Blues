@@ -182,7 +182,7 @@ class PeripheralTests: XCTestCase {
             core.modify(service: serviceUUID)
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testValidRSSIReading() {
@@ -205,7 +205,7 @@ class PeripheralTests: XCTestCase {
 
         peripheral.readRSSI()
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testInvalidRSSIReading() {
@@ -229,7 +229,7 @@ class PeripheralTests: XCTestCase {
         
         peripheral.readRSSI()
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func onNextRunLoop(_ block: @escaping () -> Void) {
@@ -238,6 +238,6 @@ class PeripheralTests: XCTestCase {
             block()
             expectation.fulfill()
         }
-        self.wait(for: [expectation], timeout: 5)
+        self.wait(for: [expectation], timeout: 5.0)
     }
 }

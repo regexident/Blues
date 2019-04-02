@@ -44,9 +44,11 @@ class CBPeripheralManagerMock: CBPeripheralManagerProtocol {
     }
     
     func remove(_ service: CBMutableServiceProtocol) {
-        guard let index = self.serviceStore.index(where: { (knownService) -> Bool in
+        let indexOrNil = self.serviceStore.firstIndex(where: { (knownService) -> Bool in
             knownService.uuid == service.uuid
-        }) else {
+        })
+        
+        guard let index = indexOrNil else {
             return
         }
         
