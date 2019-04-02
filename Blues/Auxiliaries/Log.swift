@@ -43,15 +43,15 @@ class Log {
     }
     
     func debug(_ message:  @autoclosure () -> String, file: String = #file, line: Int = #line) {
-        log(level: .debug, message: message, file: file, line: line)
+        log(level: .debug, message: message(), file: file, line: line)
     }
     
     func warning(_ message:  @autoclosure () -> String, file: String = #file, line: Int = #line) {
-        log(level: .warning, message: message, file: file, line: line)
+        log(level: .warning, message: message(), file: file, line: line)
     }
     
     func error(_ message:  @autoclosure () -> String, file: String = #file, line: Int = #line) {
-        log(level: .error, message: message, file: file, line: line)
+        log(level: .error, message: message(), file: file, line: line)
         if shouldFailOnError {
             fatalError()
         }
