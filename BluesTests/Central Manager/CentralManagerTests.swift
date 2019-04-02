@@ -98,21 +98,25 @@ class CentralManagerTests: XCTestCase {
         let mock = CBCentralManagerMock()
         let central = CentralManager(core: mock)
         
-        central.startScanningForPeripherals(advertisingWithServices: nil, options: nil, timeout: 1)
+        central.startScanningForPeripherals(
+            advertisingWithServices: nil,
+            options: nil,
+            timeout: 2.0
+        )
         
         let turnOnExpectation = XCTestExpectation()
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             XCTAssertTrue(mock.isScanning)
             turnOnExpectation.fulfill()
         }
         
         let turnOffExpectation = XCTestExpectation()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             XCTAssertFalse(mock.isScanning)
             turnOffExpectation.fulfill()
         }
         
-        self.wait(for: [turnOnExpectation, turnOffExpectation], timeout: 2)
+        self.wait(for: [turnOnExpectation, turnOffExpectation], timeout: 4.0)
     }
     
     func testRetrievePeripheralsByPeripheralUUIDs() {
@@ -169,7 +173,7 @@ class CentralManagerTests: XCTestCase {
             central.connect(peripheral: peripheral)
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testConnectingToPeripheralShouldFail() {
@@ -193,7 +197,7 @@ class CentralManagerTests: XCTestCase {
             central.connect(peripheral: peripheral)
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testDisconnectPeripheral() {
@@ -226,7 +230,7 @@ class CentralManagerTests: XCTestCase {
             XCTAssertEqual(mock.peripherals.count, 0)
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testDisconnectAllPeripheral() {
@@ -255,13 +259,13 @@ class CentralManagerTests: XCTestCase {
         onNextRunLoop {
             central.disconnectAll()
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 XCTAssertEqual(mock.peripherals.count, 0)
                 allPeripheralsDisconnectedExpectation.fulfill()
             }
         }
         
-        wait(for: [allPeripheralsDisconnectedExpectation], timeout: 1)
+        wait(for: [allPeripheralsDisconnectedExpectation], timeout: 3.0)
     }
     
     func testCustomPeripheralWrapping() {
@@ -295,7 +299,7 @@ class CentralManagerTests: XCTestCase {
         mock.genericDelegate = central
         mock.state = .unknown
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testSelfDataSourcingManager() {
@@ -330,7 +334,7 @@ class CentralManagerTests: XCTestCase {
         
         mock.state = .unknown
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func testDataSourcedManager() {
@@ -378,7 +382,7 @@ class CentralManagerTests: XCTestCase {
             mock.restore(state: dictionary)
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     func onNextRunLoop(_ block: @escaping () -> Void) {
@@ -387,6 +391,6 @@ class CentralManagerTests: XCTestCase {
             block()
             expectation.fulfill()
         }
-        self.wait(for: [expectation], timeout: 5)
+        self.wait(for: [expectation], timeout: 5.0)
     }
 }
