@@ -19,12 +19,15 @@ public enum PeripheralManagerAuthorizationStatus {
     case denied
     case authorized
     
-    init(from coreStatus: CBPeripheralManagerAuthorizationStatus) {
-        switch coreStatus {
+    init(from status: CBPeripheralManagerAuthorizationStatus) {
+        switch status {
         case .notDetermined: self = .notDetermined
         case .restricted: self = .restricted
         case .denied: self = .denied
         case .authorized: self = .authorized
+        case _:
+            print("Encountered unknown status: \(status), falling back to `.notDetermined`.")
+            self = .notDetermined
         }
     }
 }

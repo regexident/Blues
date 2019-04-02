@@ -30,6 +30,9 @@ public enum ManagerState {
         case .unauthorized: self = .unauthorized
         case .poweredOff: self = .poweredOff
         case .poweredOn: self = .poweredOn
+        case _:
+            print("Encountered unknown state: \(state), falling back to `.unknown`.")
+            self = .unknown
         }
     }
 }

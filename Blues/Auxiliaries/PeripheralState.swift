@@ -39,6 +39,9 @@ public enum PeripheralState {
         case .connecting: self = .connecting
         case .connected: self = .connected
         case .disconnecting: self = .disconnecting
+        case _:
+            print("Encountered unknown state: \(state), falling back to `.disconnected`.")
+            self = .disconnected
         }
     }
 }
