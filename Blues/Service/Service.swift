@@ -192,8 +192,8 @@ extension Service: Equatable {
 
 // MARK: - Hashable
 extension Service: Hashable {
-    public var hashValue: Int {
-        return self.identifier.hashValue
+    public func hash(into hasher: inout Hasher) {
+        self.identifier.hash(into: &hasher)
     }
 }
 

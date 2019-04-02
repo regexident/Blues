@@ -53,8 +53,8 @@ extension Identifier: Equatable {
 
 // MARK: - Hashable
 extension Identifier: Hashable {
-    public var hashValue: Int {
-        return self.core.hashValue
+    public func hash(into hasher: inout Hasher) {
+        self.core.hash(into: &hasher)
     }
 }
 
