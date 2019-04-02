@@ -25,6 +25,9 @@ public enum WriteType {
         switch writeType {
         case .withResponse: self = .withResponse
         case .withoutResponse: self = .withoutResponse
+        case _:
+            print("Encountered unknown write-type: \(writeType), falling back to `.withResponse`.")
+            self = .withResponse
         }
     }
 }
