@@ -82,7 +82,7 @@ public protocol CharacteristicReadingDelegate: CharacteristicDelegate {
     /// the characteristic’s value has changed.
     ///
     /// - Parameters:
-    ///   - data: `.ok(data)` with the updated value iff successful, otherwise `.err(error)`.
+    ///   - data: `.success(data)` with the updated value iff successful, otherwise `.failure(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didUpdate(data: Result<Data, Error>, for characteristic: Characteristic)
 }
@@ -96,7 +96,7 @@ public protocol CharacteristicWritingDelegate: CharacteristicDelegate {
     ///   `write(value:type:)` method with `.withResponse` specified as the write type.
     ///
     /// - Parameters:
-    ///   - data: `.ok(data)` with the written value iff successful, otherwise `.err(error)`.
+    ///   - data: `.success(data)` with the written value iff successful, otherwise `.failure(error)`.
     ///   - characteristic: The characteristic whose value has been retrieved.
     func didWrite(data: Result<Data, Error>, for characteristic: Characteristic)
 }
@@ -110,9 +110,9 @@ public protocol CharacteristicNotificationStateDelegate: CharacteristicReadingDe
     ///   This method is invoked when your app calls the set(notifyValue:for:) method.
     ///
     /// - Parameters:
-    ///   - isNotifying: `.ok(flag)` with a boolean value indicating whether the
+    ///   - isNotifying: `.success(flag)` with a boolean value indicating whether the
     ///     characteristic is currently notifying a subscribed central of its
-    ///     value iff successful, otherwise `.err(error)`.
+    ///     value iff successful, otherwise `.failure(error)`.
     ///   - characteristic: The characteristic whose notification state has been retrieved.
     func didUpdate(
         notificationState isNotifying: Result<Bool, Error>,
@@ -128,8 +128,8 @@ public protocol CharacteristicDiscoveryDelegate: CharacteristicDelegate {
     ///   This method is invoked when your app calls the discoverDescriptors() method.
     ///
     /// - Parameters:
-    ///   - descriptors: `.ok(descriptors)` with the character descriptors that
-    ///     were discovered, iff successful, otherwise `.ok(error)`.
+    ///   - descriptors: `.success(descriptors)` with the character descriptors that
+    ///     were discovered, iff successful, otherwise `.success(error)`.
     ///   - characteristic: The characteristic that the characteristic descriptors belong to.
     func didDiscover(
         descriptors: Result<[Descriptor], Error>,

@@ -107,7 +107,7 @@ open class Peripheral: NSObject, PeripheralProtocol {
     ///   - services: An array of `Identifier` objects that you are interested in.
     ///     Here, each `Identifier` identifies the type of service you want to discover.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func discover(services: [Identifier]?) {
         assert(self.state == .connected, self.apiMisuseErrorMessage())
         let shouldDiscoverServices = services.map { !$0.isEmpty } ?? true
@@ -429,9 +429,9 @@ extension Peripheral: CBPeripheralDelegateProtocol {
                 fatalError("Method called on wrong peripheral")
             }
             let result = Result(success: peripheral.genericServices, failure: error)
-            guard case let .ok(coreServices) = result else {
+            guard case let .success(coreServices) = result else {
                 self.delegated(to: PeripheralDiscoveryDelegate.self) { delegate in
-                    delegate.didDiscover(services: .err(error!), for: self)
+                    delegate.didDiscover(services: .failure(error!), for: self)
                 }
                 return
             }
@@ -447,7 +447,7 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             }
             self.servicesByIdentifier = servicesByIdentifier
             self.delegated(to: PeripheralDiscoveryDelegate.self) { delegate in
-                delegate.didDiscover(services: .ok(discoveredServices), for: self)
+                delegate.didDiscover(services: .success(discoveredServices), for: self)
             }
         }
     }
@@ -465,9 +465,9 @@ extension Peripheral: CBPeripheralDelegateProtocol {
                 return
             }
             let result = Result(success: service.includedServices, failure: error)
-            guard case let .ok(coreServices) = result else {
+            guard case let .success(coreServices) = result else {
                 wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
-                    delegate.didDiscover(includedServices: .err(error!), for: wrapper)
+                    delegate.didDiscover(includedServices: .failure(error!), for: wrapper)
                 }
                 return
             }
@@ -485,7 +485,7 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             }
             wrapper.includedServicesByIdentifier = includedServicesByIdentifier
             wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
-                delegate.didDiscover(includedServices: .ok(discoveredIncludedServices), for: wrapper)
+                delegate.didDiscover(includedServices: .success(discoveredIncludedServices), for: wrapper)
             }
         }
     }
@@ -503,9 +503,9 @@ extension Peripheral: CBPeripheralDelegateProtocol {
                 return
             }
             let result = Result(success: service.characteristics, failure: error)
-            guard case let .ok(coreCharacteristics) = result else {
+            guard case let .success(coreCharacteristics) = result else {
                 wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
-                    delegate.didDiscover(characteristics: .err(error!), for: wrapper)
+                    delegate.didDiscover(characteristics: .failure(error!), for: wrapper)
                 }
                 return
             }
@@ -528,7 +528,7 @@ extension Peripheral: CBPeripheralDelegateProtocol {
             }
             wrapper.characteristicsByIdentifier = characteristicsByIdentifier
             wrapper.delegated(to: ServiceDiscoveryDelegate.self) { delegate in
-                delegate.didDiscover(characteristics: .ok(discoveredCharacteristics), for: wrapper)
+                delegate.didDiscover(characteristics: .success(discoveredCharacteristics), for: wrapper)
             }
         }
     }

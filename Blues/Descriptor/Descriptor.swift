@@ -104,7 +104,7 @@ where
     ///   descriptor, the descriptor calls the `didUpdate(any:for:)`
     ///   method of its delegate object with the retrieved value, or an error.
     ///
-    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successfull, `.failure(error)` otherwise.
     public func read() {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         guard let peripheral = self.peripheral as? Peripheral else {
@@ -140,7 +140,7 @@ where
     /// Parameters:
     /// - data: The value to be written.
     ///
-    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successfull, `.failure(error)` otherwise.
     public func write(data: Data) {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         guard let peripheral = self.peripheral as? Peripheral else {
@@ -164,7 +164,7 @@ where
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Decoder.Value?, DecodingError> {
         guard let any = self.any else {
-            return .ok(nil)
+            return .success(nil)
         }
         return self.decoder.decode(any).map { .some($0) }
     }
@@ -195,10 +195,10 @@ where
     /// Parameters:
     /// - data: The value to be written.
     ///
-    /// - Returns: `.ok(())` iff successfull, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successfull, `.failure(error)` otherwise.
     public func write(value: Encoder.Value) -> Result<(), EncodingError> {
         return self.encoder.encode(value).flatMap { data in
-            return .ok(self.write(data: data))
+            return .success(self.write(data: data))
         }
     }
 }
@@ -209,9 +209,9 @@ where
 {
     public var stringValue: Result<String?, DecodingError> {
         guard let any = self.any else {
-            return .ok("")
+            return .success("")
         }
-        return .ok("\(any)")
+        return .success("\(any)")
     }
 }
 

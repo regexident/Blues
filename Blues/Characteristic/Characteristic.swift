@@ -104,7 +104,7 @@ open class Characteristic: PeripheralCharacteristicProtocol {
     ///   When the characteristic discovers one or more descriptors, it calls the
     ///   `didDiscover(descriptors:for:)` method of its delegate object.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func discoverDescriptors() {
         if self.descriptors != nil {
             return
@@ -211,7 +211,7 @@ where
     ///   by accessing the relevant properties of the `CharacteristicProperties`
     ///   enumeration, which are detailed in `Characteristic`.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func read() {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.readData(for: self)
@@ -239,7 +239,7 @@ where
     ///     for the characteristic’s value. `false` if you do not want to receive
     ///     notifications or indications whenever the characteristic’s value changes.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func set(notifyValue: Bool) {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.set(notifyValue: notifyValue, for: self)
@@ -275,7 +275,7 @@ where
     ///   - data: The value to be written.
     ///   - type: The type of write to be executed.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func write(data: Data, type: WriteType) {
         assert(self.peripheral.state == .connected, self.apiMisuseErrorMessage())
         self.peripheral.write(data: data, for: self, type: type)
@@ -295,7 +295,7 @@ where
     ///   `self.transform(data: self.data)` and then returning the result.
     public var value: Result<Decoder.Value?, DecodingError> {
         guard let data = self.data else {
-            return .ok(nil)
+            return .success(nil)
         }
         return self.decoder.decode(data).map { .some($0) }
     }
@@ -319,7 +319,7 @@ where
     ///   - value: The value to be written.
     ///   - type: The type of write to be executed.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func write(value: Encoder.Value, type: WriteType) -> Result<(), EncodingError> {
         return self.encoder.encode(value).map { data in
             return self.write(data: data, type: type)

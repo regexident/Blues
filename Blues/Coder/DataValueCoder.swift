@@ -17,7 +17,7 @@ extension DataValueCoder: ValueEncoder {
     public typealias Output = Data
     
     public func encode(_ value: Value) -> Result<Output, EncodingError> {
-        return .ok(value)
+        return .success(value)
     }
 }
 
@@ -25,6 +25,6 @@ extension DataValueCoder: ValueDecoder {
     public typealias Input = Data
     
     public func decode(_ input: Input) -> Result<Value, DecodingError> {
-        return .ok(input)
+        return .success(input)
     }
 }

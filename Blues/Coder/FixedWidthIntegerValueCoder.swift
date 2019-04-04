@@ -40,7 +40,7 @@ extension FixedWidthIntegerValueCoder: ValueEncoder {
             endian = value.littleEndian
         }
         // Dump bytes into data object:
-        return .ok(Swift.withUnsafePointer(to: endian) { (pointer: UnsafePointer<Value>) in
+        return .success(Swift.withUnsafePointer(to: endian) { (pointer: UnsafePointer<Value>) in
             return Data(bytes: pointer, count: MemoryLayout<Value>.size)
         })
     }
@@ -54,7 +54,7 @@ extension FixedWidthIntegerValueCoder: ValueDecoder {
         let foundBytes = input.count
         guard foundBytes == expectedLength else {
             let message = "Expected \(expectedLength) bytes, found \(foundBytes) bytes."
-            return .err(.init(message: message))
+            return .failure(.init(message: message))
         }
         // Read raw bytes from data object:
         let endian: Value = input.withUnsafeBytes { unsafeRawBufferPointer in
@@ -64,8 +64,8 @@ extension FixedWidthIntegerValueCoder: ValueDecoder {
         }
         // Adjust for native endianness:
         switch self.endianness {
-        case .bigEndian: return .ok(Value(bigEndian: endian))
-        case .littleEndian: return .ok(Value(littleEndian: endian))
+        case .bigEndian: return .success(Value(bigEndian: endian))
+        case .littleEndian: return .success(Value(littleEndian: endian))
         }
     }
 }

@@ -72,8 +72,8 @@ open class Service: ServiceProtocol {
         return []
     }
 
-    /// `.ok(isPrimary)` with a boolean value indicating whether the type
-    /// of service is primary or secondary if successful, otherwise `.err(error)`.
+    /// `.success(isPrimary)` with a boolean value indicating whether the type
+    /// of service is primary or secondary if successful, otherwise `.failure(error)`.
     public var isPrimary: Bool {
         return self.core.isPrimary
     }
@@ -117,7 +117,7 @@ open class Service: ServiceProtocol {
     ///     An array of `Identifier` objects that you are interested in. Here, each
     ///     `Identifier` identifies the type of included service you want to discover.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func discover(includedServices: [Identifier]? = nil) {
         self.peripheral.discover(includedServices: includedServices, for: self)
     }
@@ -142,7 +142,7 @@ open class Service: ServiceProtocol {
     ///     interested in. Here, each `Identifier` object identifies the
     ///     type of a characteristic you want to discover.
     ///
-    /// - Returns: `.ok(())` iff successful, `.err(error)` otherwise.
+    /// - Returns: `.success(())` iff successful, `.failure(error)` otherwise.
     public func discover(characteristics: [Identifier]?) {
         return self.peripheral.discover(characteristics: characteristics, for: self)
     }

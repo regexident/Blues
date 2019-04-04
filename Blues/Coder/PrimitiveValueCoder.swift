@@ -17,7 +17,7 @@ extension PrimitiveValueCoder: ValueEncoder {
     public typealias Output = Data
     
     public func encode(_ value: Value) -> Result<Output, EncodingError> {
-        return .ok(Swift.withUnsafePointer(to: value) { (pointer: UnsafePointer<Value>) in
+        return .success(Swift.withUnsafePointer(to: value) { (pointer: UnsafePointer<Value>) in
             return Data(bytes: pointer, count: MemoryLayout<Value>.size)
         })
     }
@@ -31,9 +31,9 @@ extension PrimitiveValueCoder: ValueDecoder {
         let foundBytes = input.count
         guard foundBytes == expectedLength else {
             let message = "Expected \(expectedLength) bytes, found \(foundBytes) bytes."
-            return .err(.init(message: message))
+            return .failure(.init(message: message))
         }
-        return .ok(input.withUnsafeBytes { unsafeRawBufferPointer in
+        return .success(input.withUnsafeBytes { unsafeRawBufferPointer in
             let unsafeBufferPointer = unsafeRawBufferPointer.bindMemory(to: Value.self)
             let unsafePointer = unsafeBufferPointer.baseAddress!
             return unsafePointer.pointee
