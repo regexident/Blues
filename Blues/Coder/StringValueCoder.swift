@@ -24,9 +24,9 @@ extension StringValueCoder: ValueEncoder {
     
     public func encode(_ value: Value) -> Result<Output, EncodingError> {
         guard let data = value.data(using: self.encoding) else {
-            return .err(.init(message: "Failed to encode `String` as `Data`."))
+            return .failure(.init(message: "Failed to encode `String` as `Data`."))
         }
-        return .ok(data)
+        return .success(data)
     }
 }
 
@@ -35,8 +35,8 @@ extension StringValueCoder: ValueDecoder {
     
     public func decode(_ input: Input) -> Result<Value, DecodingError> {
         guard let string = String(data: input, encoding: self.encoding) else {
-            return .err(.init(message: "Failed decode `String` from `Data`."))
+            return .failure(.init(message: "Failed decode `String` from `Data`."))
         }
-        return .ok(string)
+        return .success(string)
     }
 }

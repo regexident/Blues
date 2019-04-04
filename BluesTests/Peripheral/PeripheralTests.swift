@@ -199,7 +199,12 @@ class PeripheralTests: XCTestCase {
 
         let expectation = XCTestExpectation()
         catcher.readClosure = { result in
-            XCTAssertEqual(result.expect("in tests"), 100)
+            switch result {
+            case .success(let rssi):
+                XCTAssertEqual(rssi, 100)
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
             expectation.fulfill()
         }
 
@@ -223,7 +228,12 @@ class PeripheralTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         catcher.readClosure = { result in
-            XCTAssertTrue(result.isErr)
+            switch result {
+            case .success(_):
+                XCTFail("Expected `.failure`")
+            case .failure(_):
+                break
+            }
             expectation.fulfill()
         }
         

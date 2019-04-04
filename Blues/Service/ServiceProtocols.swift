@@ -43,8 +43,8 @@ public protocol ServiceDiscoveryDelegate: ServiceDelegate {
     ///   This method is invoked when your app calls the `discover(services:)` method.
     ///
     /// - Parameters:
-    ///   - includedServices: `.ok(includedServices)` with the included services that
-    ///     were discovered, iff successful, otherwise `.ok(error)`.
+    ///   - includedServices: `.success(includedServices)` with the included services that
+    ///     were discovered, iff successful, otherwise `.success(error)`.
     ///   - service: The service that the included services belong to.
     func didDiscover(includedServices: Result<[Service], Error>, for service: Service)
 
@@ -58,8 +58,8 @@ public protocol ServiceDiscoveryDelegate: ServiceDelegate {
     ///   the error parameter returns the cause of the failure.
     ///
     /// - Parameters:
-    ///   - characteristics: `.ok(characteristics)` with the characteristics that
-    ///     were discovered, iff successful, otherwise `.ok(error)`.
+    ///   - characteristics: `.success(characteristics)` with the characteristics that
+    ///     were discovered, iff successful, otherwise `.success(error)`.
     ///   - service: The service that the characteristics belong to.
     func didDiscover(characteristics: Result<[Characteristic], Error>, for service: Service)
 }

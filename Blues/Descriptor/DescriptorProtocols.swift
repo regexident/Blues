@@ -51,7 +51,7 @@ public protocol DescriptorReadingDelegate: DescriptorDelegate {
     /// Invoked when you retrieve a specified characteristic descriptor’s value.
     ///
     /// - Parameters:
-    ///   - any: `.ok(any)` with the updated value iff successful, otherwise `.err(error)`.
+    ///   - any: `.success(any)` with the updated value iff successful, otherwise `.failure(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
     func didUpdate(any: Result<Any, Error>, for descriptor: Descriptor)
 }
@@ -60,7 +60,7 @@ public protocol DescriptorWritingDelegate: DescriptorDelegate {
     /// Invoked when you write data to a characteristic descriptor’s value.
     ///
     /// - Parameters:
-    ///   - any: `.ok(any)` with the written value iff successful, otherwise `.err(error)`.
+    ///   - any: `.success(any)` with the written value iff successful, otherwise `.failure(error)`.
     ///   - descriptor: The descriptor whose value has been retrieved.
     func didWrite(any: Result<Any, Error>, for descriptor: Descriptor)
 }
